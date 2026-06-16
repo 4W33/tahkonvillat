@@ -1,0 +1,66 @@
+{
+  "id": "vantaa-3",
+  "location": "vantaa",
+  "image": "/images/properties/vantaa-3/01.jpg",
+  "gallery": [
+    "/images/properties/vantaa-3/01.jpg",
+    "/images/properties/vantaa-3/02.jpg",
+    "/images/properties/vantaa-3/03.jpg",
+    "/images/properties/vantaa-3/04.jpg",
+    "/images/properties/vantaa-3/05.jpg",
+    "/images/properties/vantaa-3/06.jpg",
+    "/images/properties/vantaa-3/07.jpg",
+    "/images/properties/vantaa-3/08.jpg",
+    "/images/properties/vantaa-3/09.jpg",
+    "/images/properties/vantaa-3/10.jpg",
+    "/images/properties/vantaa-3/11.jpg",
+    "/images/properties/vantaa-3/12.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Vuokrattava yksikkö · Vantaa · ★4,85 · 2 makuuhuonetta · 3 vuodetta · 1,5 yksityistä kylpyhuonetta",
+    "en": "Vuokrattava yksikkö · Vantaa · ★4,85 · 2 makuuhuonetta · 3 vuodetta · 1,5 yksityistä kylpyhuonetta"
+  },
+  "name": {
+    "fi": "Flamingo / Airport Luxury",
+    "en": "Flamingo / Airport Luxury"
+  },
+  "area": {
+    "fi": "Vantaa",
+    "en": "Vantaa"
+  },
+  "description": {
+    "en": "A two-bedroom airport apartment in the Flamingo area, with three beds and one and a half bathrooms.",
+    "fi": "Kahden makuuhuoneen lentokenttäasunto Flamingon alueella — kolme vuodepaikkaa ja puolitoista kylpyhuonetta."
+  },
+  "guests": 6,
+  "bedrooms": 2,
+  "ratingAverage": 4.85,
+  "ratingCount": 221,
+  "reviews": [
+    {
+      "comment": "Moderni huoneisto, jossa on erittäin hyvin varusteltu keittiö. Huoneisto oli lämmin ja mukava (majoituin talvella) ja sauna oli mukava lisä. Henri oli erittäin ystävällinen ja vieraanvarainen. Kiitos!",
+      "author": "Mattias",
+      "rating": 5,
+      "date": "tammikuu 2026"
+    },
+    {
+      "comment": "Yhteydenpito Henrin kanssa oli sujuvaa ja nopeaa. Asunto siisti. Pieni miinus siitä, että autopaikkoja oli välillä vaikea löytää (tämä oli ennakkoon tiedossa aiempien arvosteluiden perusteella).",
+      "author": "Hanna",
+      "rating": 5,
+      "date": "heinäkuu 2025"
+    },
+    {
+      "comment": "Henri oli fantastinen majoittaja, lentomme peruttiin ja tunnin sisällä meidät järjestettiin hänen kauniiseen asuntoonsa, joka oli tilava ja tahraton ja jossa oli kaikki mitä tarvitsimme.",
+      "author": "Erin",
+      "rating": 5,
+      "date": "tammikuu 2026"
+    },
+    {
+      "comment": "Hyvä kompakti majoitus hyvällä sijainnilla. Hyvät kulkuyhteydet.",
+      "author": "Tiina",
+      "rating": 4,
+      "date": "kesäkuu 2025"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:44.021Z"
+}

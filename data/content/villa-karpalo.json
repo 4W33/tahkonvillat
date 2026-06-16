@@ -1,0 +1,85 @@
+{
+  "slug": "villa-karpalo",
+  "location": "tahko",
+  "guests": 16,
+  "bedrooms": 5,
+  "image": "/images/properties/villa-karpalo/01.jpg",
+  "gallery": [
+    "/images/properties/villa-karpalo/01.jpg",
+    "/images/properties/villa-karpalo/02.jpg",
+    "/images/properties/villa-karpalo/03.jpg",
+    "/images/properties/villa-karpalo/04.jpg",
+    "/images/properties/villa-karpalo/05.jpg",
+    "/images/properties/villa-karpalo/06.jpg",
+    "/images/properties/villa-karpalo/07.jpg",
+    "/images/properties/villa-karpalo/08.jpg",
+    "/images/properties/villa-karpalo/09.jpg",
+    "/images/properties/villa-karpalo/10.jpg",
+    "/images/properties/villa-karpalo/11.jpg",
+    "/images/properties/villa-karpalo/12.jpg",
+    "/images/properties/villa-karpalo/13.jpg",
+    "/images/properties/villa-karpalo/14.jpg",
+    "/images/properties/villa-karpalo/15.jpg",
+    "/images/properties/villa-karpalo/16.jpg",
+    "/images/properties/villa-karpalo/17.jpg",
+    "/images/properties/villa-karpalo/18.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Villa Karpalo 5mh, ulkoporeallas, 6 hissilippua",
+    "en": "Villa Karpalo 5mh, ulkoporeallas, 6 hissilippua"
+  },
+  "name": {
+    "fi": "Villa Karpalo",
+    "en": "Villa Karpalo"
+  },
+  "description": {
+    "fi": "5 makuuhuoneen huvila ulkoporeallasalla — Tahkon suurin sauna ja 6 hissilippua.",
+    "en": "Five-bedroom villa with outdoor hot tub — Tahko's largest sauna and 6 lift tickets."
+  },
+  "longDescription": {
+    "fi": [
+      "5 makuuhuonetta, ulkoporeallas, olohuone, keittiö, takkahuone, 2 kylpyhuonetta, wc, sauna ja koko talon kiertävä terassi.",
+      "MAJOITUSHINTA SISÄLTÄÄ TALVELLA 6 HISSILIPPUA (yrityskausikortit 6kpl huvilassa).",
+      "Tahkovuoren isoin ja hienoin sauna. Löylyihin mahtuu 15-20hlö kerrallaan.",
+      "Lisämaksulliset palvelut: Liinavaatteet/pyyhkeet 18€/hlö tai pedattuna 28€/hlö. Myös omat liinavaatteet/pyyhkeet sallittu."
+    ],
+    "en": [
+      "5 bedrooms, outdoor hot tub, living room, kitchen, fireplace lounge, 2 bathrooms, WC, sauna and terrace around the house.",
+      "Winter stay price includes 6 ski lift tickets (6 corporate season cards at the villa).",
+      "Tahko's largest and finest sauna — fits 15–20 people in the steam at once.",
+      "Optional extras: bed linen/towels €18/person or made beds €28/person. Your own linen is welcome."
+    ]
+  },
+  "amenities": [
+    "kitchen",
+    "parking",
+    "beds",
+    "wifi",
+    "sauna",
+    "jacuzzi",
+    "fireplace"
+  ],
+  "ratingAverage": 5,
+  "ratingCount": 3,
+  "reviews": [
+    {
+      "comment": "Kaikki sujui paremmin kuin hyvin. Majoittajan kanssa oli helppo sopia asioista. 5/5 majoittaja 💫",
+      "author": "Jutta",
+      "rating": 5,
+      "date": "syyskuu 2024"
+    },
+    {
+      "comment": "Kiva huvila. Olisi viihtynyt pidempäänkin. Varsinkin poreallas kruunasi loman",
+      "author": "Eetu",
+      "rating": 5,
+      "date": "maaliskuu 2026"
+    },
+    {
+      "comment": "Tilava talo, erittäin suuri osa saunaa! 😀",
+      "author": "Martin",
+      "rating": 5,
+      "date": "helmikuu 2025"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:43.911Z"
+}

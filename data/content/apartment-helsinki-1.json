@@ -1,0 +1,82 @@
+{
+  "id": "helsinki-1",
+  "location": "helsinki",
+  "image": "/images/properties/helsinki-1/01.jpg",
+  "gallery": [
+    "/images/properties/helsinki-1/01.jpg",
+    "/images/properties/helsinki-1/02.jpg",
+    "/images/properties/helsinki-1/03.jpg",
+    "/images/properties/helsinki-1/04.jpg",
+    "/images/properties/helsinki-1/05.jpg",
+    "/images/properties/helsinki-1/06.jpg",
+    "/images/properties/helsinki-1/07.jpg",
+    "/images/properties/helsinki-1/08.jpg",
+    "/images/properties/helsinki-1/09.jpg",
+    "/images/properties/helsinki-1/10.jpg",
+    "/images/properties/helsinki-1/11.jpg",
+    "/images/properties/helsinki-1/12.jpg",
+    "/images/properties/helsinki-1/13.jpg",
+    "/images/properties/helsinki-1/14.jpg",
+    "/images/properties/helsinki-1/15.jpg",
+    "/images/properties/helsinki-1/16.jpg",
+    "/images/properties/helsinki-1/17.jpg",
+    "/images/properties/helsinki-1/18.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Ruokailu/keittiö.",
+    "en": "Ruokailu/keittiö."
+  },
+  "name": {
+    "fi": "Helsinki — näköala & sauna",
+    "en": "Helsinki — view & sauna"
+  },
+  "area": {
+    "fi": "Helsinki",
+    "en": "Helsinki"
+  },
+  "description": {
+    "en": "A Helsinki apartment with its own sauna, a view and a fully equipped kitchen — a comfortable base in the city.",
+    "fi": "Helsinkiläisasunto omalla saunalla, näkymällä ja täysin varustellulla keittiöllä — mukava tukikohta kaupungissa."
+  },
+  "guests": 10,
+  "bedrooms": 3,
+  "ratingAverage": 4.79,
+  "ratingCount": 604,
+  "reviews": [
+    {
+      "comment": "Meillä oli mahtava viikonloppu Henrin asunnossa. Keittiö oli erittäin hyvin varusteltu, ja siellä oli kaikki tarvittava aterioiden valmistamiseen sekä runsaasti mukeja ja laseja. Tien toisella puolella sijaitseva supermarketti oli erittäin kätevä, ja oli helppo mennä minne tahansa, joko raitiovaunulla tai jalan. Sauna oli ihana lisäetu, ja nautimme parvekkeella istumisesta ja satamanäkymien ihailemisesta. Suosittelemme ehdottomasti majoittumista täällä",
+      "author": "Jane",
+      "rating": 5
+    },
+    {
+      "comment": "Tilava kämppä isommalle porukalle kivalla näköalalla ja sijainnilla. Hyvin mietitty myös lapsiperheitä. Kaikki tarvittava löytyy. Keittiö moderni, saunasta plussaa. Irronneet pistorasiakotelot ja rispaantuneet johdot voisi päivittää uusiin ihan turvallisuutta ajatellen. Ilmastointia kannattaisi harkita kesän helteitä ajatellen. Muuten ei mitään pahaa sanottavaa.",
+      "author": "Miki",
+      "rating": 5,
+      "date": "heinäkuu 2025"
+    },
+    {
+      "comment": "majoitus oli upea, vastasi kuvausta ja viihdyimme hyvin. sängyt oli hyvät ja keittiöstä löytyi kaikki tarpeellinen ja jopa enemmänkin. Voisin mielelläni majoittua paikalla uudelleenkin.",
+      "author": "Annika",
+      "rating": 5,
+      "date": "marraskuu 2025"
+    },
+    {
+      "comment": "Asunto oli siisti ja loistavalla sijainnilla. Julkinen liikenne lähtee heti asunnon ulkopuolelta ja keskusta on kävelymatkan päässä. Meillä oli oikein mukavat päivät asunnolla.",
+      "author": "Saara",
+      "rating": 5,
+      "date": "helmikuu 2026"
+    },
+    {
+      "comment": "Kaikki sujui hyvin, asunto oli erittäin siisti ja mukava. Parvekkeelta hieno näkymä. Erinomaiset kulkuyhteydet keskustaan. Voin suositella!",
+      "author": "Jonna",
+      "rating": 5
+    },
+    {
+      "comment": "Asunto oli todella siisti, puhdas ja ilmoituksen mukainen. Todella vahva suositus!",
+      "author": "Tero",
+      "rating": 5,
+      "date": "huhtikuu 2026"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:44.058Z"
+}

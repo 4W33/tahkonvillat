@@ -1,0 +1,69 @@
+{
+  "id": "vantaa-2",
+  "location": "vantaa",
+  "image": "/images/properties/vantaa-2/01.jpg",
+  "gallery": [
+    "/images/properties/vantaa-2/01.jpg",
+    "/images/properties/vantaa-2/02.jpg",
+    "/images/properties/vantaa-2/03.jpg",
+    "/images/properties/vantaa-2/04.jpg",
+    "/images/properties/vantaa-2/05.jpg",
+    "/images/properties/vantaa-2/06.jpg",
+    "/images/properties/vantaa-2/07.jpg",
+    "/images/properties/vantaa-2/08.jpg",
+    "/images/properties/vantaa-2/09.jpg",
+    "/images/properties/vantaa-2/10.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Vuokrattava yksikkö · Vantaa · ★4,78 · 2 makuuhuonetta · 4 vuodetta · 1 yksityinen kylpyhuone",
+    "en": "Vuokrattava yksikkö · Vantaa · ★4,78 · 2 makuuhuonetta · 4 vuodetta · 1 yksityinen kylpyhuone"
+  },
+  "name": {
+    "fi": "Ylellinen 2 mh — sauna & parveke",
+    "en": "Premium 2-bed — sauna & balcony"
+  },
+  "area": {
+    "fi": "Vantaa",
+    "en": "Vantaa"
+  },
+  "description": {
+    "en": "A two-bedroom apartment in Vantaa with a sauna and balcony — four beds and a private bathroom, suited to families and work trips alike.",
+    "fi": "Kahden makuuhuoneen huoneisto Vantaalla, saunalla ja parvekkeella — neljä vuodepaikkaa ja oma kylpyhuone, sopii perheille ja työmatkoille."
+  },
+  "guests": 8,
+  "bedrooms": 2,
+  "ratingAverage": 4.78,
+  "ratingCount": 351,
+  "reviews": [
+    {
+      "comment": "Erinomainen kohde perheemme viikonloppulomaan. Tarpeisiimme loistava. Lähellä juuri kohteet, joihin oli asia: Flamingo spa, Jumbo kauppakeskus ja lentokenttä.Erittäin siisti ja kaikinpuolin mukavan tilava, uudehkon oloinen huoneisto. Ystävällinen ja avulias isäntä. Napakymppi.",
+      "author": "Mervi",
+      "rating": 5,
+      "date": "lokakuu 2025"
+    },
+    {
+      "comment": "Todella ihana asunto. Erinomainen sijainti, monipuoliset palvelut ihan vieressä, asunto kuitenkin hiljainen. Asunto oli siisti ja oli oma sauna 😊 Sisään- ja uloskirjautuminen erittäin helppoa. Tänne voisimme mielellään tulla uudelleen😊",
+      "author": "Hanne",
+      "rating": 5,
+      "date": "tammikuu 2026"
+    },
+    {
+      "comment": "Lapsiperheen tarpeisiin todella hyvä asunto! 👍🏻loistava sijainti: jumbon ravintolat, palvelut ja Flamingon kylpylä ihan kävelymatkan päässä. Huoneistossa kaikki tarvittavat. Mukavat sängyt nukkua.",
+      "author": "Minna",
+      "rating": 5,
+      "date": "helmikuu 2026"
+    },
+    {
+      "comment": "Kohde sopi oikein hyvin isommankin porukan majoittumiseen ja lasten yöpyminen huomioitu kivasti. Mukava, rauhallinen sijainti ja puhdas asunto. Hyvät kulkuyhteydet joka suuntaan.",
+      "author": "Maija",
+      "rating": 5,
+      "date": "kesäkuu 2025"
+    },
+    {
+      "comment": "Kiitos majoituksesta! Vastasi kuvausta ja olimme tyytyväisiä!",
+      "author": "Anu",
+      "rating": 5
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:44.004Z"
+}

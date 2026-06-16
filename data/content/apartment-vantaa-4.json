@@ -1,0 +1,77 @@
+{
+  "id": "vantaa-4",
+  "location": "vantaa",
+  "image": "/images/properties/vantaa-4/01.jpg",
+  "gallery": [
+    "/images/properties/vantaa-4/01.jpg",
+    "/images/properties/vantaa-4/02.jpg",
+    "/images/properties/vantaa-4/03.jpg",
+    "/images/properties/vantaa-4/04.jpg",
+    "/images/properties/vantaa-4/05.jpg",
+    "/images/properties/vantaa-4/06.jpg",
+    "/images/properties/vantaa-4/07.jpg",
+    "/images/properties/vantaa-4/08.jpg",
+    "/images/properties/vantaa-4/09.jpg",
+    "/images/properties/vantaa-4/10.jpg",
+    "/images/properties/vantaa-4/11.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Ilmainen pysäköinti lentokentällä, 2 makuuhuonetta, sauna, parveke.",
+    "en": "Ilmainen pysäköinti lentokentällä, 2 makuuhuonetta, sauna, parveke."
+  },
+  "name": {
+    "fi": "Lentokenttä — ilmainen pysäköinti",
+    "en": "Airport — free parking on site"
+  },
+  "area": {
+    "fi": "Vantaa",
+    "en": "Vantaa"
+  },
+  "description": {
+    "en": "A two-bedroom apartment beside the airport with free on-site parking, a sauna and a balcony — easy for early flights and longer stays alike.",
+    "fi": "Kahden makuuhuoneen huoneisto lentokentän vieressä — ilmainen pysäköinti tontilla, oma sauna ja parveke, kätevä aamulennoille ja pidemmillekin oleskeluille."
+  },
+  "guests": 6,
+  "bedrooms": 2,
+  "ratingAverage": 4.75,
+  "ratingCount": 97,
+  "reviews": [
+    {
+      "comment": "Erinomainen asunto hyvien kulkuyhteyksien varrella. Todella hyvät sängyt nukkumiseen. Hieman oli kuuma ja tunkkainen ilma, mutta ilmastointi ja ikkunoiden avaaminen auttoi asiaa.Asunnossa hieman voimakas pesuaineen haju ja pesuhuoneen viemäreistä nousi tunkkainen haju, joka oli myös pyyhkeissä ja vaatehuoneessa jossa kaikki pyykit olivat kuivumassa. Lähinnä tämä tuoksuyliherkille huomioksi. Wc paperi oli loppu, mutta sitä ystävällisesti toimitettiin aamulla lisää.Ehdottomasti voisin vuokrata asunnon uudelleen ja suosittelen lämpimästi muillekin.",
+      "author": "Heli",
+      "rating": 4,
+      "date": "heinäkuu 2024"
+    },
+    {
+      "comment": "Huoneiston sijainti oli hyvä, ja supermarkketeille, suureen ostoskeskukseen, jossa on monia kauppoja, ja tärkeimmille teille oli helppo päästä. Huoneiston kuvauksessa mainostettu ilmainen pysäköinti oli hieman harhaanjohtavaa, koska huoneistossa ei ole pysäköintipaikkaa. Emme onnistuneet pysäköimään autoamme ilmaiseksi kerrankaan 6 yön majoittumisemme aikana. Huoneisto oli kaiken kaikkiaan puhdas ja vuoteet mukavat. Hyvä viestintä.",
+      "author": "Maiju",
+      "rating": 4,
+      "date": "heinäkuu 2025"
+    },
+    {
+      "comment": "Erittäin siisti ja puhdas huoneisto, joka ylitti odotukseni. Kaikki toimii täydellisesti. Nopea vastaus majoittajalta. Saavuimme Helsinkiin 2 tuntia ennen sisäänkirjautumisaikaa, soittimme majoittajalle ja hän antoi meidän kirjautua sisään. Erinomainen majoittaja, erinomainen huoneisto",
+      "author": "Ambrose",
+      "rating": 5,
+      "date": "elokuu 2025"
+    },
+    {
+      "comment": "Olin majoittunut aiemmin Henrin luona, eikä minulla ollut koskaan ongelmia. Loistava sijainti! Avulias majoittaja ja rauhallinen sijainti!… palaan luultavasti uudelleen! :)",
+      "author": "Zane",
+      "rating": 5,
+      "date": "joulukuu 2025"
+    },
+    {
+      "comment": "Asunto hyvällä ja rauhallisella paikalla. Asunnosta löytyy kaikki tarvittava. Jumbo lähellä mikä iso plussa. Parkkipaikkojakin lähistöllä hyvin, myös ilmaisia.",
+      "author": "Tuomas",
+      "rating": 4,
+      "date": "heinäkuu 2025"
+    },
+    {
+      "comment": "Ystävällistä ja sujuvaa yhteydenpitoa. Erityistoiveet huomioitu erinomaisesti. Suosittelen.",
+      "author": "Sinikka",
+      "rating": 5,
+      "date": "elokuu 2025"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:44.037Z"
+}

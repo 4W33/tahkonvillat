@@ -1,0 +1,104 @@
+{
+  "slug": "villa-puolukka",
+  "location": "tahko",
+  "guests": 16,
+  "bedrooms": 6,
+  "image": "/images/properties/villa-puolukka/01.jpg",
+  "gallery": [
+    "/images/properties/villa-puolukka/01.jpg",
+    "/images/properties/villa-puolukka/02.jpg",
+    "/images/properties/villa-puolukka/03.jpg",
+    "/images/properties/villa-puolukka/04.jpg",
+    "/images/properties/villa-puolukka/05.jpg",
+    "/images/properties/villa-puolukka/06.jpg",
+    "/images/properties/villa-puolukka/07.jpg",
+    "/images/properties/villa-puolukka/08.jpg",
+    "/images/properties/villa-puolukka/09.jpg",
+    "/images/properties/villa-puolukka/10.jpg",
+    "/images/properties/villa-puolukka/11.jpg",
+    "/images/properties/villa-puolukka/12.jpg",
+    "/images/properties/villa-puolukka/13.jpg",
+    "/images/properties/villa-puolukka/14.jpg",
+    "/images/properties/villa-puolukka/15.jpg",
+    "/images/properties/villa-puolukka/16.jpg",
+    "/images/properties/villa-puolukka/17.jpg",
+    "/images/properties/villa-puolukka/18.jpg"
+  ],
+  "imageAlt": {
+    "fi": "VILLA PUOLUKKA, RANTASAUNA, 5MH, 6 HISSILIPPUA",
+    "en": "VILLA PUOLUKKA, RANTASAUNA, 5MH, 6 HISSILIPPUA"
+  },
+  "name": {
+    "fi": "Villa Puolukka",
+    "en": "Villa Puolukka"
+  },
+  "description": {
+    "fi": "5 makuuhuoneen huvila rantasaunalla — poreallas, 6 hissilippua ja tilaa 16 vieraalle.",
+    "en": "Five-bedroom villa with lakeside sauna — hot tub, 6 lift tickets and space for 16 guests."
+  },
+  "longDescription": {
+    "fi": [
+      "MAJOITUSHINTA SISÄLTÄÄ 6 HISSILIPPUA (vieraiden vapaassa käytössä koko talvikauden ajan ilman rajoituksia)",
+      "5 makuuhuonetta, olohuone, keittiö, 4 kylpyhuonetta, kodinhoitohuone, sauna, iso terassi ja ulkoporeallas.",
+      "Rantasauna, jossa puulämmitteinen Harvia Legend kiuas, 2 suihkua, olohuone, parvi, wc ja terassi.",
+      "Lisämaksulliset palvelut: Liinavaatteet/pyyhkeet 18€/hlö tai pedattuna 28€/hlö. Myös omat liinavaatteet sallittu."
+    ],
+    "en": [
+      "Stay price includes 6 ski lift tickets for guests throughout the winter season.",
+      "5 bedrooms, living room, kitchen, 4 bathrooms, utility room, sauna, large terrace and outdoor hot tub.",
+      "Lakeside sauna with a wood-fired Harvia Legend stove, 2 showers, lounge, loft, WC and terrace.",
+      "Optional extras: bed linen/towels €18/person or made beds €28/person. You may bring your own linen."
+    ]
+  },
+  "amenities": [
+    "kitchen",
+    "parking",
+    "beds",
+    "wifi",
+    "sauna",
+    "jacuzzi",
+    "pets",
+    "fireplace"
+  ],
+  "ratingAverage": 4.73,
+  "ratingCount": 30,
+  "reviews": [
+    {
+      "comment": "Siisti mökki. Yhtenäinen olohuone ja keittiö tila sopi hyvin porukalla olemiseen ja poreamme on mahtava lisä. Hissilipuista myös plussaa. Mainittavaa kuitenkin, että mökin kuudes, 4 vuoteen makuuhuone on kuitenkin vain matala parvi saunarakennuksessa, jossa on 4 patjaa, eikä siitä ole kuvaa ilmoituksessa. Kommunikointi Henrin kanssa toimi suhteellisen hyvin, vaikkakin välillä tuntui, että hän ei uskonut kun sanoimme mökin olohuoneesta löytyneen hiiren ja alakerran huoneiden olevan kylmiä. Voisin kuitenkin varata mökin uudestaan ja suositella sitä.",
+      "author": "Juho",
+      "rating": 3,
+      "date": "helmikuu 2024"
+    },
+    {
+      "comment": "Mökki sijaitsee kauniilla ja rauhallisella paikalla ja sopii hyvin isommallekin perheelle tai seurueelle. Siellä oli kaikki mitä lomailuun tarvitaan, tosin kuumina aurinkoisina päivinä sisälämpötila nousee helposti melko kuumaksi. Yhteydenpito Henrin kanssa sujui hyvin ja nopeasti. Voimme suositella tätä mökkiä.",
+      "author": "Marja",
+      "rating": 4,
+      "date": "heinäkuu 2021"
+    },
+    {
+      "comment": "Puolukka on hienolla paikalla järven rannalla. Kolmelle perheelle passelit tilat. Plussaa isosta keittiöstä! Kaikki mahtuivat aamiaiselle ja astioita ja muuta ruoanlaittovälinettä löytyi runsaasti. Voimme suositella lämpimästi.",
+      "author": "Piia",
+      "rating": 5,
+      "date": "maaliskuu 2024"
+    },
+    {
+      "comment": "Upeat puitteet isommallekin porukalle! Kaikki sujui mainiosti ja vaivattomasti. Tulemme varmasti jatkossakin!",
+      "author": "Nanna",
+      "rating": 5,
+      "date": "elokuu 2024"
+    },
+    {
+      "comment": "Työporukan pikkujoulut onnistuivat mainiosti. Monta makuuhuonetta ja wc:tä.",
+      "author": "Jenni",
+      "rating": 5,
+      "date": "marraskuu 2025"
+    },
+    {
+      "comment": "Hyvä ja mukava kohde viettää kaveriporukan virkistäytymisreissua.",
+      "author": "Mikko",
+      "rating": 4,
+      "date": "huhtikuu 2025"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:43.859Z"
+}

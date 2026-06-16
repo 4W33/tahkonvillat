@@ -1,0 +1,76 @@
+{
+  "id": "vantaa-1",
+  "location": "vantaa",
+  "image": "/images/properties/vantaa-1/01.jpg",
+  "gallery": [
+    "/images/properties/vantaa-1/01.jpg",
+    "/images/properties/vantaa-1/02.jpg",
+    "/images/properties/vantaa-1/03.jpg",
+    "/images/properties/vantaa-1/04.jpg",
+    "/images/properties/vantaa-1/05.jpg",
+    "/images/properties/vantaa-1/06.jpg",
+    "/images/properties/vantaa-1/07.jpg",
+    "/images/properties/vantaa-1/08.jpg",
+    "/images/properties/vantaa-1/09.jpg",
+    "/images/properties/vantaa-1/10.jpg",
+    "/images/properties/vantaa-1/11.jpg",
+    "/images/properties/vantaa-1/12.jpg"
+  ],
+  "imageAlt": {
+    "fi": "Lentokenttä/Flamingo Luxury 2 makuuhuonetta, sauna, parveke. Uusi huoneisto, uudet huonekalut.",
+    "en": "Lentokenttä/Flamingo Luxury 2 makuuhuonetta, sauna, parveke. Uusi huoneisto, uudet huonekalut."
+  },
+  "name": {
+    "fi": "Flamingo Luxury — sauna & parveke",
+    "en": "Flamingo Luxury — sauna & balcony"
+  },
+  "area": {
+    "fi": "Vantaa, lentokenttä / Flamingo",
+    "en": "Vantaa, airport / Flamingo"
+  },
+  "description": {
+    "en": "A newly built two-bedroom apartment by the airport and Flamingo, with its own sauna, a balcony and fresh, modern furnishings.",
+    "fi": "Uusi kahden makuuhuoneen huoneisto lentokentän ja Flamingon kupeessa — oma sauna, parveke ja modernit, vasta hankitut kalusteet."
+  },
+  "guests": 6,
+  "bedrooms": 2,
+  "ratingAverage": 4.74,
+  "ratingCount": 212,
+  "reviews": [
+    {
+      "comment": "Parkkeeraminen kadulle oli toki ilmaista mutta jos paikalta lähdit, niin ei vatmasti ollut enää vapaana. Joten huono jalkaisten kanssa hieman hankala, toki heidät sai jätettyä kadun varteen ja sitten itse etsimään vapaata paikkaa. Ilmastoinnin olisi kyllä kaivannut vaikka asunto olikin hyvään suuntaan auringon paistetta ajatellen. Asunto muuten siisti ja hyvin varusteltu. Voisin majoittua toistekkin, jos tarve tulee.",
+      "rating": 4,
+      "date": "heinäkuu 2025"
+    },
+    {
+      "comment": "Noin viikon kestänyt majoittuminenHyvät sängyt ja rauhallinen taloyhtiö. Keittiö ok varusteltu ruoanlaittoon. Kadunvarsilla paikkoja on hyvin rajoitetusti saatavilla ja yleensä täynnä. Rajoitus arkisin ( 8-16)4h. n.250 metrin päästä löytyy ilmaista kadunvartta (äyritiellä).Hyvä ja nopea kulkuyhteys lentokentälle bussilla. Pysäkki molempiin suuntiin talon edessä.",
+      "author": "Noomi",
+      "rating": 4,
+      "date": "kesäkuu 2024"
+    },
+    {
+      "comment": "Saudi-ArabiaHenri oli erittäin avulias. Hän on kohtelias henkilö ja vastasi nopeasti tarpeisiimme. Kohde oli erittäin puhdas ja hyvällä paikalla ja hiljainen. Minua ilahdutti, että huoneistosta löytyi kaikki tarvittava (siivoustarvikkeet, vuodevaatteet, täysin varusteltu keittiö)sinun ei tarvitse edes mennä ruokakauppoihin 😂",
+      "rating": 5,
+      "date": "lokakuu 2025"
+    },
+    {
+      "comment": "Henri on todella avulias ja nopea vastaamaan, hän meni jopa pidemmälle auttaakseen meitä matkatavaroidemme säilytyksessä.Huoneisto on hohtavan puhdas ja tilava. Ja sauna on mukana.erittäin suositeltu",
+      "author": "Wendy",
+      "rating": 5,
+      "date": "syyskuu 2025"
+    },
+    {
+      "comment": "ulkomaiset vieraani majoittuvat kansainvälisen tapahtuman ajaksi asuntoon. Olivat todella tyytyväisiä. Rapun edessä oli katutyömaa juuri nyt, mutta poistuu pian.",
+      "author": "Maija",
+      "rating": 5,
+      "date": "elokuu 2025"
+    },
+    {
+      "comment": "Mukava siisti asunto. Kommunikointi sujuvaa ja selkeät ohjeet sain. Oikein onnistunut majoitus, suosittelut! :)",
+      "author": "Tuula",
+      "rating": 5,
+      "date": "heinäkuu 2025"
+    }
+  ],
+  "syncedAt": "2026-06-12T03:52:43.991Z"
+}
