@@ -12,6 +12,7 @@ import {
   parseApartmentFilter,
 } from "@/lib/apartment-filters";
 import { getApartments } from "@/lib/content/apartments";
+import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
 
 type Props = {
@@ -41,6 +42,7 @@ export default async function ApartmentsPage({
     await getApartments(),
     activeFilter,
   );
+  const headerImage = getPageHeaderImage("apartments", locale as "fi" | "en");
 
   return (
     <main>
@@ -49,18 +51,19 @@ export default async function ApartmentsPage({
         title={t("title")}
         subtitle={t("subtitle")}
         narrow
+        image={headerImage.src}
+        imageAlt={headerImage.alt}
       />
 
-      <section className="relative overflow-hidden bg-ink-900 py-14 text-paper sm:py-20">
-        <div className="grain absolute inset-0 opacity-30" aria-hidden />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-[#F2EBE0] py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <p className="mono-label text-paper/50">{t("filters.label")}</p>
+            <p className="font-serif italic text-base text-forest-600">{t("filters.label")}</p>
           </Reveal>
 
           <Suspense fallback={null}>
             <div className="mt-4">
-              <ApartmentLocationFilter active={activeFilter} variant="dark" />
+              <ApartmentLocationFilter active={activeFilter} variant="light" />
             </div>
           </Suspense>
 
@@ -74,23 +77,23 @@ export default async function ApartmentsPage({
                 />
               ))
             ) : (
-              <ApartmentEmptyState variant="dark" />
+              <ApartmentEmptyState variant="light" />
             )}
           </RevealList>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#F2EBE0] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div
               id="inquiry"
               className="card scroll-mt-24 px-6 py-12 text-center sm:px-10"
             >
-              <p className="font-display text-2xl font-extrabold tracking-tightest text-ink sm:text-3xl">
+              <p className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-3xl">
                 {t("inquiry.title")}
               </p>
-              <p className="mx-auto mt-4 max-w-lg font-sans text-sm leading-relaxed text-forest-700 sm:text-base">
+              <p className="mx-auto mt-4 max-w-lg font-sans text-base leading-relaxed text-forest-700">
                 {t("inquiry.subtitle")}
               </p>
               <Link href="/contact" className="btn-primary mt-7">

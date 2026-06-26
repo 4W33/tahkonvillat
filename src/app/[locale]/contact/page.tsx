@@ -3,6 +3,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/constants";
+import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
 
 type Props = {
@@ -42,6 +43,7 @@ export default async function ContactPage({
       property: searchParams.property,
     });
   }
+  const headerImage = getPageHeaderImage("contact", locale as "fi" | "en");
 
   return (
     <main>
@@ -50,13 +52,15 @@ export default async function ContactPage({
         title={t("title")}
         subtitle={t("subtitle")}
         narrow
+        image={headerImage.src}
+        imageAlt={headerImage.alt}
       />
 
       <section className="py-12 sm:py-16">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
           <Reveal>
           <div>
-            <h2 className="font-display text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               {t("info.title")}
             </h2>
             <p className="mt-5 font-sans text-sm leading-relaxed text-forest-700 sm:text-base">

@@ -52,7 +52,7 @@ export default async function PrivacyPage({ params: { locale } }: Props) {
                   <span className="index-num">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <h2 className="mt-3 font-display text-xl font-bold tracking-tight text-ink sm:text-2xl">
+                  <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-ink sm:text-2xl">
                     {t(`sections.${key}.title`)}
                   </h2>
                   <p className="mt-3 font-sans text-sm leading-relaxed text-forest-700 sm:text-base">

@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { RevealList } from "@/components/ui/RevealList";
 import { VillaCard } from "@/components/villas/VillaCard";
 import { getVillas } from "@/lib/content/villas";
+import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
 
 type Props = {
@@ -26,29 +27,32 @@ export default async function VillasPage({ params: { locale } }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("villas");
   const villas = await getVillas();
+  const headerImage = getPageHeaderImage("villas", locale as "fi" | "en");
 
   return (
-    <main>
+    <main className="bg-[#F7F2EA]">
       <PageHeader
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}
         narrow
+        image={headerImage.src}
+        imageAlt={headerImage.alt}
       >
-        <p className="font-sans text-sm text-forest-500">
+        <p className="font-sans text-base">
           {t("cityHint")}{" "}
           <Link
             href="/apartments"
-            className="font-semibold text-forest underline-offset-4 transition-colors hover:underline"
+            className="font-semibold underline-offset-4 transition-colors hover:underline"
           >
             {t("cityHintLink")}
           </Link>
         </p>
       </PageHeader>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#F2EBE0] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <RevealList className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <RevealList className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {villas.map((villa) => (
               <VillaCard
                 key={villa.slug}

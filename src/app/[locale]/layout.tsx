@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans, IBM_Plex_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -12,22 +12,24 @@ import { getSiteUrl } from "@/lib/seo";
 import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
 import "../globals.css";
 
-const sans = Archivo({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
-
-const display = sans;
-
-const serif = Fraunces({
+// Cormorant Garamond — korkean kontrastin elegantti serif otsikoihin ja korostettuun tekstiin
+const serif = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-serif",
   style: ["normal", "italic"],
-  weight: ["400", "500", "600", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
+
+// DM Sans — lämmin, moderni groteski leipätekstiin ja käyttöliittymään
+const sans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const display = serif;
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],

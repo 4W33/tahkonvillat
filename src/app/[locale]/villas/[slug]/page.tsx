@@ -65,7 +65,7 @@ export default async function VillaDetailPage({
             <BackLink href="/villas" label={tDetail("back")} />
             <p className="eyebrow mt-6">{t(`locations.${villa.location}`)}</p>
             <h1 className="section-title mt-3">{villa.name[lang]}</h1>
-            <p className="mt-4 font-sans text-sm text-forest-600 sm:text-base">
+            <p className="mt-4 font-sans text-base text-forest-600">
               {t("meta", { guests: villa.guests, bedrooms: villa.bedrooms })}
             </p>
             <PropertyPrice
@@ -76,7 +76,7 @@ export default async function VillaDetailPage({
             {villa.ratingAverage != null && villa.ratingCount != null && (
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <StarRating value={villa.ratingAverage} size="sm" />
-                <span className="font-sans text-sm text-forest-600">
+                <span className="font-sans text-base text-forest-600">
                   {tDetail("booking.rating", {
                     rating: villa.ratingAverage.toFixed(2),
                     count: villa.ratingCount,
@@ -120,7 +120,7 @@ export default async function VillaDetailPage({
 
               <Reveal delay={160}>
                 <div className="mt-10">
-                  <h2 className="font-display text-2xl text-forest sm:text-3xl">
+                  <h2 className="font-display text-4xl font-semibold text-forest sm:text-5xl">
                     {tDetail("amenitiesTitle")}
                   </h2>
                   <div className="mt-4">
