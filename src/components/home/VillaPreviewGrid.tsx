@@ -13,21 +13,19 @@ export async function VillaPreviewGrid({ locale }: Props) {
   const villas = await getVillas();
 
   return (
-    <section className="bg-paper-50 py-20 sm:py-28">
+    <section className="bg-[#F7F2EA] py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-xl">
-              <p className="eyebrow">{t("eyebrow")}</p>
-              <h2 className="section-title mt-6">{t("title")}</h2>
-            </div>
-            <p className="max-w-sm font-sans text-sm leading-relaxed text-forest-700">
+          <div className="mb-16 max-w-3xl">
+            <p className="eyebrow">{t("eyebrow")}</p>
+            <h2 className="section-title mt-2">{t("title")}</h2>
+            <p className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-forest-700 sm:text-xl">
               {t("subtitle")}
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {villas.map((villa, index) => (
             <Reveal key={villa.slug} delay={index * 90}>
               <VillaCard villa={villa} locale={locale} />
@@ -36,7 +34,7 @@ export async function VillaPreviewGrid({ locale }: Props) {
         </div>
 
         <Reveal delay={160}>
-          <div className="mt-12 flex justify-end border-t border-[color:var(--hairline)] pt-8">
+          <div className="mt-14 flex justify-start border-t border-[color:var(--hairline)] pt-10">
             <Link href="/villas" className="btn-secondary">
               {t("cta")}
             </Link>

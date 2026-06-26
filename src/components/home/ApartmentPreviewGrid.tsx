@@ -13,21 +13,19 @@ export async function ApartmentPreviewGrid({ locale }: Props) {
   const apartments = await getApartments();
 
   return (
-    <section className="bg-paper py-20 sm:py-28">
+    <section className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="flex flex-col gap-6 border-t border-[color:var(--hairline)] pt-8 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-              <p className="eyebrow">{t("eyebrow")}</p>
-              <h2 className="section-title mt-5">{t("title")}</h2>
-            </div>
-            <p className="max-w-sm font-sans text-sm leading-relaxed text-forest-700">
+          <div className="mb-14 max-w-3xl">
+            <p className="eyebrow">{t("eyebrow")}</p>
+            <h2 className="section-title mt-2">{t("title")}</h2>
+            <p className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-forest-700 sm:text-xl">
               {t("subtitle")}
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {apartments.map((apartment, index) => (
             <Reveal key={apartment.id} delay={index * 80}>
               <ApartmentHomeCard apartment={apartment} locale={locale} />
@@ -36,7 +34,7 @@ export async function ApartmentPreviewGrid({ locale }: Props) {
         </div>
 
         <Reveal delay={160}>
-          <div className="mt-10 text-center">
+          <div className="mt-14 flex justify-start border-t border-[color:var(--hairline)] pt-10">
             <Link href="/apartments" className="btn-secondary">
               {t("cta")}
             </Link>

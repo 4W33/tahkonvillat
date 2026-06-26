@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { RevealText } from "@/components/motion/RevealText";
 import { ClipReveal } from "@/components/motion/ClipReveal";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { WindButton } from "@/components/ui/WindButton";
 
 export async function Hero() {
   const t = await getTranslations("home.hero");
@@ -14,7 +15,7 @@ export async function Hero() {
     : [title];
 
   return (
-    <section className="relative flex min-h-[90vh] flex-col justify-end overflow-hidden bg-neutral-900 text-paper">
+    <section className="relative flex min-h-[95vh] flex-col justify-end overflow-hidden bg-neutral-900 text-paper">
       <ClipReveal immediate className="absolute inset-0">
         <Image
           src={heroImage}
@@ -37,25 +38,23 @@ export async function Hero() {
       />
 
       {/* One cohesive content block, bottom-left. */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-32 sm:px-6 sm:pb-24 lg:px-8">
-        <p className="font-mono text-[0.72rem] uppercase tracking-[0.28em] text-paper/75">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-36 lg:px-8 lg:pb-36">
+        <p className="font-serif text-lg italic text-paper/85 sm:text-xl">
           {t("eyebrow")}
         </p>
         <RevealText
           as="h1"
           lines={lines}
-          className="display-xl mt-6 max-w-4xl text-[2.6rem] text-paper sm:text-6xl lg:text-[5rem]"
+          className="display-xl mt-5 max-w-4xl text-[2.8rem] text-paper sm:text-6xl lg:text-[5.2rem]"
           delay={250}
         />
-        <p className="mt-7 max-w-xl font-sans text-base leading-relaxed text-paper/85 sm:text-lg">
+        <p className="mt-8 max-w-2xl font-sans text-lg leading-relaxed text-paper/90 sm:text-xl">
           {t("subtitle")}
         </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Magnetic>
-            <Link href="/villas" className="btn-cream">
-              {t("cta")}
-            </Link>
-          </Magnetic>
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <WindButton href="/villas" variant="light">
+            {t("cta")}
+          </WindButton>
           <Magnetic>
             <Link href="/contact" className="btn-ghost-light">
               {t("ctaSecondary")}

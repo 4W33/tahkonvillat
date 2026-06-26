@@ -14,7 +14,7 @@ export async function VillaUnits({ locale, units }: Props) {
 
   return (
     <div className="mt-12">
-      <h2 className="font-display text-2xl text-forest sm:text-3xl">
+      <h2 className="font-display text-4xl font-semibold text-forest sm:text-5xl">
         {t("unitsTitle")}
       </h2>
       <p className="mt-3 font-sans text-sm text-forest-600 sm:text-base">
@@ -24,7 +24,7 @@ export async function VillaUnits({ locale, units }: Props) {
       <ul className="mt-6 grid gap-4 sm:grid-cols-2">
         {units.map((unit) => (
           <li key={unit.id} className="card p-5 transition-colors hover:bg-cream">
-            <p className="font-display text-lg text-forest">{unit.name[lang]}</p>
+            <p className="font-display text-xl font-semibold text-forest">{unit.name[lang]}</p>
             <p className="mt-2 font-sans text-sm text-forest-600">
               {t("unitMeta", {
                 guests: unit.guests,

@@ -88,7 +88,7 @@ export function VillaInquiryForm({
       id="villa-inquiry"
       className="card scroll-mt-24 p-5 pb-28 sm:p-6 lg:pb-6"
     >
-      <h3 className="font-display text-xl text-forest">{t("title")}</h3>
+      <h3 className="font-display text-2xl font-semibold text-forest">{t("title")}</h3>
       <p className="mt-2 font-sans text-sm leading-relaxed text-forest-600">
         {t("subtitle")}
       </p>

@@ -35,16 +35,16 @@ function AccordionItem({
     <div className="border-b border-[color:var(--hairline)] last:border-b-0">
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 px-6 py-6 text-left transition-colors duration-200 hover:bg-paper"
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors duration-200 hover:bg-[#FAF7F3]"
         aria-expanded={isOpen}
         onClick={onToggle}
       >
-        <span className="font-display text-lg font-bold tracking-tight text-ink sm:text-xl">
+        <span className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-2xl">
           {question}
         </span>
         <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-none border border-[color:var(--hairline)] font-mono text-lg text-ink transition-transform duration-300 ease-out-expo ${
-            isOpen ? "rotate-45" : ""
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--hairline)] font-sans text-xl font-light text-ink transition-transform duration-300 ease-out-expo ${
+            isOpen ? "rotate-45 border-ink bg-ink text-paper" : ""
           }`}
           aria-hidden
         >
@@ -58,7 +58,7 @@ function AccordionItem({
         }`}
       >
         <div className="overflow-hidden">
-          <p className="px-6 pb-6 font-sans text-sm leading-relaxed text-forest-700 sm:text-base">
+          <p className="px-6 pb-7 font-sans text-base leading-relaxed text-forest-700 sm:text-lg">
             {answer}
           </p>
         </div>

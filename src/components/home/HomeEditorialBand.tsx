@@ -10,7 +10,7 @@ export async function HomeEditorialBand() {
   const editorialImage = t("image");
 
   return (
-    <section className="relative min-h-[70vh] overflow-hidden bg-neutral-900 text-paper">
+    <section className="relative min-h-[80vh] overflow-hidden bg-neutral-900 text-paper">
       <ClipReveal className="absolute inset-0">
         <Image
           src={editorialImage}
@@ -25,7 +25,7 @@ export async function HomeEditorialBand() {
         aria-hidden
       />
 
-      <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-[80vh] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
         <p className="eyebrow text-paper/70">{t("eyebrow")}</p>
         <RevealText
           as="h2"

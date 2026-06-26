@@ -37,7 +37,7 @@ export async function GuestReviews({
 
       {!compact && (
         <div className="mt-3 flex flex-wrap items-end justify-between gap-6">
-          <h2 className="font-display text-2xl text-forest sm:text-3xl">
+          <h2 className="font-display text-3xl font-semibold text-forest sm:text-4xl">
             {t("title")}
           </h2>
 
@@ -48,7 +48,7 @@ export async function GuestReviews({
               </span>
               <div>
                 <StarRating value={ratingAverage} size="md" />
-                <p className="mt-1.5 font-sans text-xs text-forest-600">
+                <p className="mt-1.5 font-sans text-sm text-forest-600">
                   {t("summary", { count: ratingCount })}
                 </p>
               </div>
@@ -59,11 +59,11 @@ export async function GuestReviews({
 
       {compact && ratingAverage != null && ratingCount != null && (
         <div className="mb-5 space-y-1">
-          <p className="font-sans text-sm font-medium text-forest">
+          <p className="font-sans text-base font-medium text-forest">
             {t("summary", { count: ratingCount })}
           </p>
           {ratingCount > reviews.length && reviews.length > 0 && (
-            <p className="font-sans text-xs text-forest-500">
+            <p className="font-sans text-sm text-forest-500">
               {t("showingSubset", {
                 total: ratingCount,
                 shown: reviews.length,
@@ -87,18 +87,18 @@ export async function GuestReviews({
                   <StarRating value={review.rating} size="sm" />
                 )}
                 {review.author && (
-                  <span className="font-sans text-sm font-semibold text-forest">
+                  <span className="font-sans text-base font-semibold text-forest">
                     {review.author}
                   </span>
                 )}
                 {review.date && (
-                  <span className="font-sans text-xs text-forest-500">
+                  <span className="font-sans text-sm text-forest-500">
                     {review.date}
                   </span>
                 )}
               </div>
 
-              <p className="relative mt-5 flex-1 font-sans text-sm leading-relaxed text-forest-700">
+              <p className="relative mt-5 flex-1 font-sans text-base leading-relaxed text-forest-700">
                 {review.comment}
               </p>
             </li>
@@ -110,7 +110,7 @@ export async function GuestReviews({
         ratingCount != null &&
         reviews.length > 0 &&
         ratingCount > reviews.length && (
-          <p className="mt-8 font-sans text-sm text-forest-500">
+          <p className="mt-8 font-sans text-base text-forest-500">
             {t("showingSubset", {
               total: ratingCount,
               shown: reviews.length,

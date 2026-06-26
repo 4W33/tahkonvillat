@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { NavHelpMenu } from "./NavHelpMenu";
 
 const navItems = [
   { href: "/", key: "home", match: (path: string) => path === "/" },
@@ -20,7 +21,6 @@ const navItems = [
     key: "contact",
     match: (path: string) => path === "/contact",
   },
-  { href: "/faq", key: "faq", match: (path: string) => path === "/faq" },
 ] as const;
 
 type Props = {
@@ -58,12 +58,24 @@ export function NavLinks({
   });
 
   if (variant === "vertical") {
-    return <div className={className}>{links}</div>;
+    return (
+      <div className={className}>
+        {links.slice(0, 3)}
+        <NavHelpMenu variant="mobile" onNavigate={onNavigate} />
+        {links.slice(3)}
+      </div>
+    );
   }
 
   return (
     <nav className={className} aria-label="Main navigation">
-      {links}
+      {links.slice(0, 3)}
+      <NavHelpMenu
+        linkClassName={linkClassName}
+        activeClassName={activeClassName}
+        onNavigate={onNavigate}
+      />
+      {links.slice(3)}
     </nav>
   );
 }

@@ -1,12 +1,15 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { CONTACT_EMAIL } from "@/lib/constants";
+import { FooterMosaic } from "./FooterMosaic";
+import { Logo } from "./Logo";
 
 const navItems = [
   { href: "/villas", key: "villas" },
   { href: "/apartments", key: "apartments" },
-  { href: "/contact", key: "contact" },
   { href: "/faq", key: "faq" },
+  { href: "/checkout", key: "checkout" },
+  { href: "/contact", key: "contact" },
 ] as const;
 
 export async function Footer() {
@@ -16,70 +19,65 @@ export async function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden border-t border-paper/10 bg-ink-900 text-paper">
-      <div className="grain absolute inset-0 opacity-30" aria-hidden />
+    <footer>
+      <FooterMosaic />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 64 64"
-              className="mb-5 text-paper"
-              aria-hidden
-            >
-              <path d="M32 9 L57 45 H7 Z" fill="currentColor" />
-              <rect x="7" y="50.5" width="50" height="2.6" fill="currentColor" />
-              <rect x="15" y="57.4" width="34" height="2.6" fill="#b8955a" />
-            </svg>
-            <p className="display-xl text-4xl text-paper sm:text-5xl">
-              {tCommon("brand")}
+      {/* ── Footer content ──────────────────────────────── */}
+      <div className="bg-[#FAF7F3]">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+            {/* Brand */}
+            <div className="max-w-md">
+              <Logo variant="footer" linked />
+              <p className="mt-5 max-w-xs font-sans text-base leading-relaxed text-forest-600">
+                {t("tagline")}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-10 sm:flex-row sm:gap-16 lg:gap-24">
+              {/* Contact */}
+              <div>
+                <p className="font-serif italic text-[0.9rem] text-gold-dark">{t("contact")}</p>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="mt-3 inline-block font-sans text-base text-ink transition-opacity hover:opacity-60"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </div>
+
+              {/* Nav */}
+              <div>
+                <p className="font-serif italic text-[0.9rem] text-gold-dark">Sivut</p>
+                <nav aria-label="Footer navigation" className="mt-3">
+                  <ul className="flex flex-col gap-3">
+                    {navItems.map((item) => (
+                      <li key={item.key}>
+                        <Link
+                          href={item.href}
+                          className="font-sans text-base text-forest-700 transition-colors hover:text-ink"
+                        >
+                          {tNav(item.key)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-14 flex flex-col gap-3 border-t border-[color:var(--hairline)] pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="font-sans text-sm text-forest-400">
+              © {year} {tCommon("brand")}. {t("rights")}
             </p>
-            <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-paper/70">
-              {t("tagline")}
-            </p>
-          </div>
-
-          <div>
-            <p className="mono-label text-paper/50">{t("contact")}</p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-4 inline-block font-sans text-sm text-paper transition-opacity hover:opacity-70"
+            <Link
+              href="/privacy"
+              className="font-sans text-sm text-forest-400 transition-colors hover:text-ink"
             >
-              {CONTACT_EMAIL}
-            </a>
+              {t("privacy")}
+            </Link>
           </div>
-
-          <div>
-            <p className="mono-label text-paper/50">{tCommon("brand")}</p>
-            <nav aria-label="Footer navigation" className="mt-4">
-              <ul className="flex flex-col gap-3">
-                {navItems.map((item) => (
-                  <li key={item.key}>
-                    <Link
-                      href={item.href}
-                      className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-paper/70 transition-colors hover:text-paper"
-                    >
-                      {tNav(item.key)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </div>
-
-        <div className="mt-16 flex flex-col gap-3 border-t border-paper/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-paper/50">
-            © {year} {tCommon("brand")}. {t("rights")}
-          </p>
-          <Link
-            href="/privacy"
-            className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-paper/50 transition-colors hover:text-paper"
-          >
-            {t("privacy")}
-          </Link>
         </div>
       </div>
     </footer>

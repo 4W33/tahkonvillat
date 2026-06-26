@@ -54,12 +54,12 @@ export async function HomeReviews() {
   if (cards.length === 0) return null;
 
   return (
-    <section className="bg-paper-50 py-20 sm:py-28">
+    <section className="bg-[#F7F2EA] py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="max-w-2xl">
             <p className="eyebrow">{t("eyebrow")}</p>
-            <h2 className="section-title mt-6">{t("title")}</h2>
+            <h2 className="section-title mt-2">{t("title")}</h2>
             <p className="mt-5 font-sans text-base leading-relaxed text-forest-700">
               {t("subtitle")}
             </p>
@@ -76,8 +76,8 @@ export async function HomeReviews() {
                 <blockquote className="mt-4 flex-1 font-serif text-lg italic leading-snug text-ink">
                   {card.comment}
                 </blockquote>
-                <figcaption className="mt-6 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-forest-600">
-                  {card.author && <span className="text-ink">{card.author}</span>}
+                <figcaption className="mt-6 flex items-center gap-2 font-sans text-[0.82rem] text-forest-600">
+                  {card.author && <span className="font-semibold text-ink">{card.author}</span>}
                   {card.author && <span aria-hidden>·</span>}
                   <span>{card.property}</span>
                 </figcaption>

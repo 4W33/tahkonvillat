@@ -9,10 +9,10 @@ function getHref(pathname: string, slug?: string) {
     return { pathname: "/villas/[slug]" as const, params: { slug } };
   }
 
-  return pathname as "/" | "/villas" | "/apartments" | "/contact" | "/faq";
+  return pathname as "/" | "/villas" | "/apartments" | "/contact" | "/faq" | "/checkout";
 }
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ tone = "dark" }: { tone?: "light" | "dark" }) {
   const locale = useLocale();
   const pathname = usePathname();
   const params = useParams();
@@ -22,7 +22,11 @@ export function LanguageSwitcher() {
 
   return (
     <div
-      className="flex items-center gap-0.5 rounded-none border border-[color:var(--hairline)] p-0.5"
+      className={`flex items-center gap-0.5 rounded-full border p-0.5 ${
+        tone === "light"
+          ? "border-paper/30"
+          : "border-[color:var(--hairline)]"
+      }`}
       role="group"
       aria-label="Language"
     >
@@ -31,10 +35,14 @@ export function LanguageSwitcher() {
           key={code}
           href={href}
           locale={code}
-          className={`rounded-none px-3 py-1.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] transition-colors duration-200 ${
+          className={`rounded-full px-3 py-1.5 font-sans text-[0.75rem] font-semibold uppercase tracking-wide transition-colors duration-200 ${
             locale === code
-              ? "bg-ink text-paper"
-              : "text-forest-600 hover:text-ink"
+              ? tone === "light"
+                ? "bg-paper text-ink"
+                : "bg-ink text-paper"
+              : tone === "light"
+                ? "text-paper/75 hover:text-paper"
+                : "text-forest-600 hover:text-ink"
           }`}
         >
           {code === "fi" ? t("localeFi") : t("localeEn")}

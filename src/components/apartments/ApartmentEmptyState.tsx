@@ -17,7 +17,7 @@ export async function ApartmentEmptyState({ variant = "light" }: Props) {
       }
     >
       <p
-        className={`font-display text-2xl font-extrabold tracking-tightest ${isDark ? "text-paper" : "text-ink"}`}
+        className={`font-display text-4xl font-semibold tracking-tight ${isDark ? "text-paper" : "text-ink"}`}
       >
         {t("title")}
       </p>

@@ -28,17 +28,17 @@ export async function ApartmentListingItem({ apartment, locale }: Props) {
     >
       <div className="grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.45fr)]">
         <div className="relative p-4 sm:p-5 md:min-h-[300px]">
-          <span className="absolute left-7 top-7 z-20 rounded-none bg-ink/90 px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-paper">
+          <span className="absolute left-7 top-7 z-20 rounded-full bg-white/85 px-3 py-1 font-sans text-sm font-medium text-ink backdrop-blur-sm">
             {t(`locations.${apartment.location}`)}
           </span>
           <VillaGallery images={gallery} alt={alt} variant="card" />
         </div>
 
-        <div className="flex flex-col p-5 sm:p-6 md:p-7">
-          <h2 className="font-display text-2xl font-extrabold tracking-tightest text-ink sm:text-3xl">
+        <div className="flex flex-col p-5 sm:p-6 md:p-8">
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-[2rem]">
             {apartment.name[locale]}
           </h2>
-          <p className="mt-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-forest-500">
+          <p className="mt-1.5 font-sans text-base text-forest-500">
             {apartment.area[locale]}
           </p>
 
@@ -51,7 +51,7 @@ export async function ApartmentListingItem({ apartment, locale }: Props) {
           {apartment.ratingAverage != null && apartment.ratingCount != null && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <StarRating value={apartment.ratingAverage} size="sm" />
-              <span className="font-sans text-sm text-forest-600">
+              <span className="font-sans text-base text-forest-600">
                 {apartment.ratingAverage.toFixed(2)} ({apartment.ratingCount}{" "}
                 {t("reviewCount")})
               </span>
@@ -59,7 +59,7 @@ export async function ApartmentListingItem({ apartment, locale }: Props) {
           )}
 
           {apartment.description?.[locale] && (
-            <p className="mt-4 flex-1 font-sans text-sm leading-relaxed text-forest-700">
+            <p className="mt-4 flex-1 font-sans text-base leading-relaxed text-forest-700">
               {apartment.description[locale]}
             </p>
           )}

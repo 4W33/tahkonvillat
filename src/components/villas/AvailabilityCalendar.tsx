@@ -81,7 +81,7 @@ export function AvailabilityCalendar({ bookedRanges }: Props) {
   return (
     <div className="card p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-display text-xl text-forest">{t("title")}</h3>
+        <h3 className="font-display text-2xl font-semibold text-forest">{t("title")}</h3>
         <div className="flex gap-1">
           <button
             type="button"

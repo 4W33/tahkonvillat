@@ -28,27 +28,27 @@ export async function HighlightsStrip() {
   ];
 
   return (
-    <section className="border-y border-[color:var(--hairline)] bg-paper py-20 sm:py-24">
+    <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-xl">
               <p className="eyebrow">{t("eyebrow")}</p>
-              <h2 className="section-title mt-6">{t("title")}</h2>
+              <h2 className="section-title mt-2">{t("title")}</h2>
             </div>
-            <p className="max-w-sm font-sans text-sm leading-relaxed text-forest-700">
+            <p className="max-w-sm font-sans text-base leading-relaxed text-forest-700">
               {t("subtitle")}
             </p>
           </div>
         </Reveal>
 
-        <ul className="mt-12 grid grid-cols-2 gap-px overflow-hidden border border-[color:var(--hairline)] bg-[color:var(--hairline)] sm:grid-cols-4">
+        <ul className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {items.map((item, index) => (
-            <li key={item.key} className="group bg-paper">
+            <li key={item.key} className="group">
               <Reveal delay={(index % 4) * 70}>
-                <div className="flex h-full flex-col gap-5 p-7">
+                <div className="flex h-full flex-col gap-5 rounded-2xl bg-[#FAF7F3] p-8 transition-shadow duration-300 hover:shadow-lift">
                   <span
-                    className="inline-flex h-12 w-12 items-center justify-center transition-transform duration-300 ease-out-expo group-hover:-translate-y-0.5"
+                    className="inline-flex h-14 w-14 items-center justify-center transition-transform duration-300 ease-out-expo group-hover:-translate-y-0.5"
                     style={{ backgroundColor: `${item.color}1f`, color: item.color }}
                   >
                     {item.custom === "lakeside" && (
@@ -65,7 +65,7 @@ export async function HighlightsStrip() {
                       <AmenityIcon amenity={item.amenity} className="h-6 w-6" />
                     )}
                   </span>
-                  <span className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink">
+                  <span className="font-display text-xl font-semibold leading-snug text-ink sm:text-[1.35rem]">
                     {item.label}
                   </span>
                 </div>

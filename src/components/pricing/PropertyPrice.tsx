@@ -22,11 +22,11 @@ export async function PropertyPrice({
 
   if (variant === "detail") {
     return (
-      <div className="mt-4 rounded-sm bg-cream-50 px-4 py-3 ring-1 ring-forest/8">
-        <p className="font-display text-2xl text-forest">
+      <div className="mt-4 rounded-xl bg-[#FAF7F3] px-5 py-4">
+        <p className="font-display text-3xl font-semibold text-forest sm:text-3xl">
           {t("fromPerNight", { price: formatted })}
         </p>
-        <p className="mt-1.5 font-sans text-xs text-forest-500">
+        <p className="mt-1.5 font-sans text-base text-forest-500">
           {t("disclaimer")}
         </p>
       </div>
@@ -35,14 +35,14 @@ export async function PropertyPrice({
 
   if (variant === "card") {
     return (
-      <p className="mt-3 font-sans text-sm font-semibold text-forest">
+      <p className="mt-3 font-sans text-base font-semibold text-forest">
         {t("fromPerNight", { price: formatted })}
       </p>
     );
   }
 
   return (
-    <span className="font-sans text-sm font-semibold text-forest">
+    <span className="font-sans text-base font-semibold text-forest">
       {t("fromPerNight", { price: formatted })}
     </span>
   );

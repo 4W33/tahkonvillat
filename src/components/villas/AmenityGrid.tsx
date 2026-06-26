@@ -14,7 +14,7 @@ export async function AmenityGrid({ amenities }: Props) {
       {amenities.map((amenity) => (
         <li
           key={amenity}
-          className="flex items-center gap-3 rounded-sm bg-cream-50 px-4 py-3.5 shadow-inner ring-1 ring-forest/5 transition-all duration-200 hover:bg-cream hover:shadow-soft"
+          className="flex items-center gap-3 rounded-sm bg-cream-50 px-4 py-4 shadow-inner ring-1 ring-forest/5 transition-all duration-200 hover:bg-cream hover:shadow-soft"
         >
           <span
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-forest/5 text-forest"
@@ -22,7 +22,7 @@ export async function AmenityGrid({ amenities }: Props) {
           >
             <AmenityIcon amenity={amenity} />
           </span>
-          <span className="font-sans text-sm font-medium text-forest-700">
+          <span className="font-sans text-base font-medium text-forest-700">
             {t(amenity)}
           </span>
         </li>
