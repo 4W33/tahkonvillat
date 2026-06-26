@@ -57,6 +57,7 @@ export const SECTION_LABELS: Record<string, string> = {
   apartments: "Asunnot-sivu",
   contact: "Yhteystiedot",
   faq: "UKK",
+  checkout: "Lähtöpäivän ohjeet",
   pricing: "Hinnoittelutekstit",
   reviews: "Arvostelut",
   privacy: "Tietosuoja",
@@ -69,5 +70,6 @@ export const SECTION_PREVIEW: Record<string, string> = {
   apartments: "/asunnot",
   contact: "/yhteystiedot",
   faq: "/faq",
+  checkout: "/lahtopaivan-ohjeet",
   privacy: "/tietosuoja",
 };

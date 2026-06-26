@@ -14,6 +14,7 @@ type StaticPath =
   | "/apartments"
   | "/contact"
   | "/faq"
+  | "/checkout"
   | "/privacy";
 
 const STATIC_PATHS = new Set<StaticPath>([
@@ -22,6 +23,7 @@ const STATIC_PATHS = new Set<StaticPath>([
   "/apartments",
   "/contact",
   "/faq",
+  "/checkout",
   "/privacy",
 ]);
 

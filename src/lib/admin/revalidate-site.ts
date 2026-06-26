@@ -12,6 +12,8 @@ const SITE_PATHS = [
   "/en/contact",
   "/faq",
   "/en/faq",
+  "/lahtopaivan-ohjeet",
+  "/en/checkout-instructions",
   "/tietosuoja",
   "/en/privacy",
 ] as const;

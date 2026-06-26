@@ -5,7 +5,7 @@
 export const siteConfig = {
   brand: {
     name: "Tahkon Villat",
-    logo: "/images/tahkonvillat-logo.png",
+    logo: "/images/tahkon-villat-logo.png",
   },
   contact: {
     email: "pellonkulma.apartments@gmail.com",

@@ -19,6 +19,10 @@ export const routing = defineRouting({
       en: "/contact",
     },
     "/faq": "/faq",
+    "/checkout": {
+      fi: "/lahtopaivan-ohjeet",
+      en: "/checkout-instructions",
+    },
     "/privacy": {
       fi: "/tietosuoja",
       en: "/privacy",
