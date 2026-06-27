@@ -36,6 +36,8 @@ export async function Hero() {
         className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent"
         aria-hidden
       />
+      {/* Extra darkening on mobile for text legibility */}
+      <div className="absolute inset-0 bg-black/35 sm:hidden" aria-hidden />
 
       {/* One cohesive content block, bottom-left. */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-36 lg:px-8 lg:pb-36">
