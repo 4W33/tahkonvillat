@@ -39,7 +39,7 @@ export async function Hero() {
 
       {/* One cohesive content block, bottom-left. */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-36 lg:px-8 lg:pb-36">
-        <p className="font-serif text-lg italic text-paper/85 sm:text-xl">
+        <p className="font-display text-2xl italic font-semibold text-paper/90 sm:text-3xl">
           {t("eyebrow")}
         </p>
         <RevealText
