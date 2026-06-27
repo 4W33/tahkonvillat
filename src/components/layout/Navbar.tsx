@@ -84,7 +84,7 @@ export function Navbar() {
 
             <button
               type="button"
-              className={`inline-flex h-11 w-11 items-center justify-center rounded-lg transition-colors md:hidden ${
+              className={`inline-flex h-12 w-12 items-center justify-center rounded-lg transition-colors md:hidden ${
                 heroOverlay
                   ? "text-paper hover:bg-paper/10"
                   : "text-ink hover:bg-ink/5"
@@ -94,11 +94,11 @@ export function Navbar() {
               onClick={() => setOpen((prev) => !prev)}
             >
               {open ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                   <path d="M4 7h16M4 12h16M4 17h16" />
                 </svg>
               )}
