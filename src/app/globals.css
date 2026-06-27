@@ -319,9 +319,9 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.8em 3.2em;
+  padding: 0.7em 2em;
   font-family: var(--font-sans);
-  font-size: 1.125rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   cursor: pointer;
@@ -329,6 +329,13 @@ textarea {
   transition: background-color 0.3s ease, border-color 0.3s ease;
   overflow: visible;
   text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .wind-btn {
+    padding: 0.8em 3.2em;
+    font-size: 1.125rem;
+  }
 }
 
 .wind-btn-light {
