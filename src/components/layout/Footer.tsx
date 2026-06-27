@@ -37,7 +37,7 @@ export async function Footer() {
             <div className="flex flex-col gap-10 sm:flex-row sm:gap-16 lg:gap-24">
               {/* Contact */}
               <div>
-                <p className="font-serif italic text-[0.9rem] text-gold-dark">{t("contact")}</p>
+                <p className="font-display italic text-xl font-semibold text-gold-dark sm:text-2xl">{t("contact")}</p>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
                   className="mt-3 inline-block font-sans text-base text-ink transition-opacity hover:opacity-60"
@@ -48,7 +48,7 @@ export async function Footer() {
 
               {/* Nav */}
               <div>
-                <p className="font-serif italic text-[0.9rem] text-gold-dark">Sivut</p>
+                <p className="font-display italic text-xl font-semibold text-gold-dark sm:text-2xl">Sivut</p>
                 <nav aria-label="Footer navigation" className="mt-3">
                   <ul className="flex flex-col gap-3">
                     {navItems.map((item) => (
