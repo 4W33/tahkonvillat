@@ -60,7 +60,7 @@ export async function Hero() {
           <Magnetic>
             <Link
               href="/contact"
-              className="btn-ghost-light !rounded-lg !border-[1.5px] !border-white/60 !px-[1.9rem] !py-[0.7rem] !text-[0.95rem] hover:!bg-white/10 hover:!text-paper sm:!px-[2.6rem] sm:!py-4 sm:!text-lg"
+              className="btn-ghost-light !rounded-lg !border-[1.5px] !border-white/60 !px-[1.9rem] !py-[0.7rem] !text-[0.95rem] !leading-[1.5] hover:!bg-white/10 hover:!text-paper sm:!px-[2.6rem] sm:!py-4 sm:!text-lg sm:!leading-[1.5]"
             >
               {t("ctaSecondary")}
             </Link>
