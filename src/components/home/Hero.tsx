@@ -51,12 +51,15 @@ export async function Hero() {
         <p className="mt-8 max-w-2xl font-sans text-lg leading-relaxed text-paper/90 sm:text-xl">
           {t("subtitle")}
         </p>
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
           <WindButton href="/villas" variant="light">
             {t("cta")}
           </WindButton>
           <Magnetic>
-            <Link href="/contact" className="btn-ghost-light">
+            <Link
+              href="/contact"
+              className="btn-ghost-light !px-6 !py-2.5 !text-sm sm:!px-8 sm:!py-4 sm:!text-lg"
+            >
               {t("ctaSecondary")}
             </Link>
           </Magnetic>
