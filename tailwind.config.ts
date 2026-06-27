@@ -66,11 +66,12 @@ const config: Config = {
         },
       },
       fontFamily: {
-        // Fraunces leads (display + serif); Archivo for body, UI and labels
-        display: ["var(--font-serif)", "Fraunces", "Georgia", "serif"],
-        serif: ["var(--font-serif)", "Fraunces", "Georgia", "serif"],
-        sans: ["var(--font-sans)", "Archivo", "system-ui", "sans-serif"],
-        mono: ["var(--font-sans)", "Archivo", "system-ui", "sans-serif"],
+        // Cormorant Garamond — display & serif headings
+        display: ["var(--font-serif)", "Cormorant Garamond", "Georgia", "serif"],
+        serif: ["var(--font-serif)", "Cormorant Garamond", "Georgia", "serif"],
+        // DM Sans — body, UI, labels
+        sans: ["var(--font-sans)", "DM Sans", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "Courier New", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.02em",

@@ -16,7 +16,9 @@
     "villas": "Villas",
     "apartments": "Apartments",
     "contact": "Contact",
-    "faq": "FAQ"
+    "helpMenu": "Questions & guides",
+    "faq": "FAQ",
+    "checkout": "Departure day guide"
   },
   "footer": {
     "tagline": "Holiday homes in Tahko and apartments in Uusimaa.",
@@ -314,6 +316,75 @@
       "title": "Didn't find your answer?",
       "subtitle": "Send us a message — we are happy to help.",
       "button": "Get in touch"
+    }
+  },
+  "checkout": {
+    "metadata": {
+      "title": "Departure day guide | Tahko Villas",
+      "description": "Check-out and final cleaning instructions for Tahko Villas holiday homes on departure day."
+    },
+    "eyebrow": "Guides",
+    "title": "Departure day guide",
+    "subtitle": "Follow these steps for a smooth departure and a warm welcome for the next guest.",
+    "checkout": {
+      "title": "Check-out guide",
+      "steps": [
+        "Check-out time on departure day is 12:00 PM.",
+        "Pack all your belongings. Check under beds and sofas too.",
+        "Empty the fridge of food.",
+        "Wash the dishes. The dishwasher may stay on when you leave — we will empty it for you.",
+        "Take rubbish to the bin and remove empty bottles and cans.",
+        "Return furniture to its original places.",
+        "Make sure the yard is tidy and outdoor items are in place. Clean the grill if you used it.",
+        "If anything was damaged, let us know by email or via the contact form.",
+        "If you rented linens from us, strip the beds and leave them in a neat pile in the hallway.",
+        "Complete final cleaning as below. If you booked cleaning with us, you can skip this section.",
+        "Return the cottage key as instructed — thank you."
+      ]
+    },
+    "cleaning": {
+      "title": "Final cleaning if you clean yourself",
+      "intro": "Final cleaning is usually included in the price. If you agreed to clean yourself, please follow the instructions below.",
+      "kitchen": {
+        "title": "Kitchen",
+        "steps": [
+          "Wash dishes and put them away dry in the cupboards.",
+          "Empty waste bins and clean the bin and cupboard.",
+          "Empty and clean the fridge and freezer.",
+          "Clean the stove, oven and microwave.",
+          "Check the coffee maker, kettle and toaster.",
+          "Turn off washing machine and dishwasher taps."
+        ]
+      },
+      "other": {
+        "title": "Other rooms",
+        "steps": [
+          "Return furniture to its original places.",
+          "Shake rugs and bedding outside if needed.",
+          "Remove cold ashes from fireplaces.",
+          "Clean the sauna, washroom and bathroom if needed.",
+          "Clean the toilet, sink and mirrors.",
+          "Vacuum floors — including under beds, cabinets and the sofa.",
+          "Wipe table and counter surfaces and cabinet doors.",
+          "Clean windows if marked. Mop floors with a damp cloth.",
+          "Close all windows and doors.",
+          "Make beds with aired bedding and day covers."
+        ]
+      },
+      "outdoor": {
+        "title": "Outdoor areas",
+        "steps": [
+          "Clean the grill after each use to prevent rust.",
+          "If a pet stayed with you, please keep the yard tidy as well."
+        ]
+      },
+      "note": "Please make sure the next guest can arrive comfortably without extra cleaning. Thank you!"
+    },
+    "cta": {
+      "eyebrow": "Questions?",
+      "title": "Get in touch",
+      "subtitle": "If anything is unclear, we are happy to help: {email}",
+      "button": "Send a message"
     }
   },
   "pricing": {

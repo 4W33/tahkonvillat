@@ -16,7 +16,9 @@
     "villas": "Villat",
     "apartments": "Asunnot",
     "contact": "Yhteystiedot",
-    "faq": "UKK"
+    "helpMenu": "Kysymykset ja ohjeet",
+    "faq": "Usein kysytyt kysymykset",
+    "checkout": "Lähtopäivän ohjeet"
   },
   "footer": {
     "tagline": "Lomamökit Tahkolla sekä asunnot Uudellamaalla.",
@@ -314,6 +316,75 @@
       "title": "Etkö löytänyt vastausta?",
       "subtitle": "Lähetä meille viesti — autamme mielellämme.",
       "button": "Ota yhteyttä"
+    }
+  },
+  "checkout": {
+    "metadata": {
+      "title": "Lähtopäivän ohjeet | Tahkon Villat",
+      "description": "Check-out- ja loppusiivousohjeet Tahkon Villojen lomamajoituksiin lähtöpäivänä."
+    },
+    "eyebrow": "Ohjeet",
+    "title": "Lähtopäivän ohjeet",
+    "subtitle": "Näillä ohjeilla varmistat sujuvan lähdön ja mukavan saapumisen seuraavalle vieraalle.",
+    "checkout": {
+      "title": "Check-out ohje",
+      "steps": [
+        "Mökin luovutusaika on lähtöpäivänä klo 12.",
+        "Pakkaa kaikki tavarasi mukaan. Tarkista myös sängyn ja sohvan alta.",
+        "Tyhjennä jääkaappi ruuista.",
+        "Tiskaa tiskit. Astianpesukone voi jäädä päälle, kun lähdet — huolehdimme sen tyhjentämisestä puolestasi.",
+        "Vie roskat roskikseen ja ota mukaan myös tyhjät pullot sekä tölkit.",
+        "Laita huonekalut omille paikoilleen.",
+        "Tarkista, että piha on siisti ja pihatavarat ovat omilla paikoillaan. Puhdista grilli, jos olet käyttänyt sitä.",
+        "Jos jotakin rikkoutui, ilmoita siitä meille sähköpostitse tai yhteydenottolomakkeella.",
+        "Jos vuokrasit meiltä liinavaatteet, pura ne sängyistä ja laita ne siistiin pinoon eteiseen.",
+        "Suorita loppusiivous siivousohjeen mukaisesti alla. Jos olet tilannut loppusiivouksen meiltä, voit hypätä tämän kohdan yli.",
+        "Lähtiessäsi palauta mökin avain ohjeiden mukaisesti — kiitos."
+      ]
+    },
+    "cleaning": {
+      "title": "Loppusiivousohje, jos siivoat itse",
+      "intro": "Loppusiivous sisältyy yleensä hintaan. Jos olet sopinut siivouksesta itse, noudata alla olevia ohjeita.",
+      "kitchen": {
+        "title": "Keittiö",
+        "steps": [
+          "Pese astiat ja laita ne kuivina kaappeihin omille paikoilleen.",
+          "Tyhjennä roska-astiat ja puhdista roskavaunu sekä -kaappi.",
+          "Tyhjennä ja puhdista jääkaappi sekä pakastin.",
+          "Pese liesi, uuni ja mikroaaltouuni.",
+          "Tarkasta kahvinkeittimen, vedenkeittimen ja leivänpaahtimen siisteys.",
+          "Sulje pesukoneen ja astianpesukoneen hanat."
+        ]
+      },
+      "other": {
+        "title": "Muut tilat",
+        "steps": [
+          "Laita huonekalut alkuperäisille paikoilleen.",
+          "Puistele matot ja vuodevaatteet ulkona tarvittaessa.",
+          "Tyhjennä kylmät tuhkat tulisijojen pesistä.",
+          "Pese sauna, pesuhuone ja wc tarvittaessa.",
+          "Pese wc-pönttö, lavuaari ja peilit.",
+          "Imuroi lattiat — muista sänkyjen ja kaappien alustat sekä sohva ja sen alusta.",
+          "Pyyhi pöytien ja tasojen pinnat sekä kaapistojen ovet.",
+          "Pese ikkunat, jos niissä on jälkiä. Pyyhi lattiat kostealla.",
+          "Sulje ikkunat ja kaikki ovet.",
+          "Petaa tuuletetut vuodevaatteet ja päiväpeitot sänkyihin."
+        ]
+      },
+      "outdoor": {
+        "title": "Ulkotilat",
+        "steps": [
+          "Puhdista grilli aina käytön jälkeen, jotta se ei ruostu.",
+          "Jos lemmikki on ollut mukana, huolehdi myös pihan siisteydestä."
+        ]
+      },
+      "note": "Varmistathan, että seuraavan vieraan on mukava saapua ilman erillistä lisäsiivoustarvetta. Kiitos!"
+    },
+    "cta": {
+      "eyebrow": "Kysyttävää?",
+      "title": "Ota yhteyttä",
+      "subtitle": "Jos jokin jäi epäselväksi, autamme mielellämme: {email}",
+      "button": "Lähetä viesti"
     }
   },
   "pricing": {
