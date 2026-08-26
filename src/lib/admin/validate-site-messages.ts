@@ -13,7 +13,18 @@ function validateShape(
     return null;
   }
 
-  if (!template || typeof template !== "object" || Array.isArray(template)) {
+  // String lists, e.g. checkout instruction steps.
+  if (Array.isArray(template)) {
+    if (!Array.isArray(candidate)) {
+      return `${path}: odotettiin listaa`;
+    }
+    if (candidate.some((item) => typeof item !== "string")) {
+      return `${path}: listan kohtien pitää olla tekstiä`;
+    }
+    return null;
+  }
+
+  if (!template || typeof template !== "object") {
     return `${path}: virheellinen malli`;
   }
 

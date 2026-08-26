@@ -6,6 +6,7 @@ import {
   setPropertyCover,
   type BannerSlot,
 } from "@/lib/admin/home-page";
+import { isBlobMediaUrl } from "@/lib/storage/config";
 
 const BANNER_SLOTS = new Set<BannerSlot>(["hero", "story", "editorial"]);
 
@@ -29,7 +30,11 @@ export async function PUT(request: Request) {
       image?: string;
     };
 
-    if (typeof body.image !== "string" || !body.image.startsWith("/")) {
+    // Local paths start with "/", Blob uploads are absolute URLs.
+    if (
+      typeof body.image !== "string" ||
+      !(body.image.startsWith("/") || isBlobMediaUrl(body.image))
+    ) {
       return NextResponse.json({ error: "Invalid image path" }, { status: 400 });
     }
 

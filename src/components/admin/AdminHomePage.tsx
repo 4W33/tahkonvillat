@@ -1,13 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import {
-  adminCardClass,
-  adminPillActive,
-  adminPillIdle,
-} from "./admin-ui";
+import { ImagePicker } from "./ImagePicker";
+import { useUndoToast } from "./useUndoToast";
 
 type BannerSlot = "hero" | "story" | "editorial";
 
@@ -25,108 +22,193 @@ type HomeData = {
   allImages: string[];
 };
 
-const BANNER_LABELS: Record<BannerSlot, string> = {
-  hero: "Hero (iso taustakuva)",
-  story: "Meistä-osio",
-  editorial: "Luonto-kaista",
+const BANNER_INFO: Record<BannerSlot, { label: string; pickerTitle: string }> = {
+  hero: { label: "Iso pääkuva", pickerTitle: "Vaihda iso pääkuva" },
+  story: { label: "Meistä-kuva", pickerTitle: "Vaihda Meistä-osion kuva" },
+  editorial: { label: "Luontokuva", pickerTitle: "Vaihda luontokaistan kuva" },
 };
 
-const MODE_LABELS = {
-  banner: "Taustakuvat",
-  covers: "Korttien kansikuvat",
-} as const;
+type PickTarget =
+  | { kind: "banner"; slot: BannerSlot }
+  | { kind: "cover"; propertyId: string }
+  | null;
 
-type EditMode = keyof typeof MODE_LABELS;
+function EditableImage({
+  src,
+  label,
+  ariaLabel,
+  aspectClass,
+  sizes,
+  onClick,
+  children,
+}: {
+  src: string;
+  label: string;
+  ariaLabel?: string;
+  aspectClass: string;
+  sizes: string;
+  onClick: () => void;
+  children?: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Vaihda kuva: ${ariaLabel ?? label}`}
+      className={`group relative block w-full overflow-hidden bg-slate-100 ${aspectClass}`}
+    >
+      {src ? (
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes={sizes}
+          className="object-cover transition duration-200 group-hover:scale-[1.02]"
+        />
+      ) : (
+        <span className="flex h-full items-center justify-center text-xs text-slate-400">
+          Ei kuvaa
+        </span>
+      )}
+      <span className="absolute left-2 top-2 rounded bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700 shadow-sm">
+        {label}
+      </span>
+      <span
+        aria-hidden
+        className="absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sm shadow transition group-hover:bg-white"
+      >
+        ✎
+      </span>
+      {children}
+    </button>
+  );
+}
+
+function QuietBand({ label }: { label: string }) {
+  return (
+    <div className="border-y border-slate-100 bg-slate-50 px-3 py-2 text-center text-[10px] uppercase tracking-wide text-slate-400">
+      {label}
+    </div>
+  );
+}
 
 export function AdminHomePage() {
   const router = useRouter();
+  const { toast, showUndo } = useUndoToast();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState("");
-  const [mode, setMode] = useState<EditMode>("banner");
-  const [activeSlot, setActiveSlot] = useState<BannerSlot>("hero");
-  const [activePropertyId, setActivePropertyId] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [pick, setPick] = useState<PickTarget>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/admin/home-page");
-      if (!response.ok) throw new Error("Unauthorized");
-      const payload = (await response.json()) as HomeData;
-      setData(payload);
-      if (!activePropertyId && payload.properties[0]) {
-        setActivePropertyId(payload.properties[0].id);
+  const load = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
+      try {
+        const response = await fetch("/api/admin/home-page");
+        if (!response.ok) throw new Error("Unauthorized");
+        setData((await response.json()) as HomeData);
+      } catch {
+        router.push("/admin/login");
+      } finally {
+        if (!silent) setLoading(false);
       }
-    } catch {
-      router.push("/admin/login");
-    } finally {
-      setLoading(false);
-    }
-  }, [activePropertyId, router]);
+    },
+    [router],
+  );
 
   useEffect(() => {
-    load();
+    void load();
   }, [load]);
 
-  async function saveBanner(slot: BannerSlot, image: string) {
-    setSaving(true);
-    setStatus("");
-    try {
-      const response = await fetch("/api/admin/home-page", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "banner", slot, image }),
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || "Tallennus epäonnistui");
+  const applyBanner = useCallback(
+    async (slot: BannerSlot, image: string, withUndo: boolean) => {
+      const previous = data?.banners[slot];
+      setError("");
+      setData((current) =>
+        current
+          ? { ...current, banners: { ...current.banners, [slot]: image } }
+          : current,
+      );
+
+      try {
+        const response = await fetch("/api/admin/home-page", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "banner", slot, image }),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body.error || "Tallennus epäonnistui");
+        }
+        router.refresh();
+        if (withUndo && previous && previous !== image) {
+          showUndo(`${BANNER_INFO[slot].label} vaihdettu`, () => {
+            void applyBanner(slot, previous, false);
+          });
+        }
+      } catch (err) {
+        setData((current) =>
+          current && previous
+            ? { ...current, banners: { ...current.banners, [slot]: previous } }
+            : current,
+        );
+        setError(err instanceof Error ? err.message : "Tallennus epäonnistui");
       }
-      setStatus(`${BANNER_LABELS[slot]} päivitetty.`);
-      await load();
-      router.refresh();
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Tallennus epäonnistui");
-    } finally {
-      setSaving(false);
-    }
-  }
+    },
+    [data, router, showUndo],
+  );
 
-  async function saveCover(propertyId: string, image: string) {
-    setSaving(true);
-    setStatus("");
-    try {
-      const response = await fetch("/api/admin/home-page", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "cover", propertyId, image }),
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || "Tallennus epäonnistui");
+  const applyCover = useCallback(
+    async (propertyId: string, image: string, withUndo: boolean) => {
+      const previous = data?.properties.find((p) => p.id === propertyId)?.image;
+      setError("");
+      setData((current) =>
+        current
+          ? {
+              ...current,
+              properties: current.properties.map((property) =>
+                property.id === propertyId
+                  ? { ...property, image }
+                  : property,
+              ),
+            }
+          : current,
+      );
+
+      try {
+        const response = await fetch("/api/admin/home-page", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "cover", propertyId, image }),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body.error || "Tallennus epäonnistui");
+        }
+        router.refresh();
+        if (withUndo && previous && previous !== image) {
+          showUndo("Kansikuva vaihdettu", () => {
+            void applyCover(propertyId, previous, false);
+          });
+        }
+      } catch (err) {
+        setData((current) =>
+          current && previous
+            ? {
+                ...current,
+                properties: current.properties.map((property) =>
+                  property.id === propertyId
+                    ? { ...property, image: previous }
+                    : property,
+                ),
+              }
+            : current,
+        );
+        setError(err instanceof Error ? err.message : "Tallennus epäonnistui");
       }
-      setStatus("Kansikuva päivitetty — näkyy etusivun kortissa.");
-      await load();
-      router.refresh();
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Tallennus epäonnistui");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function handleImagePick(image: string) {
-    if (!data || saving) return;
-
-    if (mode === "banner") {
-      void saveBanner(activeSlot, image);
-      return;
-    }
-
-    if (activePropertyId) {
-      void saveCover(activePropertyId, image);
-    }
-  }
+    },
+    [data, router, showUndo],
+  );
 
   if (loading || !data) {
     return (
@@ -136,18 +218,24 @@ export function AdminHomePage() {
     );
   }
 
-  const activeProperty = data.properties.find((p) => p.id === activePropertyId);
-  const imagePool =
-    mode === "covers" && activeProperty ? activeProperty.gallery : data.allImages;
+  const villas = data.properties.filter((p) => p.group === "villa");
+  const apartments = data.properties.filter((p) => p.group === "apartment");
+  const pickedProperty =
+    pick?.kind === "cover"
+      ? data.properties.find((p) => p.id === pick.propertyId) ?? null
+      : null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-slate-200 bg-white px-4 py-5 sm:px-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">Etusivu — kuvat</h1>
+            <h1 className="text-lg font-semibold text-slate-900">
+              Etusivun kuvat
+            </h1>
             <p className="mt-1 text-sm text-slate-500">
-              Valitse kuva klikkaamalla — ei tarvitse mennä Kohteet-editoriin.
+              Tämä on etusivusi pienoiskoossa. Klikkaa mitä tahansa kuvaa
+              vaihtaaksesi sen — muutos tallentuu heti.
             </p>
           </div>
           <a
@@ -159,138 +247,149 @@ export function AdminHomePage() {
             Avaa etusivu ↗
           </a>
         </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {(Object.keys(MODE_LABELS) as EditMode[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setMode(key)}
-              className={`rounded-full px-4 py-2 text-sm font-medium ${
-                mode === key ? adminPillActive : adminPillIdle
-              }`}
-            >
-              {MODE_LABELS[key]}
-            </button>
-          ))}
-        </div>
+        {error && (
+          <p className="mt-3 text-sm text-red-700" role="alert">
+            {error}
+          </p>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-        {mode === "banner" ? (
-          <div className="grid gap-4 sm:grid-cols-3">
-            {(Object.keys(BANNER_LABELS) as BannerSlot[]).map((slot) => (
-              <button
-                key={slot}
-                type="button"
-                onClick={() => setActiveSlot(slot)}
-                className={`${adminCardClass} text-left transition ring-2 ${
-                  activeSlot === slot ? "ring-forest" : "ring-transparent"
-                }`}
-              >
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {BANNER_LABELS[slot]}
-                </p>
-                <div className="relative mt-3 aspect-[16/10] overflow-hidden rounded-lg bg-slate-100">
-                  <Image
-                    src={data.banners[slot]}
-                    alt={BANNER_LABELS[slot]}
-                    fill
-                    className="object-cover"
-                    sizes="300px"
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-slate-600">
-              Valitse kohde — klikkaa kuvaa asettaaksesi sen etusivun kortin kansikuvaksi.
+        <div className="mx-auto max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <EditableImage
+            src={data.banners.hero}
+            label={BANNER_INFO.hero.label}
+            aspectClass="aspect-[16/10]"
+            sizes="448px"
+            onClick={() => setPick({ kind: "banner", slot: "hero" })}
+          >
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/70 to-transparent px-3 pb-2 pt-8 text-left text-sm font-semibold text-white">
+              Tahkon Villat
+            </span>
+          </EditableImage>
+
+          <div className="px-3 pb-3 pt-3">
+            <p className="pb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+              Villat
             </p>
-            <div className="flex flex-wrap gap-2">
-              {data.properties.map((property) => (
-                <button
-                  key={property.id}
-                  type="button"
-                  onClick={() => setActivePropertyId(property.id)}
-                  className={`rounded-lg border px-3 py-2 text-sm font-medium ${
-                    activePropertyId === property.id
-                      ? "border-forest bg-forest text-white"
-                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                  }`}
-                >
-                  {property.name}{" "}
-                  <span className="opacity-70">
-                    ({property.group === "villa" ? "villa" : "asunto"})
-                  </span>
-                </button>
+            <div className="grid grid-cols-3 gap-2">
+              {villas.map((villa) => (
+                <div key={villa.id}>
+                  <div className="overflow-hidden rounded-lg">
+                    <EditableImage
+                      src={villa.image}
+                      label=""
+                      ariaLabel={`${villa.name} — kansikuva`}
+                      aspectClass="aspect-[4/5]"
+                      sizes="140px"
+                      onClick={() =>
+                        setPick({ kind: "cover", propertyId: villa.id })
+                      }
+                    />
+                  </div>
+                  <p className="mt-1 truncate text-[10px] text-slate-600">
+                    {villa.name}
+                  </p>
+                </div>
               ))}
             </div>
-            {activeProperty && (
-              <div className={adminCardClass}>
-                <p className="text-sm font-medium text-slate-900">
-                  Nykyinen kansikuva: {activeProperty.name}
-                </p>
-                <div className="relative mt-3 aspect-[4/3] max-w-xs overflow-hidden rounded-lg bg-slate-100">
-                  <Image
-                    src={activeProperty.image}
-                    alt={activeProperty.name}
-                    fill
-                    className="object-cover"
-                    sizes="320px"
-                  />
+          </div>
+
+          <div className="grid grid-cols-2 items-stretch gap-0 border-t border-slate-100">
+            <EditableImage
+              src={data.banners.story}
+              label={BANNER_INFO.story.label}
+              aspectClass="aspect-[4/3]"
+              sizes="224px"
+              onClick={() => setPick({ kind: "banner", slot: "story" })}
+            />
+            <div className="flex flex-col justify-center gap-1.5 p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                Meistä
+              </p>
+              <span className="h-1.5 w-full rounded bg-slate-100" />
+              <span className="h-1.5 w-5/6 rounded bg-slate-100" />
+              <span className="h-1.5 w-2/3 rounded bg-slate-100" />
+            </div>
+          </div>
+
+          <QuietBand label="Kohokohdat · Luottamus — ei kuvia" />
+
+          <div className="px-3 pb-3 pt-3">
+            <p className="pb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+              Asunnot
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {apartments.map((apartment) => (
+                <div key={apartment.id}>
+                  <div className="overflow-hidden rounded-lg">
+                    <EditableImage
+                      src={apartment.image}
+                      label=""
+                      ariaLabel={`${apartment.name} — kansikuva`}
+                      aspectClass="aspect-[4/3]"
+                      sizes="140px"
+                      onClick={() =>
+                        setPick({ kind: "cover", propertyId: apartment.id })
+                      }
+                    />
+                  </div>
+                  <p className="mt-1 truncate text-[10px] text-slate-600">
+                    {apartment.name}
+                  </p>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        )}
 
-        <div className="mt-8">
-          <h2 className="text-sm font-semibold text-slate-900">
-            {mode === "banner"
-              ? `Valitse kuva: ${BANNER_LABELS[activeSlot]}`
-              : `Valitse kansikuva: ${activeProperty?.name ?? ""}`}
-          </h2>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {imagePool.map((image) => {
-              const isActive =
-                mode === "banner"
-                  ? data.banners[activeSlot] === image
-                  : activeProperty?.image === image;
+          <EditableImage
+            src={data.banners.editorial}
+            label={BANNER_INFO.editorial.label}
+            aspectClass="aspect-[16/7]"
+            sizes="448px"
+            onClick={() => setPick({ kind: "banner", slot: "editorial" })}
+          />
 
-              return (
-                <button
-                  key={image}
-                  type="button"
-                  disabled={saving}
-                  onClick={() => handleImagePick(image)}
-                  className={`relative aspect-[4/3] overflow-hidden rounded-lg ring-2 transition hover:opacity-90 disabled:opacity-50 ${
-                    isActive ? "ring-forest" : "ring-transparent"
-                  }`}
-                >
-                  <Image
-                    src={image}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="160px"
-                  />
-                  {isActive && (
-                    <span className="absolute left-2 top-2 rounded bg-forest px-2 py-0.5 text-[10px] font-semibold text-white">
-                      Valittu
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          <QuietBand label="Arvostelut · Yhteydenotto — ei kuvia" />
         </div>
-
-        {status && (
-          <p className="mt-6 text-sm text-slate-600">{status}</p>
-        )}
       </div>
+
+      {pick?.kind === "banner" && (
+        <ImagePicker
+          open
+          title={BANNER_INFO[pick.slot].pickerTitle}
+          images={data.allImages}
+          currentImage={data.banners[pick.slot]}
+          uploadUrl="/api/admin/site-images"
+          onSelect={(image) => {
+            const slot = pick.slot;
+            setPick(null);
+            void applyBanner(slot, image, true);
+          }}
+          onUploaded={() => void load(true)}
+          onClose={() => setPick(null)}
+        />
+      )}
+
+      {pick?.kind === "cover" && pickedProperty && (
+        <ImagePicker
+          open
+          title={`${pickedProperty.name} — kansikuva`}
+          subtitle="Näkyy etusivun kortissa. Napauta kuvaa — käytössä heti."
+          images={pickedProperty.gallery}
+          currentImage={pickedProperty.image}
+          uploadUrl={`/api/admin/properties/${pickedProperty.id}/images`}
+          onSelect={(image) => {
+            const propertyId = pickedProperty.id;
+            setPick(null);
+            void applyCover(propertyId, image, true);
+          }}
+          onUploaded={() => void load(true)}
+          onClose={() => setPick(null)}
+        />
+      )}
+
+      {toast}
     </div>
   );
 }

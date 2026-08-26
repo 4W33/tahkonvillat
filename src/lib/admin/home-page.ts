@@ -12,6 +12,7 @@ import {
 import { revalidatePropertyPaths } from "@/lib/admin/revalidate-property";
 import { resolveProperty } from "@/lib/admin/property-registry";
 import { getAdminProperties } from "@/lib/admin/properties";
+import { readStoreJson } from "@/lib/storage/json";
 
 export type BannerSlot = "hero" | "story" | "editorial";
 
@@ -27,10 +28,13 @@ function setNestedImage(
   return next;
 }
 
+const SITE_IMAGES_PATH = "data/site-images.json";
+
 export async function getHomePageAdminData() {
-  const [{ fi }, properties] = await Promise.all([
+  const [{ fi }, properties, siteImages] = await Promise.all([
     getAllSiteMessages(),
     getAdminProperties(),
+    readStoreJson<string[]>(SITE_IMAGES_PATH),
   ]);
 
   const propertyRows = await Promise.all(
@@ -50,9 +54,10 @@ export async function getHomePageAdminData() {
 
   const allImages = Array.from(
     new Set(
-      propertyRows
-        .flatMap((row) => row?.gallery ?? [])
-        .filter(Boolean),
+      [
+        ...(siteImages ?? []),
+        ...propertyRows.flatMap((row) => row?.gallery ?? []),
+      ].filter(Boolean),
     ),
   );
 

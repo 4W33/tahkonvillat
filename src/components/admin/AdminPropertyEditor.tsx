@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminPropertyPreview } from "./AdminPropertyPreview";
+import { useUndoToast } from "./useUndoToast";
 import {
   AMENITY_OPTIONS,
   type PropertyEditorData,
@@ -47,7 +48,12 @@ const labelClass = "text-xs font-semibold uppercase tracking-wide text-slate-500
 
 export function AdminPropertyEditor({ propertyId, onBack }: Props) {
   const router = useRouter();
+  const { toast, showUndo } = useUndoToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const orderTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const imagesSnapshot = useRef<{ gallery: string[]; cover: string } | null>(
+    null,
+  );
   const [tab, setTab] = useState<Tab>("images");
   const [property, setProperty] = useState<PropertyEditorData | null>(null);
   const [gallery, setGallery] = useState<string[]>([]);
@@ -67,7 +73,8 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [imagesDirty, setImagesDirty] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dropFilesHint, setDropFilesHint] = useState(false);
   const [textsDirty, setTextsDirty] = useState(false);
   const [location, setLocation] = useState("");
   const [guests, setGuests] = useState(0);
@@ -95,7 +102,6 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
     setBedrooms(data.bedrooms);
     setAmenities(data.amenities ?? []);
     setSelected(new Set());
-    setImagesDirty(false);
     setTextsDirty(false);
     setMetaDirty(false);
   }, []);
@@ -117,18 +123,81 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
     load();
   }, [load]);
 
+  const persistImages = useCallback(
+    async (nextGallery: string[], nextCover: string) => {
+      const response = await fetch(`/api/admin/properties/${propertyId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: nextCover, gallery: nextGallery }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || "Tallennus epäonnistui");
+      }
+    },
+    [propertyId],
+  );
+
+  // Instant save with a short debounce (rapid re-ordering batches into one
+  // request) and a snapshot-based undo instead of a save button.
+  function queueImagesSave(
+    nextGallery: string[],
+    nextCover: string,
+    label: string,
+  ) {
+    if (!imagesSnapshot.current) {
+      imagesSnapshot.current = { gallery, cover };
+    }
+    setGallery(nextGallery);
+    setCover(nextCover);
+    setMessage("");
+
+    if (orderTimer.current) clearTimeout(orderTimer.current);
+    orderTimer.current = setTimeout(() => {
+      const snapshot = imagesSnapshot.current;
+      imagesSnapshot.current = null;
+      void persistImages(nextGallery, nextCover)
+        .then(() => {
+          if (!snapshot) return;
+          showUndo(label, () => {
+            setGallery(snapshot.gallery);
+            setCover(snapshot.cover);
+            void persistImages(snapshot.gallery, snapshot.cover).catch(() => {
+              setMessage("Kumoaminen epäonnistui — yritä uudelleen.");
+            });
+          });
+        })
+        .catch((error: unknown) => {
+          if (snapshot) {
+            setGallery(snapshot.gallery);
+            setCover(snapshot.cover);
+          }
+          setMessage(
+            error instanceof Error ? error.message : "Tallennus epäonnistui",
+          );
+        });
+    }, 600);
+  }
+
   function moveImage(index: number, direction: -1 | 1) {
     const next = [...gallery];
     const target = index + direction;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
-    setGallery(next);
-    setImagesDirty(true);
+    queueImagesSave(next, cover, "Järjestys tallennettu");
+  }
+
+  function reorderImage(from: number, to: number) {
+    if (from === to) return;
+    const next = [...gallery];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    queueImagesSave(next, cover, "Järjestys tallennettu");
   }
 
   function setAsCover(src: string) {
-    setCover(src);
-    setImagesDirty(true);
+    if (src === cover) return;
+    queueImagesSave(gallery, src, "Pääkuva vaihdettu");
   }
 
   function toggleSelected(src: string) {
@@ -138,30 +207,6 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
       else next.add(src);
       return next;
     });
-  }
-
-  async function handleSaveImages() {
-    if (!cover || !gallery.includes(cover)) {
-      setMessage("Valitse kansikuva galleriasta.");
-      return;
-    }
-
-    setSaving(true);
-    setMessage("");
-    try {
-      const response = await fetch(`/api/admin/properties/${propertyId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: cover, gallery }),
-      });
-      if (!response.ok) throw new Error("Tallennus epäonnistui");
-      applyProperty((await response.json()) as PropertyEditorData);
-      setMessage("Kuvat tallennettu.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Tallennus epäonnistui");
-    } finally {
-      setSaving(false);
-    }
   }
 
   async function handleSaveDetails() {
@@ -457,36 +502,18 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
         </div>
       ) : tab === "images" ? (
         <>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {imagesDirty && (
-              <button
-                type="button"
-                onClick={handleSaveImages}
-                disabled={saving}
-                className="rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 disabled:opacity-60"
-              >
-                {saving ? "Tallennetaan…" : "Tallenna järjestys"}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-60"
-            >
-              {uploading ? "Ladataan…" : "+ Lisää kuvia"}
-            </button>
-            {selected.size > 0 && (
+          {selected.size > 0 && (
+            <div className="mt-6">
               <button
                 type="button"
                 onClick={handleDeleteImages}
                 disabled={saving}
-                className="rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100"
+                className="rounded-md border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-100"
               >
                 Poista valitut ({selected.size})
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           <input
             ref={fileInputRef}
@@ -517,25 +544,79 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
               </div>
             </section>
 
-            <section className="rounded-lg border border-slate-200 bg-white p-4">
+            <section
+              onDragOver={(event) => {
+                if (event.dataTransfer.types.includes("Files")) {
+                  event.preventDefault();
+                  setDropFilesHint(true);
+                }
+              }}
+              onDragLeave={() => setDropFilesHint(false)}
+              onDrop={(event) => {
+                if (event.dataTransfer.types.includes("Files")) {
+                  event.preventDefault();
+                  setDropFilesHint(false);
+                  void handleUpload(event.dataTransfer.files);
+                }
+              }}
+              className={`rounded-lg border bg-white p-4 transition-colors ${
+                dropFilesHint
+                  ? "border-teal-600 ring-2 ring-teal-600/20"
+                  : "border-slate-200"
+              }`}
+            >
               <p className={labelClass}>Galleria ({gallery.length})</p>
               <p className="mt-2 text-sm text-slate-500">
-                Tähti = kansikuva. Nuolinäppäimet järjestävät kuvia.
+                Raahaa kuvat haluamaasi järjestykseen — tallentuu itsestään.
+                ★ = pääkuva.
               </p>
 
-              {gallery.length === 0 ? (
-                <p className="mt-6 text-sm text-slate-500">
-                  Ei kuvia. Lisää ensimmäinen kuva yllä.
-                </p>
-              ) : (
+              {
                 <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-slate-300 text-slate-600 transition-colors hover:border-teal-600 hover:text-teal-700 disabled:opacity-60"
+                    >
+                      <span className="text-2xl leading-none">＋</span>
+                      <span className="text-xs font-medium">
+                        {uploading ? "Ladataan…" : "Lisää kuvia"}
+                      </span>
+                      {!uploading && (
+                        <span className="text-[10px] text-slate-400">
+                          tai pudota tähän
+                        </span>
+                      )}
+                    </button>
+                  </li>
                   {gallery.map((src, index) => {
                     const isCover = src === cover;
                     const isSelected = selected.has(src);
                     return (
                       <li
                         key={src}
-                        className={`overflow-hidden rounded-md border ${
+                        draggable
+                        onDragStart={(event) => {
+                          setDragIndex(index);
+                          event.dataTransfer.effectAllowed = "move";
+                          event.dataTransfer.setData("text/plain", String(index));
+                        }}
+                        onDragEnd={() => setDragIndex(null)}
+                        onDragOver={(event) => {
+                          if (dragIndex !== null) event.preventDefault();
+                        }}
+                        onDrop={(event) => {
+                          if (dragIndex === null) return;
+                          event.preventDefault();
+                          event.stopPropagation();
+                          reorderImage(dragIndex, index);
+                          setDragIndex(null);
+                        }}
+                        className={`cursor-grab overflow-hidden rounded-md border active:cursor-grabbing ${
+                          dragIndex === index ? "opacity-40" : ""
+                        } ${
                           isCover
                             ? "border-teal-600 ring-2 ring-teal-600/30"
                             : isSelected
@@ -560,7 +641,7 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
                                 : "bg-white/90 text-slate-700 hover:bg-white"
                             }`}
                           >
-                            {isCover ? "★ Kansi" : "☆"}
+                            {isCover ? "★ Pääkuva" : "☆"}
                           </button>
                           <label className="absolute right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-white/90">
                             <input
@@ -576,7 +657,8 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
                             type="button"
                             onClick={() => moveImage(index, -1)}
                             disabled={index === 0}
-                            className="rounded px-2 py-1 text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30"
+                            aria-label="Siirrä taaksepäin"
+                            className="min-h-9 rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-30"
                           >
                             ←
                           </button>
@@ -587,7 +669,8 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
                             type="button"
                             onClick={() => moveImage(index, 1)}
                             disabled={index === gallery.length - 1}
-                            className="rounded px-2 py-1 text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30"
+                            aria-label="Siirrä eteenpäin"
+                            className="min-h-9 rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-30"
                           >
                             →
                           </button>
@@ -596,7 +679,7 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
                     );
                   })}
                 </ul>
-              )}
+              }
             </section>
           </div>
         </>
@@ -819,6 +902,7 @@ export function AdminPropertyEditor({ propertyId, onBack }: Props) {
           </div>
         </div>
       )}
+      {toast}
     </div>
   );
 }
