@@ -71,7 +71,7 @@ export function Navbar() {
           <div className="flex items-center justify-end gap-3">
             <Link
               href="/contact"
-              className={`hidden rounded-full px-6 py-2.5 font-sans text-base font-semibold transition-colors duration-200 md:inline-flex ${
+              className={`hidden rounded-lg px-6 py-2.5 font-sans text-base font-semibold transition-colors duration-200 md:inline-flex ${
                 heroOverlay
                   ? "border border-paper/80 bg-transparent text-paper hover:bg-paper/10"
                   : "bg-ink text-paper hover:bg-forest-700"
@@ -118,7 +118,7 @@ export function Navbar() {
             <div className="mt-4 border-t border-[color:var(--hairline)] pt-4">
               <Link
                 href="/contact"
-                className="block rounded-full bg-ink px-6 py-3.5 text-center font-sans text-lg font-semibold text-paper"
+                className="block rounded-lg bg-ink px-6 py-3.5 text-center font-sans text-lg font-semibold text-paper"
                 onClick={() => setOpen(false)}
               >
                 {tNav("contact")}

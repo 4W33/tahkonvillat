@@ -22,7 +22,7 @@ export function LanguageSwitcher({ tone = "dark" }: { tone?: "light" | "dark" })
 
   return (
     <div
-      className={`flex items-center gap-0.5 rounded-full border p-0.5 ${
+      className={`flex items-center gap-0.5 rounded-lg border p-0.5 ${
         tone === "light"
           ? "border-paper/30"
           : "border-[color:var(--hairline)]"
@@ -35,7 +35,7 @@ export function LanguageSwitcher({ tone = "dark" }: { tone?: "light" | "dark" })
           key={code}
           href={href}
           locale={code}
-          className={`rounded-full px-3 py-1.5 font-sans text-[0.75rem] font-semibold uppercase tracking-wide transition-colors duration-200 ${
+          className={`rounded-md px-3 py-1.5 font-sans text-[0.75rem] font-semibold uppercase tracking-wide transition-colors duration-200 ${
             locale === code
               ? tone === "light"
                 ? "bg-paper text-ink"

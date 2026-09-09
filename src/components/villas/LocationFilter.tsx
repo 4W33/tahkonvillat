@@ -32,7 +32,7 @@ export function LocationFilter({ active }: Props) {
           key={location}
           type="button"
           onClick={() => setLocation(location)}
-          className={`rounded-full px-4 py-2.5 font-sans text-base font-medium transition-colors ${
+          className={`rounded-lg px-4 py-2.5 font-sans text-base font-medium transition-colors ${
             active === location
               ? "bg-forest text-cream"
               : "bg-cream-50 text-forest-700 ring-1 ring-forest/10 hover:bg-cream-100"
