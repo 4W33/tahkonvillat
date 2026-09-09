@@ -11,10 +11,14 @@ import { GuestReviews } from "@/components/reviews/GuestReviews";
 import { StarRating } from "@/components/reviews/StarRating";
 import { BookingNotice } from "@/components/villas/BookingNotice";
 import { VillaInquiryForm } from "@/components/villas/VillaInquiryForm";
+import { PropertyAvailability } from "@/components/villas/PropertyAvailability";
 import { VillaJsonLd } from "@/components/seo/VillaJsonLd";
 import { getVillaBySlug, getVillaSlugs } from "@/lib/content/villas";
 import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
+
+/** Saatavuus (iCal) ja kausihinnat vanhenevat ajan myötä → uudelleenvalidoi 3 h välein. */
+export const revalidate = 10800;
 
 type Props = {
   params: { locale: string; slug: string };
@@ -111,6 +115,10 @@ export default async function VillaDetailPage({
                     </p>
                   ))}
                 </div>
+              </Reveal>
+
+              <Reveal delay={100}>
+                <PropertyAvailability villa={villa} locale={lang} />
               </Reveal>
 
               {villa.units && villa.units.length > 0 && (

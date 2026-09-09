@@ -165,7 +165,9 @@
       },
       "calendar": {
         "title": "Saatavuus",
-        "hint": "Varatut päivät päivitetään manuaalisesti — ei synkronoida Airbnbhin. Kalenteri on vain luku -tilassa; lähetä tiedustelu vahvistaaksesi päivät.",
+        "syncHint": "Varatut päivät päivittyvät Airbnbstä noin 3 tunnin välein. Varmista saatavuus aina tiedustelulla.",
+        "unavailable": "Saatavuustietoa ei juuri nyt saada haettua. Kysy vapaita päiviä tiedustelulla.",
+        "unitLabel": "Yksikkö",
         "prevMonth": "Edellinen kuukausi",
         "nextMonth": "Seuraava kuukausi",
         "legendFree": "Vapaa",
@@ -389,7 +391,10 @@
   },
   "pricing": {
     "fromPerNight": "alkaen {price} € / yö",
-    "disclaimer": "Ohjehinta. Lopullinen hinta vahvistetaan aina tiedustelussa."
+    "perNight": "{price} € / yö",
+    "disclaimer": "Ohjehinta. Lopullinen hinta vahvistetaan aina tiedustelussa.",
+    "seasonsTitle": "Hinnat kausittain",
+    "otherTimes": "Muut ajat"
   },
   "reviews": {
     "title": "Vieraiden kokemuksia",
