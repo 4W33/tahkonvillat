@@ -192,10 +192,33 @@ try {
     await login(page);
     await page.getByRole("button", { name: "Sivuston tekstit" }).click();
     await page.locator("iframe[title='Sivuston esikatselu']").waitFor({ timeout: 20000 });
-    await page.waitForTimeout(2500);
-    await page.locator("input#hero\\.title, input[id='hero.title']").first().focus();
-    await page.waitForTimeout(1200);
+    // Oletusosio on ensimmäinen avain (metadata) → vaihda Etusivu-osioon
+    await page.getByRole("button", { name: "Etusivu", exact: true }).click();
+    const frame = page.frameLocator("iframe[title='Sivuston esikatselu']");
+    await frame.locator("[data-cms='home.hero']").waitFor({ timeout: 30000 });
+    await page.waitForTimeout(1500);
+
+    // 1) Kentän fokus → iframe korostaa oikean osion
+    await page.locator("input[id='hero.title']").first().focus();
+    await frame.locator("[data-cms-active='1'][data-cms='home.hero']").waitFor({ timeout: 5000 });
+    const label = await frame.locator("[data-cms-active='1']").getAttribute("data-cms-label");
+    console.log("✓ fokus hero.title → korostus:", label);
+    await page.getByText("Muokkaat: Etusivu › Hero").waitFor();
     await shot(page, "split");
+
+    // 2) Klikkaus iframessa alatunnistetta → editori vaihtaa osioon Alatunniste
+    await frame.locator("[data-cms='footer']").scrollIntoViewIfNeeded();
+    await frame.locator("[data-cms='footer']").click({ position: { x: 20, y: 20 } });
+    await page.getByRole("heading", { level: 2, name: "Alatunniste" }).waitFor({ timeout: 5000 });
+    console.log("✓ klikkaus footer → osio Alatunniste");
+    await shot(page, "click-footer");
+
+    // 3) English → iframe /en?cms=1
+    await page.getByRole("button", { name: "English" }).click();
+    await page.waitForTimeout(500);
+    const src = await page.locator("iframe[title='Sivuston esikatselu']").getAttribute("src");
+    console.log(src === "/en?cms=1" ? "✓" : "✗", "iframe src en:", src);
+    if (src !== "/en?cms=1") failures += 1;
   }
 } catch (error) {
   failures += 1;

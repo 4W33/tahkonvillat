@@ -1,15 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   SECTION_LABELS,
   SECTION_PREVIEW,
+  SECTION_PREVIEW_EN,
   collectStringFields,
   humanizeKey,
   setByPath,
   type JsonObject,
 } from "@/lib/admin/site-content-utils";
+import { buildPreviewSrc, cmsLabel } from "@/lib/cms/cms-keys";
 import {
   adminCardClass,
   adminInputClass,
@@ -51,12 +53,25 @@ function buildFieldRows(sectionData: JsonObject, search: string): FieldRow[] {
     });
 }
 
+type PreviewMessage =
+  | { type: "cms:focus"; key: string; label: string }
+  | { type: "cms:reload" };
+
+/** Viesti esikatselu-iframelle. Sama origin → silta hyväksyy. */
+function postToPreview(iframe: HTMLIFrameElement | null, message: PreviewMessage) {
+  iframe?.contentWindow?.postMessage(message, window.location.origin);
+}
+
+const PREVIEW_STORAGE_KEY = "tv-admin-preview";
+
 function FieldEditor({
   field,
   onChange,
+  onFocus,
 }: {
   field: FieldRow;
   onChange: (path: string, value: string) => void;
+  onFocus: (path: string) => void;
 }) {
   const multiline =
     field.value.length > 120 ||
@@ -77,6 +92,7 @@ function FieldEditor({
           value={field.value}
           rows={Math.min(10, Math.max(3, Math.ceil(field.value.length / 80)))}
           onChange={(event) => onChange(field.path, event.target.value)}
+          onFocus={() => onFocus(field.path)}
           className={adminTextareaClass}
         />
       ) : (
@@ -85,6 +101,7 @@ function FieldEditor({
           type="text"
           value={field.value}
           onChange={(event) => onChange(field.path, event.target.value)}
+          onFocus={() => onFocus(field.path)}
           className={adminInputClass}
         />
       )}
@@ -118,6 +135,28 @@ export function AdminSiteContent() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [previewOpen, setPreviewOpen] = useState(true);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(PREVIEW_STORAGE_KEY) === "0") setPreviewOpen(false);
+    } catch {
+      // localStorage estetty → oletus (auki) riittää
+    }
+  }, []);
+
+  function togglePreview() {
+    setPreviewOpen((open) => {
+      try {
+        window.localStorage.setItem(PREVIEW_STORAGE_KEY, open ? "0" : "1");
+      } catch {
+        // ei kriittistä
+      }
+      return !open;
+    });
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -175,6 +214,45 @@ export function AdminSiteContent() {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
+  // Esikatselu klikkasi osiota → hyppää sen teksteihin.
+  useEffect(() => {
+    function onMessage(event: MessageEvent<{ type?: string; key?: string }>) {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "cms:select" || !event.data.key) return;
+      const key = event.data.key;
+      const [nextSection, ...rest] = key.split(".");
+      if (!sectionKeys.includes(nextSection)) return;
+      setSection(nextSection);
+      setSearch("");
+      setActiveKey(key);
+      postToPreview(iframeRef.current, {
+        type: "cms:focus",
+        key,
+        label: cmsLabel(key, SECTION_LABELS),
+      });
+      const prefix = rest.join(".");
+      window.setTimeout(() => {
+        const first = prefix
+          ? document.querySelector<HTMLElement>(`[id^="${prefix}"]`)
+          : document.querySelector<HTMLElement>("input[id], textarea[id]");
+        first?.scrollIntoView({ behavior: "smooth", block: "center" });
+        first?.focus({ preventScroll: true });
+      }, 50);
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [sectionKeys]);
+
+  function handleFieldFocus(path: string) {
+    const key = `${section}.${path}`;
+    setActiveKey(key);
+    postToPreview(iframeRef.current, {
+      type: "cms:focus",
+      key,
+      label: cmsLabel(key, SECTION_LABELS),
+    });
+  }
+
   function updateField(path: string, value: string) {
     if (!messages) return;
     const sectionRoot = messages[locale][section];
@@ -211,6 +289,7 @@ export function AdminSiteContent() {
       setSavedSnapshot(JSON.stringify(messages));
       setStatus("Tallennettu — muutokset näkyvät sivustolla.");
       router.refresh();
+      postToPreview(iframeRef.current, { type: "cms:reload" });
     } catch {
       setStatus("Tallennus epäonnistui. Yritä uudelleen.");
     } finally {
@@ -227,6 +306,10 @@ export function AdminSiteContent() {
   }
 
   const previewPath = SECTION_PREVIEW[section];
+  const previewSrc = buildPreviewSrc(section, locale, {
+    fi: SECTION_PREVIEW,
+    en: SECTION_PREVIEW_EN,
+  });
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -237,9 +320,26 @@ export function AdminSiteContent() {
             <p className="mt-1 text-sm text-slate-500">
               Kaikki sivuston tekstit FI/EN — muutokset tallennetaan ja päivittyvät julkiselle sivulle.
             </p>
+            {activeKey && (
+              <p className="mt-1 text-xs font-medium text-forest">
+                Muokkaat: {cmsLabel(activeKey, SECTION_LABELS)}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={togglePreview}
+              aria-pressed={previewOpen}
+              className={`hidden rounded-lg border px-3 py-2 text-sm lg:inline-flex ${
+                previewOpen
+                  ? "border-forest bg-forest/10 text-forest"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              {previewOpen ? "Piilota esikatselu" : "Näytä esikatselu"}
+            </button>
             {(["fi", "en"] as const).map((loc) => (
               <button
                 key={loc}
@@ -345,11 +445,35 @@ export function AdminSiteContent() {
                   key={`${locale}-${section}-${field.path}`}
                   field={field}
                   onChange={updateField}
+                  onFocus={handleFieldFocus}
                 />
               ))}
             </div>
           )}
         </div>
+
+        {previewOpen && (
+          <div className="hidden w-[46%] shrink-0 border-l border-slate-200 bg-slate-100 lg:flex lg:flex-col">
+            <div className="flex items-center justify-between border-b border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
+              <span>Esikatselu — klikkaa sivun osiota avataksesi sen tekstit</span>
+              <a
+                href={previewSrc.replace("?cms=1", "")}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-forest hover:underline"
+              >
+                Avaa ↗
+              </a>
+            </div>
+            <iframe
+              ref={iframeRef}
+              key={previewSrc}
+              src={previewSrc}
+              title="Sivuston esikatselu"
+              className="h-full min-h-0 w-full flex-1 bg-white"
+            />
+          </div>
+        )}
       </div>
 
       <div className={adminSaveBarClass}>
