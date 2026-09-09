@@ -8,6 +8,9 @@ import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
+/** Kausihinnat vanhenevat ajan myötä → uudelleenvalidoi 3 h välein. */
+export const revalidate = 10800;
+
 type Props = {
   params: { locale: string };
 };
