@@ -1,3 +1,4 @@
+import { mergeMessages } from "@/lib/data/merge-messages";
 import { readStoreJson, writeStoreJson } from "@/lib/storage/json";
 import type fiMessages from "../../../messages/fi.json";
 
@@ -16,10 +17,16 @@ async function readBundledMessages(locale: string): Promise<SiteMessages> {
   return (await import("../../../messages/fi.json")).default as SiteMessages;
 }
 
+/**
+ * Oletusviestit (messages/*.json) + adminin ylikirjoitus syvämergettynä.
+ * Ylikirjoitus voi olla vanhempi kuin koodi: uudet avaimet tulevat oletuksista,
+ * poistetut avaimet pudotetaan, jolloin validointi ja t() toimivat aina.
+ */
 export async function getSiteMessages(locale: string): Promise<SiteMessages> {
-  const stored = await readStoreJson<SiteMessages>(messageFile(locale));
-  if (stored) return stored;
-  return readBundledMessages(locale);
+  const bundled = await readBundledMessages(locale);
+  const stored = await readStoreJson<unknown>(messageFile(locale));
+  if (!stored) return bundled;
+  return mergeMessages(bundled, stored);
 }
 
 export async function writeSiteMessages(
