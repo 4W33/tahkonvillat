@@ -9,7 +9,7 @@ export async function BrandStory() {
   const storyImage = t("image");
 
   return (
-    <section className="overflow-hidden bg-white py-24 sm:py-32">
+    <section data-cms="home.story" className="overflow-hidden bg-white py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-20 lg:px-8">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="eyebrow">{t("eyebrow")}</p>

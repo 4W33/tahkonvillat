@@ -7,7 +7,7 @@ export async function CtaSection() {
   const t = await getTranslations("home.cta");
 
   return (
-    <section className="relative overflow-hidden bg-[#EDE5D8] py-24 sm:py-32">
+    <section data-cms="home.cta" className="relative overflow-hidden bg-[#EDE5D8] py-24 sm:py-32">
       {/* Subtle warm grain texture */}
       <div className="grain absolute inset-0 opacity-30" aria-hidden />
       {/* Decorative large italic text in background */}

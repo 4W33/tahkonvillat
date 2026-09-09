@@ -37,6 +37,7 @@ export default async function VillasPage({ params: { locale } }: Props) {
   return (
     <main className="bg-[#F7F2EA]">
       <PageHeader
+        cmsKey="villas"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

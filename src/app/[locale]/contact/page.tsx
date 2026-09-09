@@ -49,6 +49,7 @@ export default async function ContactPage({
   return (
     <main>
       <PageHeader
+        cmsKey="contact"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

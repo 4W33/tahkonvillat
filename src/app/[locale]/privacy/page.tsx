@@ -39,6 +39,7 @@ export default async function PrivacyPage({ params: { locale } }: Props) {
   return (
     <main>
       <PageHeader
+        cmsKey="privacy"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

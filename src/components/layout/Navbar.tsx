@@ -36,7 +36,7 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header data-cms="nav" className="fixed inset-x-0 top-0 z-50">
       {heroOverlay && (
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/75 via-black/40 to-transparent"

@@ -19,7 +19,7 @@ export async function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer>
+    <footer data-cms="footer">
       <FooterMosaic />
 
       {/* ── Footer content ──────────────────────────────── */}
