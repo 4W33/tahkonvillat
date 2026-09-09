@@ -83,6 +83,50 @@ try {
     await shot(page, "list", { fullPage: true });
   }
 
+  if (scenario === "pricing-e2e") {
+    // Lisää kausi Puolukalle adminissa → tallenna → villasivu näyttää taulukon → poista kausi.
+    const page = await desktop.newPage();
+    await login(page);
+    await page.getByRole("button", { name: "Hinnat" }).click();
+    await page.getByText("Perushinta").first().waitFor();
+    const card = page.locator("li", { hasText: "Villa Puolukka" }).first();
+    await card.getByRole("button", { name: "+ Lisää kausi" }).click();
+    await card.locator("input[type=date]").nth(0).fill("2026-09-12");
+    await card.locator("input[type=date]").nth(1).fill("2026-09-30");
+    await card.locator("input[type=number]").nth(1).fill("250");
+    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
+    await page.getByText("Hinnat tallennettu.").waitFor({ timeout: 15000 });
+    await shot(page, "admin-saved");
+
+    const pub = await desktop.newPage();
+    await pub.goto(`${BASE}/villat/villa-puolukka`);
+    await pub.getByText("Hinnat kausittain").waitFor({ timeout: 20000 });
+    const price = pub.locator('[data-cms="pricing"]');
+    await price.screenshot({ path: file("public-table") });
+    const from = await price.locator("p").first().innerText();
+    console.log("✓ julkinen sivu:", from.trim(), "+ kausitaulukko");
+    if (!from.includes("250")) {
+      failures += 1;
+      console.log("✗ alkaen-hinnan piti olla 250 (kausi < perushinta 320)");
+    }
+
+    // Päällekkäinen kausi → virhe, ei tallennu
+    await card.getByRole("button", { name: "+ Lisää kausi" }).click();
+    await card.locator("input[type=date]").nth(2).fill("2026-09-20");
+    await card.locator("input[type=date]").nth(3).fill("2026-10-05");
+    await card.locator("input[type=number]").nth(2).fill("300");
+    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
+    await page.getByText(/päällekkäin/).waitFor({ timeout: 10000 });
+    console.log("✓ päällekkäinen kausi hylättiin viestillä");
+
+    // Siivous: poista molemmat kaudet, tallenna
+    await card.getByRole("button", { name: "Poista kausi" }).nth(1).click();
+    await card.getByRole("button", { name: "Poista kausi" }).nth(0).click();
+    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
+    await page.getByText("Hinnat tallennettu.").waitFor({ timeout: 15000 });
+    console.log("✓ testikaudet poistettu");
+  }
+
   if (scenario === "villa") {
     for (const [ctx, view] of [
       [desktop, "desktop"],
