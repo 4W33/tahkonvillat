@@ -19,13 +19,14 @@ Kaikki sivuston copy FI/EN: etusivu, navigaatio, footer, villat/asunnot-sivujen 
 
 - Valitse osio vasemmalta (esim. **Etusivu**, **UKK**)
 - Vaihda **Suomi / English**
-- **Tallenna kaikki tekstit** — muutokset näkyvät sivustolla heti
+- **Esikatselu oikealla:** kun klikkaat kenttää, sivulta korostuu kultaisella se kohta, jota muokkaat ("Muokkaat: Etusivu › Hero"). Voit myös klikata esikatselussa mitä tahansa osiota — editori hyppää sen teksteihin. Esikatselun voi piilottaa napista.
+- **Tallenna kaikki tekstit** — muutokset näkyvät sivustolla ja esikatselussa heti
 
 ### Kohteet
 Jokainen villa/asunto: **Kuvat**, **Tekstit** (FI/EN), **Tiedot** (sijainti, vieraiden määrä, varustelu).
 
 ### Kalenteri
-Manuaalinen saatavuus — lisää, muokkaa ja poista varauslohkoja.
+Manuaalinen saatavuus — lisää, muokkaa ja poista varauslohkoja. Airbnbstä tulevat varaukset näkyvät samassa näkymässä harmaina palkkeina (vain luku). Villasivun julkinen Saatavuus-kalenteri näyttää molemmat.
 
 ### Hinnat
 Perushinta (€/yö) per kohde + **kaudet**: ajanjakso (alku–loppu), hinta €/yö ja valinnainen nimi (FI/EN), esim. 12.9.–30.9. → 250 €. Kaudet eivät saa olla päällekkäin. Sivulla näkyy pienin tuleva hinta "alkaen"-hintana ja kausitaulukko villasivulla. Lopullinen hinta vahvistetaan aina tiedustelussa.

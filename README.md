@@ -1,9 +1,10 @@
 # Tahkon Villat
 
 Mökki- ja asuntovuokrauksen esittelysivusto (FI/EN) omalla kevyellä admin-CMS:llä.
-Varaukset hoidetaan **tiedustelulomakkeella** — sivustolla ei ole julkista
-saatavuuskalenteria, koska varaukset tulevat Airbnb:stä ja muista kanavista ja
-sovitetaan käsin.
+Varaukset hoidetaan **tiedustelulomakkeella**. Villasivuilla on julkinen
+**Saatavuus-kalenteri** (vapaa/varattu), joka yhdistää Airbnbn iCal-viennin
+(adminin "Airbnb-kalenterit", haku 3 h välimuistilla) ja adminin käsivaraukset.
+Hinnat: perushinta + kausihinnat ajanjaksoittain (adminin "Hinnat").
 
 ## Stack
 
@@ -65,10 +66,13 @@ Kopioi `.env.example` → `.env.local`. **`.env.local` ei mene gitiin.**
 | `npm run content:messages` | luo/päivittää admin-CMS:n tekstipohjan `data/content/messages/` |
 | `npm run content:prices` | hakee ohjehinnat Airbnb-profiilista |
 | `npm run storage:seed` | lataa `data/` + kuvat Vercel Blobiin (aja kerran deployn jälkeen) |
+| `npm test` | vitest (puhdas logiikka: iCal, kausihinnat, viestimerge, CMS-avaimet) |
+| `node scripts/evidence.mjs <skenaario>` | Playwright-todisteruutukaappaukset dev-palvelinta vasten → `docs/superpowers/evidence/` |
+| `node scripts/check-airbnb-coverage.mjs` | vertaa Airbnb-profiilin listaukset sivuston mappaukseen |
 
 ## Admin
 
-`/admin/login` → Sivuston tekstit · Kohteet · Kalenteri · Hinnat · Varausehdotukset · Yhteydenotot.
+`/admin/login` → Etusivu-kuvat · Sivuston tekstit (esikatselu-iframe) · Kohteet · Kalenteri · Airbnb-kalenterit (iCal) · Hinnat (perushinta + kaudet) · Varausehdotukset · Yhteydenotot.
 
 - Asiakkaan ohje: [ADMIN-GUIDE.md](ADMIN-GUIDE.md) (mitä voi ja ei voi muokata)
 - Julkaisu: [DEPLOY.md](DEPLOY.md) · pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md)
