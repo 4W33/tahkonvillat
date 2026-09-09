@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/constants";
 import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
@@ -38,9 +39,10 @@ function InstructionList({ items }: { items: string[] }) {
 }
 
 export default async function CheckoutPage({ params: { locale } }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("checkout");
-  const headerImage = getPageHeaderImage("checkout", locale as "fi" | "en");
+  const headerImage = getPageHeaderImage("checkout", lang);
 
   const checkoutSteps = t.raw("checkout.steps") as string[];
   const kitchenSteps = t.raw("cleaning.kitchen.steps") as string[];

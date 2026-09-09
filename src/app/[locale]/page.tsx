@@ -8,22 +8,24 @@ import { HomeEditorialBand } from "@/components/home/HomeEditorialBand";
 import { HomeReviews } from "@/components/home/HomeReviews";
 import { BrandStory } from "@/components/home/BrandStory";
 import { CtaSection } from "@/components/home/CtaSection";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
 };
 
 export default async function HomePage({ params: { locale } }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
 
   return (
     <>
       <Hero />
-      <VillaPreviewGrid locale={locale as "fi" | "en"} />
+      <VillaPreviewGrid locale={lang} />
       <BrandStory />
       <TrustStrip />
       <HighlightsStrip />
-      <ApartmentPreviewGrid locale={locale as "fi" | "en"} />
+      <ApartmentPreviewGrid locale={lang} />
       <HomeEditorialBand />
       <HomeReviews />
       <CtaSection />

@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/constants";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 const SECTION_KEYS = [
   "controller",
@@ -31,7 +32,8 @@ export async function generateMetadata({ params: { locale } }: Props) {
 }
 
 export default async function PrivacyPage({ params: { locale } }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("privacy");
 
   return (

@@ -53,7 +53,7 @@ Jos tarvitset näitä, ota yhteyttä sivuston tekijään.
 ## Vinkit
 
 1. **Tallenna aina** ennen kuin poistut sivulta — näet “Tallentamattomia muutoksia” -varoituksen.
-2. **Kuvapolut** etusivulla (esim. `home.hero.image`) — kopioi polku olemassa olevasta kuvasta tai käytä Kohteet → Kuvat -uploadia ja kopioi polku sieltä.
+2. **Kuvan vaihto** käy aina klikkaamalla kuvaa — polkuja ei tarvitse kopioida mihinkään. Kuvavalitsimesta valitset joko olemassa olevan kuvan tai lataat uuden. Kuvamuutokset tallentuvat heti, ja saat **Kumoa**-painikkeen jos vaihdoit väärän.
 3. **Älä poista kenttiä** — muokkaa tekstiä, älä jätä tyhjäksi pakollisia kohtia (nimi, otsikot).
 4. **Testaa** “Avaa julkisella sivulla” -linkillä tallennuksen jälkeen.
 

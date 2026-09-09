@@ -33,3 +33,10 @@ export const routing = defineRouting({
     },
   },
 });
+
+export type AppLocale = (typeof routing.locales)[number];
+
+/** Tyyppivartija: kertoo onko merkkijono tuettu kieli. */
+export function isAppLocale(value: string): value is AppLocale {
+  return (routing.locales as readonly string[]).includes(value);
+}

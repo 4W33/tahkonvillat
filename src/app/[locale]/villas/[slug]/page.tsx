@@ -14,6 +14,7 @@ import { VillaInquiryForm } from "@/components/villas/VillaInquiryForm";
 import { VillaJsonLd } from "@/components/seo/VillaJsonLd";
 import { getVillaBySlug, getVillaSlugs } from "@/lib/content/villas";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string; slug: string };
@@ -28,7 +29,7 @@ export async function generateMetadata({ params: { locale, slug } }: Props) {
   const villa = await getVillaBySlug(slug);
   if (!villa) return {};
 
-  const lang = locale as "fi" | "en";
+  const lang = requireLocale(locale);
   const tCommon = await getTranslations({ locale, namespace: "common" });
   const pageTitle = `${villa.name[lang]} | ${tCommon("brand")}`;
 
@@ -44,7 +45,8 @@ export async function generateMetadata({ params: { locale, slug } }: Props) {
 export default async function VillaDetailPage({
   params: { locale, slug },
 }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const villa = await getVillaBySlug(slug);
 
   if (!villa) {
@@ -53,7 +55,6 @@ export default async function VillaDetailPage({
 
   const t = await getTranslations("villas");
   const tDetail = await getTranslations("villas.detail");
-  const lang = locale as "fi" | "en";
 
   return (
     <main className="pb-24 lg:pb-0">

@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 import { isProductionDeploy } from "@/lib/storage/config";
 
@@ -48,7 +49,17 @@ export async function isAuthenticated(): Promise<boolean> {
   }
 }
 
+/**
+ * Vertailu vakioajassa: `===` keskeyttää heti ensimmäiseen eroavaan merkkiin,
+ * jolloin vastausaika vuotaa tietoa salasanasta. SHA-256 tasaa myös pituuden,
+ * joten pituuskaan ei vuoda.
+ */
 export function verifyPassword(password: string): boolean {
   const expected = getAdminPassword();
-  return expected.length > 0 && password === expected;
+  if (expected.length === 0) return false;
+
+  const given = createHash("sha256").update(password, "utf8").digest();
+  const actual = createHash("sha256").update(expected, "utf8").digest();
+
+  return timingSafeEqual(given, actual);
 }

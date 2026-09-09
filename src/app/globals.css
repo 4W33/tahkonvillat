@@ -2,33 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Värit vastaavat tailwind.config.ts:n palettia — pidä nämä synkassa.
+   Aiemmin :root kantoi vanhaa vihertävää metsäpalettia (#14241b / #0f1f17),
+   vaikka Tailwind oli jo vaihtunut lämpimään harmaaseen (#1c1b19). */
 :root {
-  --background: #f1ece1;
-  --foreground: #14241b;
-  --paper: #f1ece1;
-  --ink: #14241b;
-  --ink-900: #0f1f17;
-  --gold: #b8955a;
-  --shadow-soft: 0 2px 24px rgba(15, 31, 23, 0.06);
-  --shadow-lift: 0 18px 50px rgba(15, 31, 23, 0.14);
+  --background: #f1ece4; /* cream.200 */
+  --foreground: #1c1b19; /* ink.DEFAULT */
+  --paper: #ffffff; /* paper.DEFAULT */
+  --ink: #1c1b19; /* ink.DEFAULT */
+  --ink-900: #141312; /* ink.900 */
+  --gold: #b8955a; /* gold.DEFAULT */
+  --shadow-soft: 0 2px 24px rgba(28, 27, 25, 0.06);
+  --shadow-lift: 0 18px 50px rgba(28, 27, 25, 0.14);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --hairline: rgba(20, 36, 27, 0.16);
+  --hairline: rgba(28, 27, 25, 0.16);
 }
 
 html {
   scroll-behavior: smooth;
-}
-
-/* Lenis smooth-scroll */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
 }
 
 body {

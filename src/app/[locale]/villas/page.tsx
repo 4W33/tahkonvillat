@@ -6,6 +6,7 @@ import { VillaCard } from "@/components/villas/VillaCard";
 import { getVillas } from "@/lib/content/villas";
 import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
@@ -24,10 +25,11 @@ export async function generateMetadata({ params: { locale } }: Props) {
 }
 
 export default async function VillasPage({ params: { locale } }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("villas");
   const villas = await getVillas();
-  const headerImage = getPageHeaderImage("villas", locale as "fi" | "en");
+  const headerImage = getPageHeaderImage("villas", lang);
 
   return (
     <main className="bg-[#F7F2EA]">
@@ -57,7 +59,7 @@ export default async function VillasPage({ params: { locale } }: Props) {
               <VillaCard
                 key={villa.slug}
                 villa={villa}
-                locale={locale as "fi" | "en"}
+                locale={lang}
               />
             ))}
           </RevealList>

@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tahkon Villat
 
-## Getting Started
+Mökki- ja asuntovuokrauksen esittelysivusto (FI/EN) omalla kevyellä admin-CMS:llä.
+Varaukset hoidetaan **tiedustelulomakkeella** — sivustolla ei ole julkista
+saatavuuskalenteria, koska varaukset tulevat Airbnb:stä ja muista kanavista ja
+sovitetaan käsin.
 
-First, run the development server:
+## Stack
+
+| Osa | Valinta |
+|-----|---------|
+| Framework | Next.js 14 (App Router) |
+| Kielet | next-intl, `fi` (oletus) + `en`, `localePrefix: "as-needed"` |
+| Tyylit | Tailwind CSS |
+| Tallennus | Vercel Blob tuotannossa, paikallinen `data/` + `public/images/` kehityksessä |
+| Sähköposti | Resend (valinnainen — ilman sitä viestit tallentuvat vain admin-inboxiin) |
+| Kuvat | `next/image` + sharp |
+
+## Kohteet
+
+Kohdelista on koodissa: `src/lib/site.config.ts`.
+
+- **Villat (Tahko):** `villa-puolukka`, `villa-karpalo`, `tahkon-teituli`
+- **Asunnot (Uusimaa):** `vantaa-1` … `vantaa-4`, `helsinki-1`
+
+Sisältö tulee `data/content/<slug>.json` -tiedostoista, jotka on tuotu Airbnb-listauksista
+(`data/airbnb/`). **Sivustolle ei kirjoiteta keksittyä markkinointitekstiä** — kaikki copy
+on joko asiakkaan omaa (`messages/*.json`) tai peräisin oikeasta listausdatasta.
+
+## Kehitys
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev:clean      # tyhjentää .next-välimuistin ensin (OneDrive rikkoo sen herkästi)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ilman `BLOB_READ_WRITE_TOKEN`-muuttujaa admin kirjoittaa paikalliseen `data/`-kansioon.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Tuotantobuildin testaus paikallisesti:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run preview
+```
 
-## Learn More
+## Ympäristömuuttujat
 
-To learn more about Next.js, take a look at the following resources:
+Kopioi `.env.example` → `.env.local`. **`.env.local` ei mene gitiin.**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Muuttuja | Pakollinen | Selite |
+|----------|-----------|--------|
+| `ADMIN_PASSWORD` | kyllä | `/admin/login` |
+| `ADMIN_SESSION_TOKEN` | kyllä (tuotanto) | pitkä satunnainen merkkijono, ei kehityksen oletusarvo |
+| `NEXT_PUBLIC_SITE_URL` | tuotanto | esim. `https://tahkonvillat.fi` |
+| `BLOB_READ_WRITE_TOKEN` | tuotanto | Vercel Blob — ilman tätä admin-tallennukset kaatuvat |
+| `RESEND_API_KEY`, `EMAIL_FROM` | ei | lomakeilmoitukset sähköpostiin |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Skriptit
 
-## Deploy on Vercel
+| Komento | Mitä tekee |
+|---------|-----------|
+| `npm run dev:clean` | kehityspalvelin puhtaalla välimuistilla |
+| `npm run build` | tuotantobuild (tyhjentää välimuistin ensin) |
+| `npm run content:import` | scrapeaa Airbnb-listaukset ja synkkaa `data/content/`-tiedostoihin |
+| `npm run content:messages` | luo/päivittää admin-CMS:n tekstipohjan `data/content/messages/` |
+| `npm run content:prices` | hakee ohjehinnat Airbnb-profiilista |
+| `npm run storage:seed` | lataa `data/` + kuvat Vercel Blobiin (aja kerran deployn jälkeen) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Admin
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`/admin/login` → Sivuston tekstit · Kohteet · Kalenteri · Hinnat · Varausehdotukset · Yhteydenotot.
+
+- Asiakkaan ohje: [ADMIN-GUIDE.md](ADMIN-GUIDE.md) (mitä voi ja ei voi muokata)
+- Julkaisu: [DEPLOY.md](DEPLOY.md) · pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md)
+
+## Kansiorakenne
+
+```
+src/app/[locale]/     julkiset sivut (fi/en, lokalisoidut polut)
+src/app/admin/        admin-UI
+src/app/api/admin/    admin-API (cookie-autentikointi)
+src/components/       ui, home, villas, apartments, admin, motion
+src/lib/data/         sisältö-, hinta-, varaus- ja viestivarastot
+src/lib/storage/      Blob vs. paikallinen tiedostojärjestelmä
+data/                 sisältö-JSON + Airbnb-tuonti + lomakedata
+messages/             i18n-oletustekstit (admin voi ylikirjoittaa)
+docs/                 spec + vanha teemakonsepti
+```

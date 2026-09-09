@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { getFaqItems } from "@/lib/content/faq";
 import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
@@ -23,10 +24,11 @@ export async function generateMetadata({ params: { locale } }: Props) {
 }
 
 export default async function FaqPage({ params: { locale } }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("faq");
   const faqItems = await getFaqItems();
-  const headerImage = getPageHeaderImage("faq", locale as "fi" | "en");
+  const headerImage = getPageHeaderImage("faq", lang);
 
   return (
     <main>
@@ -43,7 +45,7 @@ export default async function FaqPage({ params: { locale } }: Props) {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <FaqAccordion
-              locale={locale as "fi" | "en"}
+              locale={lang}
               items={faqItems ?? undefined}
             />
           </Reveal>

@@ -2,3 +2,11 @@ node_modules/
 .next/
 tsconfig.tsbuildinfo
 .claude/
+
+# Salaisuudet — ei koskaan gitiin
+.env
+.env.local
+.env.*.local
+
+# Kehitysartefaktit
+scripts/airbnb-*.html

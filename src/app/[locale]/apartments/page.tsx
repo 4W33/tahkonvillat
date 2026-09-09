@@ -14,6 +14,7 @@ import {
 import { getApartments } from "@/lib/content/apartments";
 import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
@@ -35,14 +36,15 @@ export default async function ApartmentsPage({
   params: { locale },
   searchParams,
 }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("apartments");
   const activeFilter = parseApartmentFilter(searchParams.location);
   const apartments = filterApartmentsByLocation(
     await getApartments(),
     activeFilter,
   );
-  const headerImage = getPageHeaderImage("apartments", locale as "fi" | "en");
+  const headerImage = getPageHeaderImage("apartments", lang);
 
   return (
     <main>
@@ -73,7 +75,7 @@ export default async function ApartmentsPage({
                 <ApartmentListingItem
                   key={apartment.id}
                   apartment={apartment}
-                  locale={locale as "fi" | "en"}
+                  locale={lang}
                 />
               ))
             ) : (

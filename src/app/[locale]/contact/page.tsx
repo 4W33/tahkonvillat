@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/constants";
 import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
+import { requireLocale } from "@/i18n/locale";
 
 type Props = {
   params: { locale: string };
@@ -26,9 +27,9 @@ export default async function ContactPage({
   params: { locale },
   searchParams,
 }: Props) {
-  setRequestLocale(locale);
+  const lang = requireLocale(locale);
+  setRequestLocale(lang);
   const t = await getTranslations("contact");
-  const lang = locale as "fi" | "en";
 
   const initialTopic =
     searchParams.topic === "apartment" ||
@@ -43,7 +44,7 @@ export default async function ContactPage({
       property: searchParams.property,
     });
   }
-  const headerImage = getPageHeaderImage("contact", locale as "fi" | "en");
+  const headerImage = getPageHeaderImage("contact", lang);
 
   return (
     <main>

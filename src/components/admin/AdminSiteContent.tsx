@@ -161,6 +161,20 @@ export function AdminSiteContent() {
   const dirty =
     messages !== null && JSON.stringify(messages) !== savedSnapshot;
 
+  // ADMIN-GUIDE lupaa varoituksen ennen sivulta poistumista — pelkkä
+  // "Tallentamattomia muutoksia" -teksti ei estänyt tekstien menettämistä.
+  useEffect(() => {
+    if (!dirty) return;
+
+    function warn(event: BeforeUnloadEvent) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+
   function updateField(path: string, value: string) {
     if (!messages) return;
     const sectionRoot = messages[locale][section];
