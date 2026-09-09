@@ -236,7 +236,17 @@ try {
     for (const p of paths) {
       await page.goto(`${BASE}${p}`);
       await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(800);
+      // Reveal-animaatiot paljastuvat vierityksessä (tai 3 s varmuusajastimella):
+      // vieritetään sivu läpi ennen koko sivun kuvaa.
+      await page.evaluate(async () => {
+        const step = window.innerHeight * 0.8;
+        for (let y = 0; y < document.body.scrollHeight; y += step) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 120));
+        }
+        window.scrollTo(0, 0);
+      });
+      await page.waitForTimeout(1200);
       const slug = p === "/" ? "root" : p.replace(/\//g, "_").replace(/^_/, "");
       await shot(page, `mobile-${slug}`, { fullPage: true });
       if (!(await assertNoHorizontalScroll(page, `mobile ${p}`))) failures += 1;
