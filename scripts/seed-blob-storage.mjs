@@ -16,14 +16,29 @@ const contentDir = path.join(dataDir, "content");
 
 const PREFIX = "store";
 
+// PIDÄ SYNKASSA src/lib/storage/access-policy.ts kanssa.
+// Testi src/lib/storage/access-policy.test.ts hajoaa, jos listat eriytyvät.
+const PRIVATE_PATHS = new Set([
+  "data/contacts.json",
+  "data/inquiries.json",
+  "data/reservations.json",
+  "data/ical-sources.json",
+]);
+
 const JSON_FILES = [
-  { local: "data/pricing.json", access: "public" },
-  { local: "data/reservations.json", access: "private" },
-  { local: "data/inquiries.json", access: "private" },
-  { local: "data/contacts.json", access: "private" },
+  "data/pricing.json",
+  "data/site-images.json",
+  "data/reservations.json",
+  "data/inquiries.json",
+  "data/contacts.json",
+  "data/ical-sources.json",
 ];
 
-async function uploadJson(relativePath, access) {
+function accessFor(relativePath) {
+  return PRIVATE_PATHS.has(relativePath) ? "private" : "public";
+}
+
+async function uploadJson(relativePath, access = accessFor(relativePath)) {
   const file = path.join(root, relativePath);
   try {
     const raw = await fs.readFile(file, "utf-8");
@@ -139,8 +154,8 @@ async function main() {
 
   console.log("Seeding Vercel Blob from local data/…\n");
 
-  for (const entry of JSON_FILES) {
-    await uploadJson(entry.local, entry.access);
+  for (const relativePath of JSON_FILES) {
+    await uploadJson(relativePath);
   }
 
   await uploadContentFiles();

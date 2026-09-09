@@ -28,9 +28,7 @@ export async function POST(request: Request) {
     }
 
     const existing = (await readStoreJson<string[]>(SITE_IMAGES_PATH)) ?? [];
-    await writeStoreJson(SITE_IMAGES_PATH, [...uploaded, ...existing], {
-      access: "public",
-    });
+    await writeStoreJson(SITE_IMAGES_PATH, [...uploaded, ...existing]);
 
     return NextResponse.json({ uploaded });
   } catch (error) {

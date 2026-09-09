@@ -41,7 +41,7 @@ export function buildInquiryEntry(payload: InquiryPayload): StoredInquiry {
 export async function appendInquiry(entry: StoredInquiry): Promise<StoredInquiry> {
   const existing = await readInquiries();
   existing.unshift(entry);
-  await writeStoreJson(INQUIRIES_PATH, existing, { access: "private" });
+  await writeStoreJson(INQUIRIES_PATH, existing);
   return entry;
 }
 
@@ -51,6 +51,6 @@ export async function markInquiryRead(id: string): Promise<boolean> {
   if (index === -1) return false;
 
   inquiries[index] = { ...inquiries[index], read: true };
-  await writeStoreJson(INQUIRIES_PATH, inquiries, { access: "private" });
+  await writeStoreJson(INQUIRIES_PATH, inquiries);
   return true;
 }

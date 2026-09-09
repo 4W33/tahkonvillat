@@ -9,5 +9,5 @@ export async function readReservations(): Promise<Reservation[]> {
 }
 
 export async function writeReservations(reservations: Reservation[]): Promise<void> {
-  await writeStoreJson(RESERVATIONS_PATH, reservations, { access: "private" });
+  await writeStoreJson(RESERVATIONS_PATH, reservations);
 }

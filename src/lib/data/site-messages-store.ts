@@ -33,7 +33,7 @@ export async function writeSiteMessages(
   locale: string,
   data: SiteMessages,
 ): Promise<void> {
-  await writeStoreJson(messageFile(locale), data, { access: "public" });
+  await writeStoreJson(messageFile(locale), data);
 }
 
 export async function getAllSiteMessages(): Promise<{

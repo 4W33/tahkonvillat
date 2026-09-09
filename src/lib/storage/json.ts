@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { storageAccess } from "@/lib/storage/access-policy";
 import { getBlobClient } from "@/lib/storage/blob-client";
 import {
   assertWritableStorage,
@@ -29,18 +30,28 @@ async function writeLocalJson(
   await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
 }
 
-async function readBlobJson<T>(relativePath: string): Promise<T | null> {
-  const pathname = blobJsonPath(relativePath);
+function isNotFound(error: unknown): boolean {
+  const name = error instanceof Error ? error.name : "";
+  const message = error instanceof Error ? error.message : String(error);
+  return name === "BlobNotFoundError" || /not\s*found/i.test(message);
+}
 
-  try {
-    const { head } = await getBlobClient();
-    const meta = await head(pathname);
-    const response = await fetch(meta.downloadUrl);
-    if (!response.ok) return null;
-    return (await response.json()) as T;
-  } catch {
-    return null;
-  }
+/**
+ * Yksityinen blob vaatii autentikoinnin: `head()` + tavallinen `fetch(downloadUrl)`
+ * ei riitä, vaan sisältö luetaan `get(pathname, { access: "private" })` -kutsulla,
+ * joka käyttää BLOB_READ_WRITE_TOKENia.
+ */
+async function readBlobJson<T>(
+  relativePath: string,
+  access: "public" | "private",
+): Promise<T | null> {
+  const pathname = blobJsonPath(relativePath);
+  const { get } = await getBlobClient();
+
+  const result = await get(pathname, { access, useCache: access === "public" });
+  if (!result || result.statusCode !== 200 || !result.stream) return null;
+
+  return (await new Response(result.stream).json()) as T;
 }
 
 async function writeBlobJson(
@@ -59,10 +70,31 @@ async function writeBlobJson(
   });
 }
 
+/**
+ * Lukee tallennuksen Blobista (tuotanto) tai paikallisesta `data/`-kansiosta (kehitys).
+ *
+ * Julkinen sisältö: jos blobia ei ole, palataan repon mukana tulevaan oletukseen.
+ * Yksityinen sisältö (lomakeviestit, varaukset, iCal-linkit): puuttuva blob
+ * tarkoittaa "ei vielä mitään tallennettua" ja palataan paikalliseen tiedostoon,
+ * mutta MUU virhe heitetään eteenpäin. Muuten hakuvirhe näyttäisi hiljaa repoon
+ * committoidun vanhan datan ikään kuin se olisi ajantasainen.
+ */
 export async function readStoreJson<T>(relativePath: string): Promise<T | null> {
   if (isBlobStorageEnabled()) {
-    const remote = await readBlobJson<T>(relativePath);
-    if (remote !== null) return remote;
+    const access = storageAccess(relativePath);
+    try {
+      const remote = await readBlobJson<T>(relativePath, access);
+      if (remote !== null) return remote;
+    } catch (error) {
+      if (access === "private" && !isNotFound(error)) {
+        throw new Error(
+          `Tallennuksen luku epäonnistui (${relativePath}): ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+      console.error(`[storage] ${relativePath}:`, error);
+    }
   }
 
   return readLocalJson<T>(relativePath);
@@ -71,13 +103,11 @@ export async function readStoreJson<T>(relativePath: string): Promise<T | null> 
 export async function writeStoreJson(
   relativePath: string,
   data: unknown,
-  options?: { access?: "public" | "private" },
 ): Promise<void> {
   assertWritableStorage();
-  const access = options?.access ?? "private";
 
   if (isBlobStorageEnabled()) {
-    await writeBlobJson(relativePath, data, access);
+    await writeBlobJson(relativePath, data, storageAccess(relativePath));
     return;
   }
 

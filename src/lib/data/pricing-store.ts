@@ -9,5 +9,5 @@ export async function readPricing(): Promise<PricingStore> {
 }
 
 export async function writePricing(store: PricingStore): Promise<void> {
-  await writeStoreJson(PRICING_PATH, store, { access: "public" });
+  await writeStoreJson(PRICING_PATH, store);
 }

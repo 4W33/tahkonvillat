@@ -61,7 +61,7 @@ async function readContentJson<T>(filename: string): Promise<T | null> {
 }
 
 async function writeContentJson(filename: string, data: unknown): Promise<void> {
-  await writeStoreJson(contentPath(filename), data, { access: "public" });
+  await writeStoreJson(contentPath(filename), data);
 }
 
 function asVilla(data: VillaRecord): Villa {

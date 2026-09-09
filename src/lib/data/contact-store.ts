@@ -37,7 +37,7 @@ export function buildContactEntry(payload: ContactPayload): StoredContact {
 export async function appendContact(entry: StoredContact): Promise<StoredContact> {
   const existing = await readContacts();
   existing.unshift(entry);
-  await writeStoreJson(CONTACTS_PATH, existing, { access: "private" });
+  await writeStoreJson(CONTACTS_PATH, existing);
   return entry;
 }
 
@@ -47,6 +47,6 @@ export async function markContactRead(id: string): Promise<boolean> {
   if (index === -1) return false;
 
   contacts[index] = { ...contacts[index], read: true };
-  await writeStoreJson(CONTACTS_PATH, contacts, { access: "private" });
+  await writeStoreJson(CONTACTS_PATH, contacts);
   return true;
 }

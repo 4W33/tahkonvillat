@@ -10,5 +10,5 @@ export async function readIcalSources(): Promise<IcalSourceStore> {
 }
 
 export async function writeIcalSources(store: IcalSourceStore): Promise<void> {
-  await writeStoreJson(ICAL_SOURCES_PATH, store, { access: "private" });
+  await writeStoreJson(ICAL_SOURCES_PATH, store);
 }
