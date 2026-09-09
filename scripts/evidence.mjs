@@ -232,7 +232,9 @@ try {
 
   if (scenario === "pages") {
     const paths = ["/", "/villat", "/villat/villa-puolukka", "/villat/tahkon-teituli", "/asunnot", "/yhteystiedot", "/faq", "/tietosuoja", "/en"];
-    const page = await mobile.newPage();
+    // deviceScaleFactor 1: Chromiumin koko sivun kuva jää tyhjäksi yli ~16384 px korkeudella.
+    const mobile1x = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
+    const page = await mobile1x.newPage();
     for (const p of paths) {
       await page.goto(`${BASE}${p}`);
       await page.waitForLoadState("networkidle");
