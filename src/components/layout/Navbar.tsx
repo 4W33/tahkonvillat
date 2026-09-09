@@ -60,7 +60,12 @@ export function Navbar() {
             heroOverlay ? "h-[6.25rem]" : "h-[4.75rem]"
           }`}
         >
-          <Logo variant="nav" priority expanded={heroOverlay} />
+          <Logo
+            variant="nav-horizontal"
+            priority
+            expanded={heroOverlay}
+            tone={heroOverlay ? "light" : "dark"}
+          />
 
           <NavLinks
             className="hidden items-center justify-center gap-9 md:flex"
