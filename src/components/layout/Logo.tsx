@@ -45,7 +45,7 @@ export function Logo({
           />
         </span>
         <span
-          className={`hidden whitespace-nowrap font-display font-semibold leading-none tracking-tight transition-all duration-300 md:inline ${
+          className={`hidden whitespace-nowrap font-display font-semibold leading-none tracking-tight transition-all duration-300 lg:inline ${
             expanded ? "text-[1.75rem]" : "text-[1.45rem]"
           } ${tone === "light" ? "text-paper" : "text-ink"}`}
         >
