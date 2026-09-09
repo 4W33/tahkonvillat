@@ -2,17 +2,24 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
+import { BRAND_LOGO, BRAND_MARK_PLAIN, BRAND_NAME } from "@/lib/constants";
 
 type Props = {
-  /** nav = pelkkä merkki · nav-horizontal = merkki + nimi vierekkäin (md+) · footer = iso merkki */
+  /**
+   * nav = pelkkä tunnus · nav-horizontal = merkki + nimi vierekkäin ·
+   * footer = iso tunnus.
+   *
+   * "nav-horizontal" vaatii tekstittömän merkin (`BRAND_MARK_PLAIN`). Ilman sitä
+   * se palautuu pelkkään tunnukseen, koska nykyisessä kuvassa nimi on jo sisällä
+   * eikä sitä pidä toistaa vieressä.
+   */
   variant?: "nav" | "nav-horizontal" | "footer";
   className?: string;
   linked?: boolean;
   priority?: boolean;
   /** Large hero nav logo — shrinks when user scrolls */
   expanded?: boolean;
-  /** Vaakaversion nimen sävy (hero-tilassa vaalea). */
+  /** Vaakatunnuksen nimen sävy (hero-tilassa vaalea). */
   tone?: "dark" | "light";
 };
 
@@ -24,11 +31,10 @@ export function Logo({
   expanded = false,
   tone = "dark",
 }: Props) {
+  const horizontal = variant === "nav-horizontal" && BRAND_MARK_PLAIN !== null;
   let content: React.ReactNode;
 
-  if (variant === "nav-horizontal") {
-    // Merkki + ladottu nimi: skaalautuu tarkasti navin korkeuteen ja käyttää
-    // sivuston omaa Cormorant-fonttia. Nimi piiloutuu mobiilissa (pelkkä merkki).
+  if (horizontal) {
     const markClass = expanded ? "h-14 w-14 sm:h-16 sm:w-16" : "h-11 w-11 sm:h-12 sm:w-12";
     content = (
       <span className={`inline-flex items-center gap-3 ${className}`}>
@@ -36,7 +42,7 @@ export function Logo({
           className={`relative inline-flex shrink-0 transition-all duration-300 ease-out-expo ${markClass}`}
         >
           <Image
-            src={BRAND_LOGO}
+            src={BRAND_MARK_PLAIN as string}
             alt=""
             fill
             priority={priority}
