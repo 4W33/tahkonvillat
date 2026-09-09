@@ -69,12 +69,14 @@ Kopioi `.env.example` → `.env.local`. **`.env.local` ei mene gitiin.**
 | `npm test` | vitest (puhdas logiikka: iCal, kausihinnat, viestimerge, CMS-avaimet) |
 | `node scripts/evidence.mjs <skenaario>` | Playwright-todisteruutukaappaukset dev-palvelinta vasten → `docs/superpowers/evidence/` |
 | `node scripts/check-airbnb-coverage.mjs` | vertaa Airbnb-profiilin listaukset sivuston mappaukseen |
+| `node scripts/admin-guide-pdf.mjs` | rakentaa asiakkaan sisällönhallintaoppaan PDF:ksi (vaatii käynnissä olevan palvelimen) |
 
 ## Admin
 
 `/admin/login` → Etusivu-kuvat · Sivuston tekstit (esikatselu-iframe) · Kohteet · Kalenteri · Airbnb-kalenterit (iCal) · Hinnat (perushinta + kaudet) · Varausehdotukset · Yhteydenotot.
 
 - Asiakkaan ohje: [ADMIN-GUIDE.md](ADMIN-GUIDE.md) (mitä voi ja ei voi muokata)
+- Asiakkaalle jaettava opas: [docs/Tahkon-Villat-sisallonhallintaopas.pdf](docs/Tahkon-Villat-sisallonhallintaopas.pdf) — rakennetaan `scripts/admin-guide-pdf.mjs`:llä, lähde `docs/admin-guide-source.html`
 - Julkaisu: [DEPLOY.md](DEPLOY.md) · pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md)
 
 ## Kansiorakenne

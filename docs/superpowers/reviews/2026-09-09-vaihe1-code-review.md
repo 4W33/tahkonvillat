@@ -9,6 +9,10 @@ puhtaissa moduuleissa testien takana (42 vitest-testiä), API-reitit validoivat 
 admin-istunnon, julkinen kalenteri ei koskaan näytä päiviä vapaina virhetilanteessa. Ei kriittisiä eikä
 korkeita löydöksiä.
 
+> **Jälkikirjaus 2026-09-09:** katselmuksen jälkeen löytyi vielä tuotantoestäjä (yksityisten
+> blobien luku autentikoimatta) ja logon nimen kaksoiskirjoitus navissa. Molemmat korjattu
+> commiteissa `95761d2` ja `2a8dac7`. Ks. WORKDESK.
+
 ## Löydökset
 
 ### CRITICAL

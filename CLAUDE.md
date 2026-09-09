@@ -25,3 +25,6 @@
 - Kaikki julkiset napit: `rounded-lg` (0.875 rem). Ei pill-nappeja.
 - Tekstit: `getSiteMessages` mergeää oletukset + ylikirjoituksen (`merge-messages.ts`). Uusi avain lisätään AINA molempiin `messages/fi.json` ja `messages/en.json`.
 - Kalenteri: iCal-linkit adminissa (`data/ical-sources.json`), haku 3 h välimuistilla. Virhetilanteessa EI näytetä päiviä vapaina.
+- Tallennustasot: `src/lib/storage/access-policy.ts` on ainoa paikka, joka päättää onko blob public vai private. Älä anna access-tasoa kutsukohtaisesti — luku ja kirjoitus eriytyisivät taas.
+- Logon vaakaversio (merkki + nimi vieressä) kytkeytyy päälle vasta kun tekstitön merkki on paikallaan: `public/images/logo-mark-plain.png` + `markPlainAvailable: true` site.configissa.
+- Asiakasopas: `node scripts/admin-guide-pdf.mjs` (dev-palvelin käynnissä) → `docs/Tahkon-Villat-sisallonhallintaopas.pdf`. Älä kirjoita oppaaseen ominaisuuksia, joita adminissa ei ole.
