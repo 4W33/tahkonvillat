@@ -102,10 +102,11 @@ export function AdminIcalSources() {
         <h2 className="text-base font-semibold text-slate-900">Näin kopioit linkin Airbnbstä</h2>
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-600">
           <li>
-            Airbnb → Kalenteri → valitse kohde → <strong>Saatavuus</strong>
+            Airbnb → Kalenteri → valitse kohde → <strong>Varattavuus</strong>
           </li>
           <li>
-            Kohta <strong>Yhdistä kalenterit</strong> → <strong>Yhdistä toiseen sivustoon</strong>
+            Kohta <strong>Yhdistä kalenterit</strong> →{" "}
+            <strong>Yhdistä toiseen verkkosivustoon</strong>
           </li>
           <li>
             Kopioi Airbnbn kalenterilinkki (päättyy <code>.ics?s=…</code>) ja liitä alle

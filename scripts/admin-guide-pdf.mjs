@@ -203,8 +203,8 @@ function buildHtml() {
   <h3>Näin kopioit linkin Airbnbstä</h3>
   <ol>
     <li>Kirjaudu Airbnbhen ja avaa <strong>Kalenteri</strong>.</li>
-    <li>Valitse kohde ja avaa <strong>Saatavuus</strong>.</li>
-    <li>Etsi kohta <strong>Yhdistä kalenterit</strong> ja valitse <strong>Yhdistä toiseen sivustoon</strong>.</li>
+    <li>Valitse kohde ja avaa <strong>Varattavuus</strong>.</li>
+    <li>Etsi kohta <strong>Yhdistä kalenterit</strong> ja valitse <strong>Yhdistä toiseen verkkosivustoon</strong>.</li>
     <li>Kopioi Airbnbn antama kalenterilinkki. Se päättyy <code>.ics</code> ja sisältää pitkän tunnisteen.</li>
     <li>Liitä linkki tähän näkymään oikean kohteen kenttään ja paina <strong>Testaa</strong>.</li>
     <li>Kun testi kertoo montako varausta linkistä löytyi, paina <strong>Tallenna linkit</strong>.</li>

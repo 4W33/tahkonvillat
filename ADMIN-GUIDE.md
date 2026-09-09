@@ -32,7 +32,7 @@ Manuaalinen saatavuus — lisää, muokkaa ja poista varauslohkoja. Airbnbstä t
 Perushinta (€/yö) per kohde + **kaudet**: ajanjakso (alku–loppu), hinta €/yö ja valinnainen nimi (FI/EN), esim. 12.9.–30.9. → 250 €. Kaudet eivät saa olla päällekkäin. Sivulla näkyy pienin tuleva hinta "alkaen"-hintana ja kausitaulukko villasivulla. Lopullinen hinta vahvistetaan aina tiedustelussa.
 
 ### Airbnb-kalenterit
-Liitä jokaiselle villalle/yksikölle Airbnbn iCal-vientilinkki (Airbnb → Kalenteri → Saatavuus → Yhdistä kalenterit → Yhdistä toiseen sivustoon → kopioi linkki). **Testaa**-nappi kertoo, toimiiko linkki. Sivuston Saatavuus-kalenteri päivittyy noin 3 tunnin välein. Käsin lisätyt Kalenteri-varaukset näkyvät myös.
+Liitä jokaiselle villalle/yksikölle Airbnbn iCal-vientilinkki (Airbnb → Kalenteri → valitse kohde → Varattavuus → Yhdistä kalenterit → Yhdistä toiseen verkkosivustoon → kopioi linkki). **Testaa**-nappi kertoo, toimiiko linkki. Sivuston Saatavuus-kalenteri päivittyy noin 3 tunnin välein. Käsin lisätyt Kalenteri-varaukset näkyvät myös.
 
 ### Varausehdotukset & Yhteydenotot
 Lomakkeiden viestit. Varausehdotuksesta voi luoda kalenterivarauksen.

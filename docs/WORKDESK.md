@@ -47,7 +47,7 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - 2026-09-09 Tallennustasot yhdessä tiedostossa (`access-policy.ts`), testi estää eriytymisen.
 
 ## Odottaa asiakkaalta / Valtterilta
-- [ ] **Airbnb iCal -linkit ×6** (Puolukka, Karpalo, Teituli A/B/8A/8B). Ohje PDF-oppaan luvussa 5. Asiakas voi liittää ne itse adminiin.
+- [ ] **Airbnb iCal -linkit ×6** (Puolukka, Karpalo, Teituli A/B/8A/8B). Asiakkaalle oma ohje: `docs/Tahkon-Villat-Airbnb-kalenteriohje.pdf`. Asiakas hakee linkit itse — **emme pyydä Airbnb-tunnuksia**.
 - [ ] **Logon tekstitön merkki** → `public/images/logo-mark-plain.png`, sitten `markPlainAvailable: true` site.configiin. Lisäksi uusi Nanobanana-viimeistelty tunnus jos tulee.
 - [ ] **Resend**: API-avain (`.env.local` + Vercel) ja tahkonvillat.fi SPF/DKIM Domainhotellin DNS:ään.
 - [ ] **Vercel-projektin avaaminen** Valtterin tilillä (402 = pysäytetty).
