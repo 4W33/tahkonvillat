@@ -49,6 +49,7 @@ export default async function ApartmentsPage({
   return (
     <main>
       <PageHeader
+        cmsKey="apartments"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

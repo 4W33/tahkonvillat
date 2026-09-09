@@ -31,7 +31,7 @@ export async function TrustStrip() {
   ];
 
   return (
-    <section className="bg-[#F7F2EA] py-20 sm:py-28">
+    <section data-cms="home.trust" className="bg-[#F7F2EA] py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <p className="eyebrow">{t("eyebrow")}</p>

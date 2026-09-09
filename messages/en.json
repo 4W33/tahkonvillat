@@ -165,7 +165,9 @@
       },
       "calendar": {
         "title": "Availability",
-        "hint": "Booked dates are updated manually — not synced from Airbnb. The calendar is read-only; send an inquiry to confirm your dates.",
+        "syncHint": "Booked dates sync from Airbnb roughly every 3 hours. Always confirm availability with an inquiry.",
+        "unavailable": "Availability could not be loaded right now. Please ask about free dates with an inquiry.",
+        "unitLabel": "Unit",
         "prevMonth": "Previous month",
         "nextMonth": "Next month",
         "legendFree": "Available",
@@ -389,7 +391,10 @@
   },
   "pricing": {
     "fromPerNight": "from {price} € / night",
-    "disclaimer": "Guide price. Final rate is always confirmed on inquiry."
+    "perNight": "{price} € / night",
+    "disclaimer": "Guide price. Final rate is always confirmed on inquiry.",
+    "seasonsTitle": "Seasonal prices",
+    "otherTimes": "Other dates"
   },
   "reviews": {
     "title": "Guest experiences",

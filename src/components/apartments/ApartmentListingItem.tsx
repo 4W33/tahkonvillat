@@ -26,15 +26,17 @@ export async function ApartmentListingItem({ apartment, locale }: Props) {
       id={apartment.id}
       className="card-interactive scroll-mt-24 overflow-hidden"
     >
-      <div className="grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.45fr)]">
-        <div className="relative p-4 sm:p-5 md:min-h-[300px]">
+      {/* minmax(0,…) myös mobiilissa: muuten sarake venyy pikkukuvarivin (overflow-x) leveyteen
+          ja kuva + tekstit leikkautuvat kortin ulkopuolelle. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.45fr)]">
+        <div className="relative min-w-0 p-4 sm:p-5 md:min-h-[300px]">
           <span className="absolute left-7 top-7 z-20 rounded-full bg-white/85 px-3 py-1 font-sans text-sm font-medium text-ink backdrop-blur-sm">
             {t(`locations.${apartment.location}`)}
           </span>
           <VillaGallery images={gallery} alt={alt} variant="card" />
         </div>
 
-        <div className="flex flex-col p-5 sm:p-6 md:p-8">
+        <div className="flex min-w-0 flex-col p-5 sm:p-6 md:p-8">
           <h2 className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-[2rem]">
             {apartment.name[locale]}
           </h2>

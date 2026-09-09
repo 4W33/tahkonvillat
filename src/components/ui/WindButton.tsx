@@ -9,13 +9,17 @@ type Props = {
   href: Href;
   children: React.ReactNode;
   variant?: "light" | "dark";
+  className?: string;
 };
 
-export function WindButton({ href, children, variant = "light" }: Props) {
+export function WindButton({ href, children, variant = "light", className = "" }: Props) {
   const isLight = variant === "light";
 
   return (
-    <Link href={href} className={`wind-btn ${isLight ? "wind-btn-light" : "wind-btn-dark"}`}>
+    <Link
+      href={href}
+      className={`wind-btn ${isLight ? "wind-btn-light" : "wind-btn-dark"} ${className}`.trim()}
+    >
       {/* Plant icon 1 — right side, big */}
       <span className="wind-icon wind-icon-1" aria-hidden>
         <svg viewBox="0 0 26.3 65.33" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

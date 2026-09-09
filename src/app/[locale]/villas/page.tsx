@@ -8,6 +8,9 @@ import { getPageHeaderImage } from "@/lib/page-header-images";
 import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
+/** Kausihinnat vanhenevat ajan myötä → uudelleenvalidoi 3 h välein. */
+export const revalidate = 10800;
+
 type Props = {
   params: { locale: string };
 };
@@ -34,6 +37,7 @@ export default async function VillasPage({ params: { locale } }: Props) {
   return (
     <main className="bg-[#F7F2EA]">
       <PageHeader
+        cmsKey="villas"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

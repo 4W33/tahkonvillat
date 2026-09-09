@@ -46,9 +46,8 @@ export function Magnetic({ children, className = "", strength = 0.32 }: Props) {
   return (
     <span
       ref={ref}
-      className={className}
+      className={className || "inline-block"}
       style={{
-        display: "inline-block",
         transition: "transform 0.45s cubic-bezier(0.16,1,0.3,1)",
         willChange: "transform",
       }}

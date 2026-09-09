@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Cursor } from "@/components/motion/Cursor";
+import { CmsPreviewBridge } from "@/components/cms/CmsPreviewBridge";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { getSiteUrl } from "@/lib/seo";
 import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
@@ -93,6 +94,7 @@ export default async function LocaleLayout({
       >
         <OrganizationJsonLd locale={locale} />
         <Cursor />
+        <CmsPreviewBridge />
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>
             <SiteShell>{children}</SiteShell>

@@ -20,21 +20,24 @@ function normalizeContact(entry: Record<string, unknown>): StoredContact {
     topic: entry.topic as StoredContact["topic"],
     message: String(entry.message ?? ""),
     locale: String(entry.locale ?? "fi"),
+    notified: typeof entry.notified === "boolean" ? entry.notified : null,
   };
 }
 
-export async function appendContact(payload: ContactPayload): Promise<StoredContact> {
-  const entry: StoredContact = {
+export function buildContactEntry(payload: ContactPayload): StoredContact {
+  return {
     ...payload,
     id: `cnt-${Date.now()}`,
     createdAt: new Date().toISOString(),
     read: false,
+    notified: null,
   };
+}
 
+export async function appendContact(entry: StoredContact): Promise<StoredContact> {
   const existing = await readContacts();
   existing.unshift(entry);
   await writeStoreJson(CONTACTS_PATH, existing, { access: "private" });
-
   return entry;
 }
 

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { appendInquiry } from "@/lib/data/inquiry-store";
-import { sendInquiryNotification } from "@/lib/email/send";
+import { appendInquiry, buildInquiryEntry } from "@/lib/data/inquiry-store";
+import { sendInquiryNotification, toNotifiedFlag } from "@/lib/email/send";
 import type { InquiryPayload } from "@/types/inquiry";
 
 function isValidPayload(body: unknown): body is InquiryPayload {
@@ -33,13 +33,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid inquiry data" }, { status: 400 });
     }
 
-    const entry = await appendInquiry(body);
+    const entry = buildInquiryEntry(body);
 
+    let notified: boolean | null = null;
     try {
-      await sendInquiryNotification(entry);
+      notified = toNotifiedFlag(await sendInquiryNotification(entry));
     } catch (error) {
       console.error("Inquiry email failed:", error);
+      notified = false;
     }
+
+    await appendInquiry({ ...entry, notified });
 
     return NextResponse.json({ ok: true });
   } catch {

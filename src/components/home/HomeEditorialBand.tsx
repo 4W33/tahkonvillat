@@ -10,7 +10,7 @@ export async function HomeEditorialBand() {
   const editorialImage = t("image");
 
   return (
-    <section className="relative min-h-[80vh] overflow-hidden bg-neutral-900 text-paper">
+    <section data-cms="home.editorial" className="relative min-h-[80vh] overflow-hidden bg-neutral-900 text-paper">
       <ClipReveal className="absolute inset-0">
         <Image
           src={editorialImage}

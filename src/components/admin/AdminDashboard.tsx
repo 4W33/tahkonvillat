@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
+import type { Availability } from "@/types/availability";
 import type { StoredInquiry } from "@/types/inquiry";
 import type { Reservation } from "@/types/villa";
 import type { AdminProperty } from "@/lib/admin/properties";
+import { AdminIcalSources } from "./AdminIcalSources";
 import { AdminInbox } from "./AdminInbox";
 import { AdminPricing } from "./AdminPricing";
 import { AdminProperties } from "./AdminProperties";
@@ -18,6 +20,7 @@ type AdminView =
   | "home"
   | "content"
   | "calendar"
+  | "ical"
   | "properties"
   | "pricing"
   | "inquiries"
@@ -75,6 +78,7 @@ export function AdminDashboard({ properties }: Props) {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [icalBookings, setIcalBookings] = useState<Record<string, Availability>>({});
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(
     properties[0]?.id || "",
@@ -107,6 +111,15 @@ export function AdminDashboard({ properties }: Props) {
       if (!response.ok) throw new Error("Unauthorized");
       const data = await response.json();
       setReservations(data);
+      // Airbnb-varaukset (iCal, 3 h välimuisti) harmaina palkkeina — virhe ei kaada näkymää.
+      try {
+        const icalRes = await fetch("/api/admin/ical-bookings");
+        if (icalRes.ok) {
+          setIcalBookings((await icalRes.json()) as Record<string, Availability>);
+        }
+      } catch {
+        setIcalBookings({});
+      }
     } catch {
       router.push("/admin/login");
     } finally {
@@ -246,6 +259,7 @@ export function AdminDashboard({ properties }: Props) {
             {(
               [
                 ["calendar", "Kalenteri"],
+                ["ical", "Airbnb-kalenterit"],
                 ["pricing", "Hinnat"],
                 ["inquiries", "Varausehdotukset"],
                 ["contacts", "Yhteydenotot"],
@@ -384,8 +398,10 @@ export function AdminDashboard({ properties }: Props) {
                   ? "Sivuston tekstit"
                   : view === "properties"
                   ? "Kohteet"
+                  : view === "ical"
+                  ? "Airbnb-kalenterit"
                   : view === "pricing"
-                    ? "Ohjehinnat"
+                    ? "Hinnat"
                     : view === "inquiries"
                       ? "Varausehdotukset"
                       : "Yhteydenotot"}
@@ -424,6 +440,8 @@ export function AdminDashboard({ properties }: Props) {
             <AdminProperties />
           ) : view === "pricing" ? (
             <AdminPricing properties={properties} />
+          ) : view === "ical" ? (
+            <AdminIcalSources />
           ) : view !== "calendar" ? (
             <AdminInbox
               view={view}
@@ -523,6 +541,49 @@ export function AdminDashboard({ properties }: Props) {
                             </button>
                           );
                         })}
+
+                        {Object.values(icalBookings)
+                          .filter(
+                            (a) =>
+                              a.key === property.id ||
+                              a.key.startsWith(`${property.id}:`),
+                          )
+                          .flatMap((a) =>
+                            a.booked
+                              .filter((r) => r.source === "airbnb")
+                              .map((r) => ({ ...r, key: a.key })),
+                          )
+                          .map((r) => {
+                            const span = getBarSpan(
+                              {
+                                id: r.key,
+                                propertySlug: property.id,
+                                guestName: "",
+                                startDate: r.start,
+                                endDate: r.end,
+                              },
+                              days,
+                            );
+                            if (!span) return null;
+                            const unit = r.key.includes(":")
+                              ? r.key.split(":")[1].toUpperCase()
+                              : "";
+                            return (
+                              <div
+                                key={`${r.key}-${r.start}`}
+                                className="absolute bottom-1 z-[1] flex h-4 items-center overflow-hidden rounded bg-slate-300 px-1.5 text-[10px] font-medium text-slate-700"
+                                style={{
+                                  left: span.start * DAY_WIDTH + 2,
+                                  width: span.span * DAY_WIDTH - 4,
+                                }}
+                                title={`Airbnb${unit ? ` · ${unit}` : ""} · ${r.start} → ${r.end}`}
+                              >
+                                <span className="truncate">
+                                  Airbnb{unit ? ` ${unit}` : ""}
+                                </span>
+                              </div>
+                            );
+                          })}
                       </div>
                     );
                   })}

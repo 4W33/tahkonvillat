@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { appendContact } from "@/lib/data/contact-store";
-import { sendContactNotification } from "@/lib/email/send";
+import { appendContact, buildContactEntry } from "@/lib/data/contact-store";
+import { sendContactNotification, toNotifiedFlag } from "@/lib/email/send";
 import type { ContactPayload } from "@/types/contact";
 
 function isValidPayload(body: unknown): body is ContactPayload {
@@ -29,13 +29,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid contact data" }, { status: 400 });
     }
 
-    const entry = await appendContact(body);
+    const entry = buildContactEntry(body);
 
+    // Lähetetään ensin, tallennetaan sitten tila mukaan — viesti säilyy inboxissa
+    // vaikka sähköposti epäonnistuisi, ja admin näkee epäonnistumisen.
+    let notified: boolean | null = null;
     try {
-      await sendContactNotification(entry);
+      notified = toNotifiedFlag(await sendContactNotification(entry));
     } catch (error) {
       console.error("Contact email failed:", error);
+      notified = false;
     }
+
+    await appendContact({ ...entry, notified });
 
     return NextResponse.json({ ok: true });
   } catch {

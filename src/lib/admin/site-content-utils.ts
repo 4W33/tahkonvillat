@@ -73,3 +73,14 @@ export const SECTION_PREVIEW: Record<string, string> = {
   checkout: "/lahtopaivan-ohjeet",
   privacy: "/tietosuoja",
 };
+
+/** Englanninkieliset polut (next-intl:n lokalisoidut pathnamet, ks. revalidate-site.ts). */
+export const SECTION_PREVIEW_EN: Record<string, string> = {
+  home: "/",
+  villas: "/villas",
+  apartments: "/apartments",
+  contact: "/contact",
+  faq: "/faq",
+  checkout: "/checkout-instructions",
+  privacy: "/privacy",
+};

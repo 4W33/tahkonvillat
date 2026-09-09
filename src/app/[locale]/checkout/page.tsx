@@ -52,6 +52,7 @@ export default async function CheckoutPage({ params: { locale } }: Props) {
   return (
     <main>
       <PageHeader
+        cmsKey="checkout"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

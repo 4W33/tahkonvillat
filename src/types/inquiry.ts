@@ -15,4 +15,6 @@ export type StoredInquiry = InquiryPayload & {
   id: string;
   createdAt: string;
   read: boolean;
+  /** Sähköposti-ilmoitus: true lähetetty · false epäonnistui · null ei konfiguroitu. */
+  notified?: boolean | null;
 };
