@@ -52,7 +52,8 @@ Kopioi `.env.example` → `.env.local`. **`.env.local` ei mene gitiin.**
 | `ADMIN_SESSION_TOKEN` | kyllä (tuotanto) | pitkä satunnainen merkkijono, ei kehityksen oletusarvo |
 | `NEXT_PUBLIC_SITE_URL` | tuotanto | esim. `https://tahkonvillat.fi` |
 | `BLOB_READ_WRITE_TOKEN` | tuotanto | Vercel Blob — ilman tätä admin-tallennukset kaatuvat |
-| `RESEND_API_KEY`, `EMAIL_FROM` | ei | lomakeilmoitukset sähköpostiin |
+| `RESEND_API_KEY`, `EMAIL_FROM` | ei | lomakeilmoitukset sähköpostiin (EMAIL_FROM vaatii verifioidun domainin) |
+| `EMAIL_TO` | ei | ilmoitusten vastaanottaja (oletus `site.config.ts` contact.email) |
 
 ## Skriptit
 

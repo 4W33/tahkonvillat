@@ -24,21 +24,24 @@ function normalizeInquiry(entry: Record<string, unknown>): StoredInquiry {
     guests: Number(entry.guests ?? 0),
     message: String(entry.message ?? ""),
     locale: String(entry.locale ?? "fi"),
+    notified: typeof entry.notified === "boolean" ? entry.notified : null,
   };
 }
 
-export async function appendInquiry(payload: InquiryPayload): Promise<StoredInquiry> {
-  const entry: StoredInquiry = {
+export function buildInquiryEntry(payload: InquiryPayload): StoredInquiry {
+  return {
     ...payload,
     id: `inq-${Date.now()}`,
     createdAt: new Date().toISOString(),
     read: false,
+    notified: null,
   };
+}
 
+export async function appendInquiry(entry: StoredInquiry): Promise<StoredInquiry> {
   const existing = await readInquiries();
   existing.unshift(entry);
   await writeStoreJson(INQUIRIES_PATH, existing, { access: "private" });
-
   return entry;
 }
 

@@ -22,6 +22,19 @@ const TOPIC_LABELS: Record<StoredContact["topic"], string> = {
   general: "Yleinen",
 };
 
+/** Näkyy vain kun lähetystä yritettiin ja se epäonnistui (ei kun sähköpostia ei ole konfiguroitu). */
+function NotifyFailedBadge({ notified }: { notified?: boolean | null }) {
+  if (notified !== false) return null;
+  return (
+    <span
+      className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-amber-800"
+      title="Sähköposti-ilmoitusta ei saatu lähetettyä — viesti on tallessa tässä"
+    >
+      Ilmoitus epäonnistui
+    </span>
+  );
+}
+
 type Props = {
   view: View;
   onCreateReservation?: (inquiry: StoredInquiry) => void;
@@ -103,6 +116,7 @@ export function AdminInbox({ view, onCreateReservation }: Props) {
                       Uusi
                     </span>
                   )}
+                  <NotifyFailedBadge notified={item.notified} />
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
                   {item.name} ·{" "}
@@ -173,6 +187,7 @@ export function AdminInbox({ view, onCreateReservation }: Props) {
                     Uusi
                   </span>
                 )}
+                <NotifyFailedBadge notified={item.notified} />
               </p>
               <p className="mt-1 text-sm text-slate-600">
                 <a

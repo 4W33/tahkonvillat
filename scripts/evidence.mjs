@@ -127,6 +127,63 @@ try {
     console.log("✓ testikaudet poistettu");
   }
 
+  if (scenario === "logo") {
+    // Navin vaakalogo: hero-tila, vieritetty tila, md-leveys (768: pelkkä merkki) ja mobiili.
+    const page = await desktop.newPage();
+    await page.goto(BASE);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1200);
+    await page.locator("header").screenshot({ path: file("desktop-hero-nav") });
+    console.log("✓", path.relative(process.cwd(), file("desktop-hero-nav")));
+    await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(600);
+    await page.locator("header").screenshot({ path: file("desktop-scrolled-nav") });
+    console.log("✓", path.relative(process.cwd(), file("desktop-scrolled-nav")));
+    const md = await browser.newContext({ viewport: { width: 768, height: 900 } });
+    const mdPage = await md.newPage();
+    await mdPage.goto(BASE);
+    await mdPage.waitForTimeout(1200);
+    await mdPage.locator("header").screenshot({ path: file("md-nav") });
+    console.log("✓", path.relative(process.cwd(), file("md-nav")));
+    const brand = await mdPage.locator("header a[aria-label] span").last().boundingBox();
+    const nav = await mdPage.locator("header nav").boundingBox();
+    if (brand && nav && brand.x + brand.width > nav.x) {
+      failures += 1;
+      console.log("✗ 768 px: logon nimi menee navilinkkien päälle");
+    } else {
+      console.log("✓ 768 px: logo ja navilinkit eivät limity");
+    }
+    const mPage = await mobile.newPage();
+    await mPage.goto(BASE);
+    await mPage.waitForTimeout(1200);
+    await mPage.locator("header").screenshot({ path: file("mobile-nav") });
+    console.log("✓", path.relative(process.cwd(), file("mobile-nav")));
+  }
+
+  if (scenario === "contact-e2e") {
+    // Lomake ilman RESEND_API_KEY:tä → tallentuu inboxiin, ei "Ilmoitus epäonnistui" -merkkiä.
+    const page = await desktop.newPage();
+    await page.goto(`${BASE}/yhteystiedot`);
+    await page.waitForLoadState("networkidle");
+    const marker = `evidence-${Date.now()}`;
+    await page.locator("#contact-name").fill("Testi Todiste");
+    await page.locator("#contact-email").fill("todiste@example.com");
+    await page.locator("form textarea").first().fill(`Automaattinen testiviesti ${marker}`);
+    await page.locator("form button[type=submit]").first().click();
+    await page.waitForTimeout(3000);
+    await shot(page, "form-sent");
+
+    const admin = await desktop.newPage();
+    await login(admin);
+    await admin.getByRole("button", { name: "Yhteydenotot" }).click();
+    await admin.getByText(marker).waitFor({ timeout: 15000 });
+    const item = admin.locator("li", { hasText: marker }).first();
+    const failed = await item.getByText("Ilmoitus epäonnistui").count();
+    console.log(failed === 0 ? "✓" : "✗", "inbox: viesti tallessa, epäonnistumismerkkiä ei (ei avainta):", failed === 0);
+    if (failed !== 0) failures += 1;
+    await shot(admin, "inbox");
+  }
+
   if (scenario === "villa") {
     for (const [ctx, view] of [
       [desktop, "desktop"],
