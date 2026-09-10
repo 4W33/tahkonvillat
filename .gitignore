@@ -10,3 +10,7 @@ tsconfig.tsbuildinfo
 
 # Kehitysartefaktit
 scripts/airbnb-*.html
+
+# Airbnbn kalenterilinkit ovat salaisia: linkki antaa lukuoikeuden
+# asiakkaan varauskalenteriin. Ei koskaan versionhallintaan.
+data/ical-sources.json

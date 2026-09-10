@@ -1,7 +1,7 @@
 /**
  * Rakentaa asiakkaalle lyhyen ohjeen Airbnbn kalenterilinkkien hakemiseen.
  *
- *   node scripts/airbnb-ical-guide-pdf.mjs [--base http://localhost:3311]
+ *   node scripts/airbnb-ical-guide-pdf.mjs
  *
  * Tarkoitus: asiakas hakee linkit itse eikä meidän tarvitse koskaan pyytää
  * hänen Airbnb-tunnuksiaan. Ohje on erillinen ja lyhyt, jotta sen voi
@@ -15,17 +15,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const args = process.argv.slice(2);
-const opt = (name, fallback) => {
-  const i = args.indexOf(`--${name}`);
-  return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
-};
-const BASE = opt("base", "http://localhost:3311");
-const PASSWORD = process.env.EVIDENCE_ADMIN_PASSWORD ?? "novo-dev-test";
 const OUT_PDF = path.resolve("docs/Tahkon-Villat-Airbnb-kalenteriohje.pdf");
 const TODAY = new Intl.DateTimeFormat("fi-FI", { dateStyle: "long" }).format(new Date());
-
-let adminShot = "";
 
 function buildHtml() {
   return `<!doctype html>
@@ -121,8 +112,7 @@ function buildHtml() {
     <strong>.ics</strong>. Kopioi se kokonaisuudessaan. Tämä on kohteen kalenterilinkki.
   </li>
   <li>
-    Toimita linkki meille tai liitä se itse verkkosivujen ylläpitoon (seuraava sivu).
-    Toista vaiheet 2–5 jokaiselle kohteelle.
+    Lähetä linkki meille sähköpostilla. Toista vaiheet 2–5 jokaiselle kohteelle.
   </li>
 </ol>
 
@@ -154,27 +144,31 @@ function buildHtml() {
 
 <div class="page2"></div>
 
-<h2>Linkin liittäminen verkkosivuille</h2>
+<h2>Linkkien toimittaminen</h2>
 <p>
-  Voit liittää linkit itse. Kirjaudu sivuston ylläpitoon ja valitse vasemmalta
-  <strong>Airbnb-kalenterit</strong>. Jokaisella kohteella on oma kenttänsä.
+  Lähetä linkit sähköpostilla, niin liitämme ne sivustolle puolestanne ja
+  tarkistamme samalla, että kalenteri näyttää oikeat päivät. Älkää lähettäkö
+  niitä avoimissa ryhmissä, koska linkki on henkilökohtainen.
 </p>
-${adminShot ? `<figure><img src="${adminShot}" alt=""><figcaption>Ylläpidon Airbnb-kalenterit-näkymä. Yksi kenttä jokaiselle kohteelle.</figcaption></figure>` : ""}
-<ol class="steps">
-  <li>Liitä kopioimasi linkki oikean kohteen kenttään.</li>
-  <li>Paina <strong>Testaa</strong>. Sivusto kertoo heti, montako varausta linkistä löytyi.</li>
-  <li>Kun kaikki haluamasi linkit on liitetty, paina <strong>Tallenna linkit</strong>.</li>
-</ol>
 <p>
-  Jos et halua tehdä tätä itse, lähetä linkit meille, niin liitämme ne puolestasi.
-  Lähetä ne mieluiten sähköpostilla äläkä julkisessa ryhmässä.
+  Voitte lähettää kaikki kuusi kerralla tai aloittaa yhdellä. Jos haluatte
+  ensin nähdä miltä se näyttää, lähettäkää vaikka Villa Puolukan linkki, niin
+  näytämme tuloksen ennen kuin teette loput.
 </p>
+<div class="card">
+  <p class="label">Myöhemmin</p>
+  <p>
+    Kun sivusto on julkaistu, saatte oman ylläpitotunnuksen. Silloin voitte
+    halutessanne vaihtaa ja lisätä linkkejä itse. Tähän ensimmäiseen kertaan
+    sitä ei tarvita.
+  </p>
+</div>
 
 <h2>Mitä tapahtuu tämän jälkeen</h2>
 <ul>
   <li>Verkkosivujen kohdesivulla näkyy kalenteri, jossa varatut päivät on merkitty varatuiksi.</li>
   <li>Sivusto hakee tiedot Airbnbstä noin kolmen tunnin välein, joten aivan tuore varaus voi näkyä pienellä viiveellä.</li>
-  <li>Muut kuin Airbnbn kautta tulleet varaukset lisätään ylläpidon <strong>Kalenteri</strong>-näkymässä käsin, ja nekin näkyvät sivustolla.</li>
+  <li>Suoraan teiltä varatut päivät kannattaa merkitä estetyiksi Airbnbn kalenterissa heti kun varaus on sovittu. Silloin ne näkyvät varattuina myös verkkosivuilla, eikä kukaan ehdi varata samoja päiviä Airbnbn kautta.</li>
   <li>Jos linkki lakkaa toimimasta, sivusto ei näytä päiviä virheellisesti vapaina vaan kehottaa kysymään saatavuutta.</li>
 </ul>
 
@@ -199,25 +193,6 @@ const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1400, height: 900 } });
 
 try {
-  try {
-    const page = await context.newPage();
-    await page.goto(`${BASE}/admin/login`);
-    await page.fill("#password", PASSWORD);
-    await page.click("button[type=submit]");
-    await page.waitForURL(`${BASE}/admin`, { timeout: 20000 });
-    await page.getByRole("button", { name: "Airbnb-kalenterit" }).click();
-    await page.getByText("Näin kopioit linkin Airbnbstä").waitFor({ timeout: 15000 });
-    await page.waitForTimeout(800);
-    const buffer = await page.screenshot();
-    adminShot = `data:image/png;base64,${buffer.toString("base64")}`;
-    console.log("✓ kuva: ylläpidon näkymä");
-  } catch (error) {
-    console.warn(
-      "! ylläpidon kuvaa ei saatu, ohje rakennetaan ilman sitä:",
-      error instanceof Error ? error.message.split("\n")[0] : error,
-    );
-  }
-
   const guide = await context.newPage();
   await guide.setContent(buildHtml(), { waitUntil: "networkidle" });
   await guide.waitForTimeout(1200);
