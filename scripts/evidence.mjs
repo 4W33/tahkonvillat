@@ -127,6 +127,107 @@ try {
     console.log("✓ testikaudet poistettu");
   }
 
+  if (scenario === "admin-full") {
+    // Kattava adminin savutesti: jokainen näkymä renderöityy, kohde-editorin
+    // tallennukset toimivat, uloskirjautuminen toimii ja suojaus pitää.
+    const page = await desktop.newPage();
+    const errors = [];
+    page.on("console", (m) => {
+      if (m.type() === "error") errors.push(m.text().slice(0, 120));
+    });
+
+    // Suojaus: ilman istuntoa /admin ohjaa kirjautumiseen
+    await page.goto(`${BASE}/admin`);
+    await page.waitForTimeout(1500);
+    const redirected = page.url().includes("/admin/login");
+    console.log(redirected ? "✓" : "✗", "ilman istuntoa /admin → kirjautuminen:", redirected);
+    if (!redirected) failures += 1;
+
+    await login(page);
+
+    const views = [
+      ["Etusivu — kuvat", "Etusivun kuvat"],
+      ["Sivuston tekstit", "Sivuston tekstit"],
+      ["Kohteet", "Kohteet"],
+      ["Kalenteri", "Kohde"],
+      ["Airbnb-kalenterit", "Näin kopioit linkin Airbnbstä"],
+      ["Hinnat", "Perushinta"],
+      ["Varausehdotukset", null],
+      ["Yhteydenotot", null],
+    ];
+    for (const [nappi, teksti] of views) {
+      await page.getByRole("button", { name: nappi, exact: true }).click();
+      await page.waitForTimeout(1600);
+      if (teksti) {
+        const nakyy = await page.getByText(teksti).first().isVisible().catch(() => false);
+        console.log(nakyy ? "✓" : "✗", `näkymä ${nappi}: ${teksti}`);
+        if (!nakyy) failures += 1;
+      } else {
+        console.log("✓", `näkymä ${nappi} avautui`);
+      }
+    }
+
+    // Kohde-editori: tekstien tallennus ja palautus
+    await page.getByRole("button", { name: "Kohteet", exact: true }).click();
+    await page.getByRole("button", { name: "Muokkaa" }).first().click();
+    await page.getByRole("button", { name: "Tekstit", exact: true }).click();
+    const nimi = page.locator("input[type=text]").first();
+    await nimi.waitFor({ state: "visible", timeout: 15000 });
+    const alkuperainen = await nimi.inputValue();
+    await nimi.fill(`${alkuperainen} TESTI`);
+    await page.getByRole("button", { name: /Tallenna tekstit/ }).click();
+    await page.getByText("Tekstit tallennettu.").waitFor({ timeout: 20000 });
+    console.log("✓ kohde-editori: tekstien tallennus");
+    await shot(page, "property-texts-saved");
+    await nimi.fill(alkuperainen);
+    await page.getByRole("button", { name: /Tallenna tekstit/ }).click();
+    await page.getByText("Tekstit tallennettu.").waitFor({ timeout: 20000 });
+    const palautettu = (await nimi.inputValue()) === alkuperainen;
+    console.log(palautettu ? "✓" : "✗", "kohde-editori: nimi palautettu ennalleen");
+    if (!palautettu) failures += 1;
+
+    // Tiedot-välilehti: tallennusnappi on lukittu kunnes jotain muuttuu.
+    await page.getByRole("button", { name: "Tiedot", exact: true }).click();
+    await page.waitForTimeout(1200);
+    const tallennaTiedot = page.getByRole("button", { name: /Tallenna tiedot/ });
+    const lukittuAluksi = await tallennaTiedot.isDisabled();
+    console.log(lukittuAluksi ? "✓" : "✗", "Tallenna tiedot lukittu ilman muutoksia:", lukittuAluksi);
+    if (!lukittuAluksi) failures += 1;
+
+    const luku = page.locator("input[type=number]").first();
+    const lukuAlku = await luku.inputValue();
+    await luku.fill(String(Number(lukuAlku) + 1));
+    await tallennaTiedot.click();
+    await page.getByText("Tiedot tallennettu.").waitFor({ timeout: 20000 });
+    console.log("✓ kohde-editori: tietojen tallennus");
+    await luku.fill(lukuAlku);
+    await tallennaTiedot.click();
+    await page.getByText("Tiedot tallennettu.").waitFor({ timeout: 20000 });
+    console.log("✓ kohde-editori: luku palautettu ennalleen");
+
+    // Kuvat-välilehti ja kuvavalitsin
+    await page.getByRole("button", { name: "Kuvat", exact: true }).click();
+    await page.waitForTimeout(1500);
+    const kuvia = await page.locator("img").count();
+    console.log(kuvia > 0 ? "✓" : "✗", `kohde-editori: galleria renderöityy (${kuvia} kuvaa)`);
+    if (kuvia === 0) failures += 1;
+    await shot(page, "property-images");
+
+    // Uloskirjautuminen
+    await page.getByRole("button", { name: "Kirjaudu ulos" }).first().click();
+    await page.waitForTimeout(2500);
+    const ulos = page.url().includes("/admin/login");
+    console.log(ulos ? "✓" : "✗", "uloskirjautuminen → kirjautumissivu:", ulos);
+    if (!ulos) failures += 1;
+
+    console.log(
+      errors.length === 0 ? "✓" : "✗",
+      `konsolivirheitä: ${errors.length}`,
+      errors.slice(0, 3).join(" | "),
+    );
+    if (errors.length > 0) failures += 1;
+  }
+
   if (scenario === "logo") {
     // Navin vaakalogo: hero-tila, vieritetty tila, md-leveys (768: pelkkä merkki) ja mobiili.
     const page = await desktop.newPage();
