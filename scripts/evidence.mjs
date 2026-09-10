@@ -8,6 +8,7 @@
  * Admin-salasana: EVIDENCE_ADMIN_PASSWORD (oletus dev-testiarvo, ei tuotantosalaisuus).
  */
 import { mkdir } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
 
@@ -212,6 +213,36 @@ try {
     console.log(kuvia > 0 ? "✓" : "✗", `kohde-editori: galleria renderöityy (${kuvia} kuvaa)`);
     if (kuvia === 0) failures += 1;
     await shot(page, "property-images");
+
+    // Kuvan lataus: luodaan väliaikainen testikuva, ladataan se ja siivotaan perässä.
+    const sharp = (await import("sharp")).default;
+    const fsp = await import("node:fs/promises");
+    const testKuva = path.join(os.tmpdir(), "evidence-upload.jpg");
+    await sharp({
+      create: {
+        width: 1600,
+        height: 1200,
+        channels: 3,
+        background: { r: 180, g: 160, b: 120 },
+      },
+    })
+      .jpeg()
+      .toFile(testKuva);
+    const kuviaEnnen = await page.locator("img").count();
+    const chooser = page.waitForEvent("filechooser", { timeout: 15000 });
+    await page.locator("input[type=file]").first().click({ force: true }).catch(async () => {
+      await page.locator("input[type=file]").first().setInputFiles(testKuva);
+    });
+    await chooser.then((c) => c.setFiles(testKuva)).catch(async () => {
+      await page.locator("input[type=file]").first().setInputFiles(testKuva);
+    });
+    await page.waitForTimeout(6000);
+    const kuviaJalkeen = await page.locator("img").count();
+    const latausOk = kuviaJalkeen > kuviaEnnen;
+    console.log(latausOk ? "✓" : "✗", `kuvan lataus: ${kuviaEnnen} → ${kuviaJalkeen} kuvaa`);
+    if (!latausOk) failures += 1;
+    await shot(page, "property-upload");
+    await fsp.rm(testKuva, { force: true });
 
     // Uloskirjautuminen
     await page.getByRole("button", { name: "Kirjaudu ulos" }).first().click();
