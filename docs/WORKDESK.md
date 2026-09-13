@@ -30,7 +30,14 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - **Yksityiset blobit luettiin autentikoimatta** → admin-tallennukset olisivat kadonneet tuotannossa (`95761d2`)
 - Logon nimi näkyi navissa kahdesti → vaakatunnus vaatii nyt tekstittömän merkin (`2a8dac7`)
 
-## Julkaisutila (todennettu 2026-09-09)
+## Tuotantobugi 13.9.2026 — korjattu
+- Oire: `tahkonvillat-pi.vercel.app` villasivut 404, /villat ja /asunnot tyhjinä. Etusivu toimi.
+- Juurisyy: `data/`-tiedostot eivät olleet mukana Vercelin palvelinfunktioissa (0 tiedostoa .nft.json:ssa). Ajon aikana renderöidyt sivut lukivat tyhjää. Toistettu paikallisesti piilottamalla data/content.
+- Korjaus `5c381fd`: `experimental.outputFileTracingIncludes` data/content/** + data/*.json. Regressiotarkistus `node scripts/check-trace.mjs`.
+- Todennettu tuotannossa: 10 reittiä 200, villakortit ja asunnot näkyvät, mobiilikuva `evidence/2026-09-13-prod-villasivu-mobiili.png`.
+
+## Julkaisutila (todennettu 2026-09-09, päivitetty 13.9.)
+- **Uusi tuotanto-osoite `tahkonvillat-pi.vercel.app`** (vanha `tahkonvillat.vercel.app` yhä 402). Projekti on nyt käynnissä.
 - Vercel-projekti **on olemassa Valtterin tilillä** (`valtteri-s-projects`), kytketty repoon. Push mainiin laukaisee tuotantobuildin automaattisesti. 9.9. build onnistui (`85f98c0`).
 - `tahkonvillat.vercel.app` vastaa **402** → projekti on pysäytetty (maksu tai kuluraja). Mitään ei näy ulospäin.
 - `tahkonvillat.fi` on yhä **tyhjä LiteSpeed-hakemistolistaus** Domainhotellilla, ei Next-sivusto.
@@ -61,6 +68,7 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - Loppukatselmus asiakkaan kanssa + `/delivery-check` → laskutus
 
 ## Kehitysmuistiinpanot
+- **Buildin jälkeen aina** `node scripts/check-trace.mjs` — varmistaa että data/ on funktioissa.
 - Dev: `ADMIN_PASSWORD=novo-dev-test npm run dev -- -p 3311` (paikallinen testisalasana, ei koske `.env.local`).
 - Todisteet: `PLAYWRIGHT_BROWSERS_PATH=%LOCALAPPDATA%\ms-playwright node scripts/evidence.mjs <admin-ical|admin-pricing|pricing-e2e|villa|home|pages|admin-preview|logo|contact-e2e>`
 - Opas: `node scripts/admin-guide-pdf.mjs` (palvelin käynnissä)
