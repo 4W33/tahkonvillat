@@ -6,6 +6,13 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@vercel/blob", "undici"],
+    // Sisältö luetaan Blobista tai sen puuttuessa tiedostosta data/…
+    // dynaamisella polulla, jota Next ei osaa jäljittää. Ilman tätä tiedostot
+    // puuttuvat Vercelin funktioista ja ajon aikana renderöidyt sivut näyttävät
+    // tyhjää ja 404:ää (tuotantobugi 13.9.2026). Tarkistus: scripts/check-trace.mjs
+    outputFileTracingIncludes: {
+      "/**": ["./data/content/**/*", "./data/*.json"],
+    },
   },
   webpack: (config, { dev }) => {
     // OneDrive often corrupts webpack's persistent cache → missing vendor-chunks/*.js
