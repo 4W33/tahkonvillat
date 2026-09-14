@@ -36,6 +36,13 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - Korjaus `5c381fd`: `experimental.outputFileTracingIncludes` data/content/** + data/*.json. Regressiotarkistus `node scripts/check-trace.mjs`.
 - Todennettu tuotannossa: 10 reittiä 200, villakortit ja asunnot näkyvät, mobiilikuva `evidence/2026-09-13-prod-villasivu-mobiili.png`.
 
+## Tallennus korjattu 14.9.2026
+- Löydös: Vercel Blobissa taso on kiinteä per säilö, koodi sekoitti julkista ja yksityistä → puolet tallennuksista olisi kaatunut.
+- Tuotannossa 14.9.: admin 503 (ei konfiguroitu), yhteydenotto- ja tiedustelulomake 500.
+- Korjaus `8af5cf4`: yksi yksityinen säilö, kuvat reitin /api/media kautta (vain kohteiden kuvat sallittu), Blob tunnistetaan myös BLOB_STORE_ID:stä, sisältö palaa repon oletukseen Blob-häiriössä.
+- Todennettu: 61 testiä, next start rikkinäisellä Blobilla (sivut 200, 5 läpäisyyritystä 404), admin-full 21/21, tuotanto 200 + kuvareitin suojaus 404.
+- **Odottaa Valtteria** (sähköposti 14.9. klo 13.31): yksityinen Blob-säilö, ADMIN_PASSWORD, ADMIN_SESSION_TOKEN, NEXT_PUBLIC_SITE_URL, Redeploy. Sen jälkeen: kirjaudu, tallenna yksi teksti ja hinta, lähetä testilomake, tarkista että säilyvät.
+
 ## Julkaisutila (todennettu 2026-09-09, päivitetty 13.9.)
 - **Uusi tuotanto-osoite `tahkonvillat-pi.vercel.app`** (vanha `tahkonvillat.vercel.app` yhä 402). Projekti on nyt käynnissä.
 - Vercel-projekti **on olemassa Valtterin tilillä** (`valtteri-s-projects`), kytketty repoon. Push mainiin laukaisee tuotantobuildin automaattisesti. 9.9. build onnistui (`85f98c0`).
