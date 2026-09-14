@@ -1,32 +1,47 @@
 export type StorageAccess = "public" | "private";
 
 /**
- * Yksi totuuslähde sille, mikä tallennus on julkinen ja mikä yksityinen.
+ * Kaikki tallennukset ovat yksityisiä.
  *
- * Aiemmin kirjoituspuoli päätti tason kutsukohtaisesti eikä lukupuoli tiennyt
- * siitä mitään: yksityiset blobit kirjoitettiin oikein, mutta luettiin
- * autentikoimattomalla fetchillä, joka epäonnistuu. Kun luku ja kirjoitus
- * lukevat saman politiikan, ne eivät voi enää olla eri mieltä.
+ * Vercel Blobissa taso on kiinteä koko säilölle: säilö on joko julkinen tai
+ * yksityinen, eikä samaan säilöön voi kirjoittaa molempia (docs: vercel-blob/
+ * using-blob-sdk, 9/2026). Aiemmin sisältö kirjoitettiin julkisena ja
+ * lomakeviestit yksityisinä samaan säilöön, jolloin puolet tallennuksista
+ * olisi kaatunut tuotannossa kumman tason tahansa valitsi.
  *
- * Yksityisiä ovat kaikki tallennukset, joissa on henkilötietoja tai salaisuuksia:
- * lomakeviestit (nimi, sähköposti, puhelin), varaukset (vieraan nimi) ja
- * Airbnbn iCal-osoitteet (salaisia linkkejä).
+ * Yksi yksityinen säilö: sisältö luetaan palvelimella get()-kutsulla, ja kuvat
+ * näytetään sivuston oman reitin /api/media/… kautta. Mikään asiakkaan tieto ei
+ * voi päätyä julkiseen osoitteeseen väärän luokittelun takia.
+ *
+ * Funktio on säilytetty, jotta luku, kirjoitus ja seed-skripti kysyvät tason
+ * samasta paikasta.
  */
-const PRIVATE_PATHS: ReadonlySet<string> = new Set([
+export function storageAccess(_relativePath: string): StorageAccess {
+  return "private";
+}
+
+export function isPrivateStore(relativePath: string): boolean {
+  return storageAccess(relativePath) === "private";
+}
+
+/**
+ * Tallennukset, joiden lukuvirhe EI saa palata hiljaa repon vanhaan tiedostoon:
+ * lomakeviestit, varaukset ja iCal-linkit. Niissä vanha data näyttäisi
+ * ajantasaiselta ja tuoreet viestit katoaisivat näkyvistä.
+ *
+ * Kaikki muu (sivuston sisältö, tekstit, hinnat, kuvalista) palaa virheessä repon
+ * mukana tulevaan oletukseen, jotta julkinen sivusto pysyy pystyssä vaikka
+ * Blob-säilössä olisi häiriö.
+ *
+ * Tämä on eri asia kuin tallennustaso: taso on nyt aina "private".
+ */
+const FAIL_LOUD_PATHS: ReadonlySet<string> = new Set([
   "data/contacts.json",
   "data/inquiries.json",
   "data/reservations.json",
   "data/ical-sources.json",
 ]);
 
-function normalize(relativePath: string): string {
-  return relativePath.replace(/^\/+/, "");
-}
-
-export function storageAccess(relativePath: string): StorageAccess {
-  return PRIVATE_PATHS.has(normalize(relativePath)) ? "private" : "public";
-}
-
-export function isPrivateStore(relativePath: string): boolean {
-  return storageAccess(relativePath) === "private";
+export function failLoudOnReadError(relativePath: string): boolean {
+  return FAIL_LOUD_PATHS.has(relativePath.replace(/^\/+/, ""));
 }

@@ -4,9 +4,10 @@ import { getBlobClient } from "@/lib/storage/blob-client";
 import {
   assertWritableStorage,
   blobMediaPath,
-  isBlobMediaUrl,
   isBlobStorageEnabled,
   isLocalMediaPath,
+  mediaPathnameFromUrl,
+  mediaRouteUrl,
 } from "@/lib/storage/config";
 
 const MEDIA_ROOT = path.join(process.cwd(), "public", "images", "properties");
@@ -21,6 +22,11 @@ export async function ensureLocalMediaDir(mediaDir: string): Promise<string> {
   return dir;
 }
 
+/**
+ * Tallentaa kuvan. Tuotannossa kuva menee yksityiseen Blob-säilöön ja sen osoite
+ * on sivuston oma reitti /api/media/… (ks. app/api/media/[...path]/route.ts).
+ * Kehityksessä kuva kirjoitetaan public/images/properties/-kansioon.
+ */
 export async function saveMediaFile(
   mediaDir: string,
   filename: string,
@@ -31,13 +37,13 @@ export async function saveMediaFile(
   if (isBlobStorageEnabled()) {
     const pathname = blobMediaPath(mediaDir, filename);
     const { put } = await getBlobClient();
-    const blob = await put(pathname, buffer, {
-      access: "public",
+    await put(pathname, buffer, {
+      access: "private",
       contentType: "image/webp",
       addRandomSuffix: false,
       allowOverwrite: true,
     });
-    return blob.url;
+    return mediaRouteUrl(pathname);
   }
 
   const dir = await ensureLocalMediaDir(mediaDir);
@@ -46,10 +52,11 @@ export async function saveMediaFile(
 }
 
 export async function deleteMediaUrl(url: string): Promise<void> {
-  if (isBlobMediaUrl(url)) {
+  const pathname = mediaPathnameFromUrl(url);
+  if (pathname || url.includes(".blob.vercel-storage.com/")) {
     try {
       const { del } = await getBlobClient();
-      await del(url);
+      await del(pathname ?? url);
     } catch {
       // ignore missing blobs
     }

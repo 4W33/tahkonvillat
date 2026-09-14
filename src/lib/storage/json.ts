@@ -1,6 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { storageAccess } from "@/lib/storage/access-policy";
+import {
+  failLoudOnReadError,
+  storageAccess,
+  type StorageAccess,
+} from "@/lib/storage/access-policy";
 import { getBlobClient } from "@/lib/storage/blob-client";
 import {
   assertWritableStorage,
@@ -39,16 +43,18 @@ function isNotFound(error: unknown): boolean {
 /**
  * Yksityinen blob vaatii autentikoinnin: `head()` + tavallinen `fetch(downloadUrl)`
  * ei riitä, vaan sisältö luetaan `get(pathname, { access: "private" })` -kutsulla,
- * joka käyttää BLOB_READ_WRITE_TOKENia.
+ * joka käyttää BLOB_READ_WRITE_TOKENia tai Vercelin OIDC-tunnistetta. useCache: false
+ * yksityisille lukee aina tuoreimman version (CDN voisi muuten palauttaa
+ * minuutin vanhan version heti tallennuksen jälkeen).
  */
 async function readBlobJson<T>(
   relativePath: string,
-  access: "public" | "private",
+  access: StorageAccess,
 ): Promise<T | null> {
   const pathname = blobJsonPath(relativePath);
   const { get } = await getBlobClient();
 
-  const result = await get(pathname, { access, useCache: access === "public" });
+  const result = await get(pathname, { access, useCache: false });
   if (!result || result.statusCode !== 200 || !result.stream) return null;
 
   return (await new Response(result.stream).json()) as T;
@@ -57,7 +63,7 @@ async function readBlobJson<T>(
 async function writeBlobJson(
   relativePath: string,
   data: unknown,
-  access: "public" | "private",
+  access: StorageAccess,
 ): Promise<void> {
   const pathname = blobJsonPath(relativePath);
   const { put } = await getBlobClient();
@@ -73,11 +79,14 @@ async function writeBlobJson(
 /**
  * Lukee tallennuksen Blobista (tuotanto) tai paikallisesta `data/`-kansiosta (kehitys).
  *
- * Julkinen sisältö: jos blobia ei ole, palataan repon mukana tulevaan oletukseen.
- * Yksityinen sisältö (lomakeviestit, varaukset, iCal-linkit): puuttuva blob
- * tarkoittaa "ei vielä mitään tallennettua" ja palataan paikalliseen tiedostoon,
- * mutta MUU virhe heitetään eteenpäin. Muuten hakuvirhe näyttäisi hiljaa repoon
- * committoidun vanhan datan ikään kuin se olisi ajantasainen.
+ * Puuttuva blob tarkoittaa "ei vielä mitään tallennettua": palataan repon
+ * mukana tulevaan tiedostoon.
+ *
+ * Muu lukuvirhe (verkko, tunnistautuminen):
+ * - sivuston sisältö, tekstit ja hinnat palaavat repon oletukseen, jotta julkinen
+ *   sivu pysyy pystyssä
+ * - lomakeviestit, varaukset ja iCal-linkit heittävät virheen, koska vanha data
+ *   näyttäisi ajantasaiselta (ks. failLoudOnReadError)
  */
 export async function readStoreJson<T>(relativePath: string): Promise<T | null> {
   if (isBlobStorageEnabled()) {
@@ -86,7 +95,7 @@ export async function readStoreJson<T>(relativePath: string): Promise<T | null> 
       const remote = await readBlobJson<T>(relativePath, access);
       if (remote !== null) return remote;
     } catch (error) {
-      if (access === "private" && !isNotFound(error)) {
+      if (failLoudOnReadError(relativePath) && !isNotFound(error)) {
         throw new Error(
           `Tallennuksen luku epäonnistui (${relativePath}): ${
             error instanceof Error ? error.message : String(error)
@@ -118,9 +127,8 @@ export async function deleteStoreJson(relativePath: string): Promise<void> {
   if (!isBlobStorageEnabled()) return;
 
   try {
-    const { head, del } = await getBlobClient();
-    const meta = await head(blobJsonPath(relativePath));
-    await del(meta.url);
+    const { del } = await getBlobClient();
+    await del(blobJsonPath(relativePath));
   } catch {
     // ignore missing blobs
   }

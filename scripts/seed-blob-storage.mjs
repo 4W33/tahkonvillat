@@ -16,26 +16,17 @@ const contentDir = path.join(dataDir, "content");
 
 const PREFIX = "store";
 
-// PIDÄ SYNKASSA src/lib/storage/access-policy.ts kanssa.
-// Testi src/lib/storage/access-policy.test.ts hajoaa, jos listat eriytyvät.
-const PRIVATE_PATHS = new Set([
-  "data/contacts.json",
-  "data/inquiries.json",
-  "data/reservations.json",
-  "data/ical-sources.json",
-]);
-
+// Yksi yksityinen säilö: kaikki kirjoitetaan yksityisenä (ks. src/lib/storage/access-policy.ts).
 const JSON_FILES = [
   "data/pricing.json",
   "data/site-images.json",
   "data/reservations.json",
   "data/inquiries.json",
   "data/contacts.json",
-  "data/ical-sources.json",
 ];
 
-function accessFor(relativePath) {
-  return PRIVATE_PATHS.has(relativePath) ? "private" : "public";
+function accessFor() {
+  return "private";
 }
 
 async function uploadJson(relativePath, access = accessFor(relativePath)) {
@@ -70,14 +61,14 @@ async function uploadContentFiles() {
   }
 
   for (const name of files.filter((f) => f.endsWith(".json"))) {
-    await uploadJson(`data/content/${name}`, "public");
+    await uploadJson(`data/content/${name}`);
   }
 
   const messagesDir = path.join(contentDir, "messages");
   try {
     const messageFiles = await fs.readdir(messagesDir);
     for (const name of messageFiles.filter((f) => f.endsWith(".json"))) {
-      await uploadJson(`data/content/messages/${name}`, "public");
+      await uploadJson(`data/content/messages/${name}`);
     }
   } catch {
     console.log("– no data/content/messages directory");
@@ -100,52 +91,6 @@ async function walkFiles(dir, baseDir = dir) {
   return files;
 }
 
-async function uploadPropertyImages() {
-  const imagesRoot = path.join(root, "public", "images", "properties");
-
-  try {
-    await fs.access(imagesRoot);
-  } catch {
-    console.log("\n– no public/images/properties (run npm run content:import first)");
-    return;
-  }
-
-  const files = await walkFiles(imagesRoot);
-  const imageFiles = files.filter((file) =>
-    /\.(jpe?g|png|webp|avif)$/i.test(file),
-  );
-
-  if (!imageFiles.length) {
-    console.log("\n– no property images to upload");
-    return;
-  }
-
-  console.log(`\nUploading ${imageFiles.length} property images…`);
-
-  for (const relative of imageFiles) {
-    const file = path.join(imagesRoot, relative);
-    const buffer = await fs.readFile(file);
-    const pathname = `media/properties/${relative.replace(/\\/g, "/")}`;
-    const ext = path.extname(relative).toLowerCase();
-    const contentType =
-      ext === ".png"
-        ? "image/png"
-        : ext === ".webp"
-          ? "image/webp"
-          : ext === ".avif"
-            ? "image/avif"
-            : "image/jpeg";
-
-    const blob = await put(pathname, buffer, {
-      access: "public",
-      contentType,
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
-    console.log(`✓ ${pathname} → ${blob.url}`);
-  }
-}
-
 async function main() {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     console.error("Set BLOB_READ_WRITE_TOKEN before running this script.");
@@ -159,7 +104,8 @@ async function main() {
   }
 
   await uploadContentFiles();
-  await uploadPropertyImages();
+  // Repon kuvat (public/images/properties) tarjoillaan staattisesti deployn mukana,
+  // joten niitä ei ladata Blobiin. Adminissa ladatut uudet kuvat menevät Blobiin itse.
 
   console.log(
     "\nDone. Production reads use Blob when available; git files remain fallback.",

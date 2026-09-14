@@ -89,7 +89,7 @@ export async function DELETE(request: Request, { params }: RouteContext) {
 
     for (const src of paths) {
       if (
-        isBlobMediaUrl(src) ||
+        (isBlobMediaUrl(src) && src.includes(`/properties/${ref.mediaDir}/`)) ||
         (isLocalMediaPath(src) &&
           src.includes(`/images/properties/${ref.mediaDir}/`))
       ) {

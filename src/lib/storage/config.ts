@@ -1,5 +1,11 @@
+/**
+ * Blob on käytössä, jos jompikumpi tunnistautumistapa on saatavilla:
+ * staattinen BLOB_READ_WRITE_TOKEN (lisätään kun säilö luodaan projektille)
+ * tai BLOB_STORE_ID (lisätään kun olemassa oleva säilö yhdistetään projektiin;
+ * SDK hakee silloin VERCEL_OIDC_TOKENin itse).
+ */
 export function isBlobStorageEnabled(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 export function isProductionDeploy(): boolean {
@@ -26,7 +32,7 @@ export function assertProductionSecrets(): void {
 export function assertWritableStorage(): void {
   if (isProductionDeploy() && !isBlobStorageEnabled()) {
     throw new Error(
-      "BLOB_READ_WRITE_TOKEN is required for admin writes on Vercel. Enable Blob storage and add the token to environment variables.",
+      "Blob-tallennus puuttuu: luo Vercel-projektiin yksityinen (Private) Blob-säilö. Ilman sitä adminin tallennukset ja lomakkeet eivät toimi tuotannossa.",
     );
   }
 }
@@ -41,8 +47,35 @@ export function blobMediaPath(mediaDir: string, filename: string): string {
   return `media/properties/${mediaDir}/${filename}`;
 }
 
+/**
+ * Kuvat ovat yksityisessä säilössä, joten niillä ei ole julkista osoitetta.
+ * Ne näytetään sivuston oman reitin kautta: /api/media/properties/<kohde>/<tiedosto>.
+ */
+export const MEDIA_ROUTE_PREFIX = "/api/media/";
+
+export function mediaRouteUrl(pathname: string): string {
+  return `${MEDIA_ROUTE_PREFIX}${pathname.replace(/^media\//, "")}`;
+}
+
+export function mediaPathnameFromUrl(url: string): string | null {
+  if (!url.startsWith(MEDIA_ROUTE_PREFIX)) return null;
+  return `media/${url.slice(MEDIA_ROUTE_PREFIX.length)}`;
+}
+
+/**
+ * Kuvareitti saa lukea VAIN kohteiden kuvia. Samassa yksityisessä säilössä on
+ * lomakeviestejä ja varauksia, joten polku tarkistetaan tiukasti: ei `..`,
+ * ei muita kansioita, vain kuvapäätteet, täsmälleen media/properties/<kohde>/<tiedosto>.
+ */
+export function isAllowedMediaPathname(pathname: string): boolean {
+  if (pathname.includes("..")) return false;
+  return /^media\/properties\/[a-z0-9-]+\/[A-Za-z0-9_-][A-Za-z0-9._-]*\.(webp|jpe?g|png|avif)$/.test(
+    pathname,
+  );
+}
+
 export function isBlobMediaUrl(url: string): boolean {
-  return url.includes(".blob.vercel-storage.com/");
+  return url.startsWith(MEDIA_ROUTE_PREFIX) || url.includes(".blob.vercel-storage.com/");
 }
 
 export function isLocalMediaPath(url: string): boolean {
