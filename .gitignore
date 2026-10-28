@@ -14,3 +14,6 @@ scripts/airbnb-*.html
 # Airbnbn kalenterilinkit ovat salaisia: linkki antaa lukuoikeuden
 # asiakkaan varauskalenteriin. Ei koskaan versionhallintaan.
 data/ical-sources.json
+
+# Airbnb iCal -linkit sisältävät salaiset tokenit
+AIRBNB-LINKIT.md

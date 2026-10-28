@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  createElement,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { createElement, type ReactNode } from "react";
+import { useRevealOnScroll } from "./useRevealOnScroll";
 
 type Props = {
   /** Each entry renders as one masked line that slides up in sequence. */
@@ -19,8 +14,8 @@ type Props = {
 
 /**
  * Editorial line-by-line headline reveal: each line sits in an overflow-hidden
- * track and slides up from below, staggered. Falls back to plain visible text
- * under reduced-motion (handled via the `is-in` class default state).
+ * track and slides up from below, staggered. Above-the-fold headlines render
+ * static (see useRevealOnScroll).
  */
 export function RevealText({
   lines,
@@ -28,45 +23,8 @@ export function RevealText({
   as = "h2",
   delay = 0,
 }: Props) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduce) {
-      setVisible(true);
-      return;
-    }
-    const el = ref.current;
-    if (!el) return;
-
-    let done = false;
-    const reveal = () => {
-      if (done) return;
-      done = true;
-      setVisible(true);
-      cleanup();
-    };
-    const check = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) reveal();
-    };
-    const onScroll = () => requestAnimationFrame(check);
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    const safety = window.setTimeout(reveal, 3000);
-    function cleanup() {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      window.clearTimeout(safety);
-    }
-
-    check();
-    return cleanup;
-  }, []);
+  const { ref, state } = useRevealOnScroll<HTMLElement>(0.9);
+  const hidden = state === "hidden";
 
   return createElement(
     as,
@@ -79,11 +37,13 @@ export function RevealText({
         <span
           style={{
             display: "block",
-            transform: visible ? "translateY(0)" : "translateY(110%)",
-            opacity: visible ? 1 : 0,
+            transform: hidden ? "translateY(110%)" : "translateY(0)",
+            opacity: hidden ? 0 : 1,
             transition:
-              "transform 1s cubic-bezier(0.16,1,0.3,1), opacity 1s cubic-bezier(0.16,1,0.3,1)",
-            transitionDelay: `${delay + i * 90}ms`,
+              state === "shown"
+                ? "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s cubic-bezier(0.16,1,0.3,1)"
+                : undefined,
+            transitionDelay: state === "shown" ? `${Math.min(delay, 200) + i * 60}ms` : undefined,
           }}
         >
           {line}

@@ -16,7 +16,7 @@ export async function Hero() {
 
   return (
     <section data-cms="home.hero" className="relative flex min-h-[95vh] flex-col justify-end overflow-hidden bg-neutral-900 text-paper">
-      <ClipReveal immediate className="absolute inset-0">
+      <ClipReveal className="absolute inset-0">
         <Image
           src={heroImage}
           alt={t("imageAlt")}

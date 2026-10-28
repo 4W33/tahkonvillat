@@ -97,6 +97,7 @@ const config: Config = {
         "fade-up": "fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
         "hero-zoom": "hero-zoom 24s ease-in-out infinite alternate",
+        "loading-bar": "loading-bar 1s ease-in-out infinite",
       },
       keyframes: {
         "fade-up": {
@@ -110,6 +111,10 @@ const config: Config = {
         "hero-zoom": {
           from: { transform: "scale(1)" },
           to: { transform: "scale(1.08)" },
+        },
+        "loading-bar": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(300%)" },
         },
       },
     },
