@@ -20,7 +20,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:dev": "node scripts/dev-db.mjs",
-    "payload": "payload"
+    "payload": "payload",
+    "cms:seed": "payload run scripts/seed-payload.ts",
+    "cms:export-blob": "node scripts/export-blob-store.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.92.1",

@@ -10,15 +10,19 @@ const pg = new EmbeddedPostgres({
   user: "postgres",
   password: "postgres",
   persistent: true,
+  // Windowsin oletus on WIN1252, joka ei hyväksy emojeja (Airbnb-arviot). Neon on UTF8.
+  initdbFlags: ["--encoding=UTF8", "--locale=C"],
 });
 
 if (!existsSync(dir)) await pg.initialise();
 await pg.start();
-try {
-  await pg.createDatabase("tahkonvillat");
-} catch (e) {
-  if (!String(e?.message ?? e).includes("already exists")) throw e;
+const client = pg.getPgClient();
+await client.connect();
+const { rowCount } = await client.query("select 1 from pg_database where datname = 'tahkonvillat'");
+if (!rowCount) {
+  await client.query("create database tahkonvillat encoding 'UTF8' lc_collate 'C' lc_ctype 'C' template template0");
 }
+await client.end();
 console.log("dev-db valmis: 127.0.0.1:54329/tahkonvillat");
 
 const stop = async () => {

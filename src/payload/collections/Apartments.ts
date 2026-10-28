@@ -12,7 +12,7 @@ export const Apartments: CollectionConfig = {
     useAsTitle: "name",
     defaultColumns: ["name", "location", "area", "updatedAt"],
     livePreview: {
-      url: ({ locale }) => `${siteConfig.siteUrl}/${locale?.code === "en" ? "en/apartments" : "asunnot"}`,
+      url: ({ locale, req }) => `${req.origin || siteConfig.siteUrl}/${locale?.code === "en" ? "en/apartments" : "asunnot"}`,
     },
   },
   access: { read: () => true },

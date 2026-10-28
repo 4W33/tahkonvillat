@@ -19,8 +19,8 @@ export const Villas: CollectionConfig = {
     useAsTitle: "name",
     defaultColumns: ["name", "location", "guests", "updatedAt"],
     livePreview: {
-      url: ({ data, locale }) =>
-        `${siteConfig.siteUrl}/${locale?.code === "en" ? "en/villas" : "villat"}/${data?.slug ?? ""}`,
+      url: ({ data, locale, req }) =>
+        `${req.origin || siteConfig.siteUrl}/${locale?.code === "en" ? "en/villas" : "villat"}/${data?.slug ?? ""}`,
     },
   },
   access: { read: () => true },

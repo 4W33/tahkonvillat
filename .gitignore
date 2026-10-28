@@ -20,3 +20,7 @@ AIRBNB-LINKIT.md
 
 # Paikallinen embedded Postgres
 .dev-db/
+
+# Payload: paikalliset kuvat (ilman Blob-tokenia) ja tuotannon export
+/media/
+data/blob-export/
