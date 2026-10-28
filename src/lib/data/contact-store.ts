@@ -11,10 +11,11 @@ export function buildContactEntry(payload: ContactPayload): StoredContact {
   };
 }
 
-export async function appendContact(entry: StoredContact): Promise<StoredContact> {
+/** Palauttaa luodun dokumentin id:n. */
+export async function appendContact(entry: StoredContact): Promise<number | string> {
   const { getPayloadClient } = await import("@/lib/payload");
   const payload = await getPayloadClient();
-  await payload.create({
+  const doc = await payload.create({
     collection: "contacts",
     overrideAccess: true,
     data: {
@@ -28,5 +29,5 @@ export async function appendContact(entry: StoredContact): Promise<StoredContact
       notified: notifiedValue(entry.notified),
     },
   });
-  return entry;
+  return doc.id;
 }

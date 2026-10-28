@@ -11,10 +11,11 @@ export function buildInquiryEntry(payload: InquiryPayload): StoredInquiry {
   };
 }
 
-export async function appendInquiry(entry: StoredInquiry): Promise<StoredInquiry> {
+/** Palauttaa luodun dokumentin id:n. */
+export async function appendInquiry(entry: StoredInquiry): Promise<number | string> {
   const { getPayloadClient } = await import("@/lib/payload");
   const payload = await getPayloadClient();
-  await payload.create({
+  const doc = await payload.create({
     collection: "inquiries",
     overrideAccess: true,
     data: {
@@ -32,5 +33,5 @@ export async function appendInquiry(entry: StoredInquiry): Promise<StoredInquiry
       notified: notifiedValue(entry.notified),
     },
   });
-  return entry;
+  return doc.id;
 }

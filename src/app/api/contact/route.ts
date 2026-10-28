@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { appendContact, buildContactEntry } from "@/lib/data/contact-store";
+import { hasValidSender, markNotified } from "@/lib/data/message-guard";
 import { sendContactNotification, toNotifiedFlag } from "@/lib/email/send";
 import type { ContactPayload } from "@/types/contact";
 
@@ -8,16 +9,11 @@ function isValidPayload(body: unknown): body is ContactPayload {
   const data = body as Record<string, unknown>;
 
   return (
-    typeof data.name === "string" &&
-    typeof data.email === "string" &&
-    typeof data.message === "string" &&
+    hasValidSender(data) &&
     typeof data.locale === "string" &&
     (data.topic === "villa" ||
       data.topic === "apartment" ||
-      data.topic === "general") &&
-    data.name.trim().length > 0 &&
-    data.email.includes("@") &&
-    data.message.trim().length > 0
+      data.topic === "general")
   );
 }
 
@@ -31,8 +27,8 @@ export async function POST(request: Request) {
 
     const entry = buildContactEntry(body);
 
-    // Lähetetään ensin, tallennetaan sitten tila mukaan — viesti säilyy inboxissa
-    // vaikka sähköposti epäonnistuisi, ja admin näkee epäonnistumisen.
+    // Tallennetaan ensin: viesti ei katoa, vaikka sähköposti tai tilan päivitys epäonnistuisi.
+    const id = await appendContact(entry);
     let notified: boolean | null = null;
     try {
       notified = toNotifiedFlag(await sendContactNotification(entry));
@@ -41,7 +37,7 @@ export async function POST(request: Request) {
       notified = false;
     }
 
-    await appendContact({ ...entry, notified });
+    await markNotified("contacts", id, notified);
 
     return NextResponse.json({ ok: true });
   } catch {

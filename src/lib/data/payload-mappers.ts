@@ -16,6 +16,12 @@ function text(value: unknown): LocaleText {
   };
 }
 
+/** Nimet ja alt-tekstit: puuttuva englanti → suomi (tyhjä otsikko/aria-label on pahempi). */
+function name(value: unknown): LocaleText {
+  const t = text(value);
+  return { fi: t.fi, en: t.en || t.fi };
+}
+
 function mediaUrl(value: unknown): string {
   const url = (value as { url?: unknown } | null)?.url;
   return typeof url === "string" ? url : "";
@@ -52,7 +58,7 @@ export function toVilla(doc: Doc): Villa {
   const units = Array.isArray(doc.units) && doc.units.length
     ? doc.units.map((u: Doc) => ({
         id: String(u.unitId),
-        name: text(u.name),
+        name: name(u.name),
         guests: num(u.guests) ?? 0,
         bedrooms: num(u.bedrooms) ?? 0,
       }))
@@ -64,8 +70,8 @@ export function toVilla(doc: Doc): Villa {
     bedrooms: num(doc.bedrooms) ?? 0,
     image,
     gallery: gallery(doc.gallery, image),
-    imageAlt: text(doc.imageAlt),
-    name: text(doc.name),
+    imageAlt: name(doc.imageAlt),
+    name: name(doc.name),
     description: text(doc.description),
     longDescription: { fi: paragraphs(long.fi), en: paragraphs(long.en) },
     amenities: (Array.isArray(doc.amenities) ? doc.amenities : []) as AmenityId[],
@@ -84,8 +90,8 @@ export function toApartment(doc: Doc): Apartment {
     location: doc.location as Apartment["location"],
     image,
     gallery: gallery(doc.gallery, image),
-    imageAlt: text(doc.imageAlt),
-    name: text(doc.name),
+    imageAlt: name(doc.imageAlt),
+    name: name(doc.name),
     area: text(doc.area),
     description: description.fi || description.en ? description : undefined,
     guests: num(doc.guests),

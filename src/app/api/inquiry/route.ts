@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { appendInquiry, buildInquiryEntry } from "@/lib/data/inquiry-store";
+import { hasValidSender, markNotified } from "@/lib/data/message-guard";
 import { sendInquiryNotification, toNotifiedFlag } from "@/lib/email/send";
 import type { InquiryPayload } from "@/types/inquiry";
 
@@ -10,16 +11,11 @@ function isValidPayload(body: unknown): body is InquiryPayload {
   return (
     typeof data.villaSlug === "string" &&
     typeof data.villaName === "string" &&
-    typeof data.name === "string" &&
-    typeof data.email === "string" &&
+    hasValidSender(data) &&
     typeof data.checkIn === "string" &&
     typeof data.checkOut === "string" &&
     typeof data.guests === "number" &&
-    typeof data.message === "string" &&
     typeof data.locale === "string" &&
-    data.name.trim().length > 0 &&
-    data.email.includes("@") &&
-    data.message.trim().length > 0 &&
     data.guests > 0 &&
     data.checkOut > data.checkIn
   );
@@ -34,7 +30,8 @@ export async function POST(request: Request) {
     }
 
     const entry = buildInquiryEntry(body);
-
+    // Tallennetaan ensin: viesti ei katoa, vaikka sähköposti tai tilan päivitys epäonnistuisi.
+    const id = await appendInquiry(entry);
     let notified: boolean | null = null;
     try {
       notified = toNotifiedFlag(await sendInquiryNotification(entry));
@@ -43,7 +40,7 @@ export async function POST(request: Request) {
       notified = false;
     }
 
-    await appendInquiry({ ...entry, notified });
+    await markNotified("inquiries", id, notified);
 
     return NextResponse.json({ ok: true });
   } catch {

@@ -13,10 +13,12 @@ const context = { disableRevalidate: true };
 
 type Json = Record<string, any>;
 type Text = { fi: string; en: string };
-const stats: Record<string, { created: number; updated: number }> = {};
-const bump = (kind: string, created: boolean) => {
-  stats[kind] ??= { created: 0, updated: 0 };
-  stats[kind][created ? "created" : "updated"] += 1;
+// Julkaisun jälkeen asiakkaan muokkaukset ovat Payloadissa: olemassa olevat kohteet päivitetään vain --force-lipulla.
+const FORCE = process.argv.includes("--force");
+const stats: Record<string, { created: number; updated: number; skipped: number }> = {};
+const bump = (kind: string, created: boolean | "skipped") => {
+  stats[kind] ??= { created: 0, updated: 0, skipped: 0 };
+  stats[kind][created === "skipped" ? "skipped" : created ? "created" : "updated"] += 1;
 };
 
 function readJson(rel: string): { data: any; fromExport: boolean } | null {
@@ -95,14 +97,19 @@ async function upsertLocalized(
   key: "slug" | "apartmentId",
   fi: Json,
   toEn: (doc: Json) => Json,
-): Promise<void> {
+): Promise<boolean> {
   const existing = await payload.find({ collection, where: { [key]: { equals: fi[key] } }, limit: 1, depth: 0 });
   const prev = existing.docs[0];
+  if (prev && !FORCE) {
+    bump(collection === "villas" ? "villat" : "asunnot", "skipped");
+    return false;
+  }
   const doc = prev
     ? await payload.update({ collection, id: prev.id, data: fi as never, locale: "fi", context })
     : await payload.create({ collection, data: fi as never, locale: "fi", context });
   await payload.update({ collection, id: doc.id, data: toEn(doc as Json) as never, locale: "en", context });
   bump(collection === "villas" ? "villat" : "asunnot", !prev);
+  return true;
 }
 
 async function seedVillas(payload: Payload, villaSlugs: readonly string[], pricing: Json, sources: Json) {
@@ -118,7 +125,6 @@ async function seedVillas(payload: Payload, villaSlugs: readonly string[], prici
     }
     const units = (record.units ?? []) as Json[];
     const icalUrl = sources[slug]?.url;
-    links += (icalUrl ? 1 : 0) + units.filter((u) => sources[`${slug}:${u.id}`]?.url).length;
     const fi = {
       slug,
       location: record.location,
@@ -145,7 +151,7 @@ async function seedVillas(payload: Payload, villaSlugs: readonly string[], prici
       pricing: pricingData(pricing[slug], "fi"),
       syncedAt: record.syncedAt,
     };
-    await upsertLocalized(payload, "villas", "slug", fi, (doc) => ({
+    const written = await upsertLocalized(payload, "villas", "slug", fi, (doc) => ({
       name: record.name.en,
       description: record.description?.en,
       imageAlt: record.imageAlt?.en,
@@ -153,6 +159,7 @@ async function seedVillas(payload: Payload, villaSlugs: readonly string[], prici
       units: (doc.units ?? []).map((row: Json, i: number) => ({ ...row, name: units[i]?.name?.en })),
       pricing: pricingData(pricing[slug], "en", doc.pricing?.seasons),
     }));
+    if (written) links += (icalUrl ? 1 : 0) + units.filter((u) => sources[`${slug}:${u.id}`]?.url).length;
   }
   console.log(`iCal-linkkejä kytketty: ${links}`);
 }

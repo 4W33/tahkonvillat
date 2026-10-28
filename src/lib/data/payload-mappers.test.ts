@@ -38,9 +38,9 @@ describe("toVilla", () => {
     expect(villa.gallery).toEqual(["/a"]);
   });
 
-  it("puuttuvat käännökset → tyhjä merkkijono, ei undefined", () => {
+  it("puuttuva englanninkielinen nimi → suomi, muut tyhjiä", () => {
     const villa = toVilla({ ...villaDoc, name: { fi: "Vain fi" }, units: undefined, longDescription: null });
-    expect(villa.name).toEqual({ fi: "Vain fi", en: "" });
+    expect(villa.name).toEqual({ fi: "Vain fi", en: "Vain fi" });
     expect(villa.longDescription).toEqual({ fi: [], en: [] });
     expect(villa.units).toBeUndefined();
   });

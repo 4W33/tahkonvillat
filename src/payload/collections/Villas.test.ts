@@ -68,6 +68,22 @@ describe.skipIf(!hasDb)("villas-kokoelma", () => {
     expect(JSON.stringify((error as { data?: unknown }).data)).toMatch(/Kaudet ovat päällekkäin/);
   });
 
+  it("varauksen kalenteriavaimen pitää vastata kalenteria tarkasti", async () => {
+    await payload.create({ collection: "villas", data: villaData() as never, context });
+    const reservation = (calendarKey: string) =>
+      payload.create({
+        collection: "reservations",
+        data: { calendarKey, startDate: "2027-01-10T12:00:00.000Z", endDate: "2027-01-12T12:00:00.000Z" },
+        context,
+      });
+    for (const bad of [SLUG, `${SLUG}:`, `${SLUG}:u1:x`, `${SLUG}:u2`]) {
+      await expect(reservation(bad), bad).rejects.toThrow();
+    }
+    const ok = await reservation(`${SLUG}:u1`);
+    await payload.delete({ collection: "reservations", id: ok.id, context });
+    await cleanup();
+  });
+
   it("http-iCal-linkki hylätään", async () => {
     await expect(
       payload.create({

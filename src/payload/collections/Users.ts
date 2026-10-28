@@ -4,7 +4,7 @@ export const Users: CollectionConfig = {
   slug: "users",
   labels: { singular: "Käyttäjä", plural: "Käyttäjät" },
   admin: { useAsTitle: "email", group: "Asetukset" },
-  auth: true,
+  auth: { cookies: { secure: process.env.NODE_ENV === "production" } },
   access: {
     read: ({ req }) => Boolean(req.user),
     create: ({ req }) => Boolean(req.user),

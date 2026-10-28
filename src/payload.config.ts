@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { resendAdapter } from "@payloadcms/email-resend";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig, type Config } from "payload";
 import sharp from "sharp";
@@ -14,6 +15,10 @@ import { siteTextGlobals } from "./payload/globals/SiteTexts";
 import { fi } from "./payload/i18n/fi";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Sama lähettäjä kuin lomake-ilmoituksissa (src/lib/email/send.ts). Ilman avainta Payload kirjoittaa
+// viestit (myös salasanan palautuslinkin) lokiin, joten tuotannossa RESEND_API_KEY kuuluu asettaa.
+const emailFrom = (process.env.EMAIL_FROM || "Tahkon Villat <onboarding@resend.dev>").match(/^(.*?)\s*<(.+)>$/);
 
 export default buildConfig({
   admin: {
@@ -41,6 +46,13 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL },
   }),
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromName: emailFrom?.[1] || "Tahkon Villat",
+        defaultFromAddress: emailFrom?.[2] || process.env.EMAIL_FROM || "onboarding@resend.dev",
+      })
+    : undefined,
   sharp,
   plugins: [
     // Payload 3.92 tukee vain julkista Blob-säilöä; kuvat ovat sivustolla julkisia muutenkin.

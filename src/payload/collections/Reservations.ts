@@ -35,7 +35,10 @@ export const Reservations: CollectionConfig = {
         });
         const villa = docs[0];
         const units = villa?.units ?? [];
-        const ok = villa && (units.length ? units.some((u) => u.unitId === unitId) : !unitId);
+        // Kalenteri vertaa avainta tarkasti: yksiköllinen villa vaatii muodon slug:unitId, muuten pelkkä slug.
+        const ok = villa && (units.length
+          ? value === `${slug}:${unitId}` && units.some((u) => u.unitId === unitId)
+          : value === slug);
         return ok || "Tuntematon kohde tai yksikkö";
       },
     },
