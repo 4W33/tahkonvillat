@@ -6,6 +6,7 @@ import { buildConfig, type Config } from "payload";
 import sharp from "sharp";
 import { Apartments } from "./payload/collections/Apartments";
 import { Media } from "./payload/collections/Media";
+import { Contacts, Inquiries } from "./payload/collections/Messages";
 import { Reservations } from "./payload/collections/Reservations";
 import { Users } from "./payload/collections/Users";
 import { Villas } from "./payload/collections/Villas";
@@ -20,7 +21,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " · Tahkon Villat" },
   },
-  collections: [Villas, Apartments, Reservations, Media, Users],
+  collections: [Villas, Apartments, Reservations, Contacts, Inquiries, Media, Users],
   globals: siteTextGlobals,
   localization: {
     locales: [

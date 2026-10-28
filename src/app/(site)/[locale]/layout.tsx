@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
-import { CmsPreviewBridge } from "@/components/cms/CmsPreviewBridge";
+import { LivePreviewRefresh } from "@/components/cms/LivePreviewRefresh";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { getSiteUrl } from "@/lib/seo";
 import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
@@ -103,7 +103,7 @@ export default async function LocaleLayout(props: Props) {
         className={`${display.variable} ${sans.variable} ${serif.variable} ${mono.variable} antialiased`}
       >
         <OrganizationJsonLd locale={locale} />
-        <CmsPreviewBridge />
+        <LivePreviewRefresh />
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>
             <SiteShell>{children}</SiteShell>

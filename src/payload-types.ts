@@ -70,6 +70,8 @@ export interface Config {
     villas: Villa;
     apartments: Apartment;
     reservations: Reservation;
+    contacts: Contact;
+    inquiries: Inquiry;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
@@ -82,6 +84,8 @@ export interface Config {
     villas: VillasSelect<false> | VillasSelect<true>;
     apartments: ApartmentsSelect<false> | ApartmentsSelect<true>;
     reservations: ReservationsSelect<false> | ReservationsSelect<true>;
+    contacts: ContactsSelect<false> | ContactsSelect<true>;
+    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -304,6 +308,44 @@ export interface Reservation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts".
+ */
+export interface Contact {
+  id: number;
+  topic?: ('villa' | 'apartment' | 'general') | null;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message?: string | null;
+  locale?: string | null;
+  read?: boolean | null;
+  notified?: ('sent' | 'failed' | 'off') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries".
+ */
+export interface Inquiry {
+  id: number;
+  villaSlug?: string | null;
+  villaName?: string | null;
+  checkIn?: string | null;
+  checkOut?: string | null;
+  guests?: number | null;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message?: string | null;
+  locale?: string | null;
+  read?: boolean | null;
+  notified?: ('sent' | 'failed' | 'off') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -363,6 +405,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reservations';
         value: number | Reservation;
+      } | null)
+    | ({
+        relationTo: 'contacts';
+        value: number | Contact;
+      } | null)
+    | ({
+        relationTo: 'inquiries';
+        value: number | Inquiry;
       } | null)
     | ({
         relationTo: 'media';
@@ -528,6 +578,42 @@ export interface ReservationsSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   guestName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts_select".
+ */
+export interface ContactsSelect<T extends boolean = true> {
+  topic?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  message?: T;
+  locale?: T;
+  read?: T;
+  notified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries_select".
+ */
+export interface InquiriesSelect<T extends boolean = true> {
+  villaSlug?: T;
+  villaName?: T;
+  checkIn?: T;
+  checkOut?: T;
+  guests?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  message?: T;
+  locale?: T;
+  read?: T;
+  notified?: T;
   updatedAt?: T;
   createdAt?: T;
 }
