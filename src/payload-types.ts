@@ -67,8 +67,11 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    villas: Villa;
+    apartments: Apartment;
+    reservations: Reservation;
     media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +79,11 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    villas: VillasSelect<false> | VillasSelect<true>;
+    apartments: ApartmentsSelect<false> | ApartmentsSelect<true>;
+    reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -149,6 +155,155 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "villas".
+ */
+export interface Villa {
+  id: number;
+  /**
+   * Sivun osoite, esim. villa-puolukka. Älä muuta julkaisun jälkeen.
+   */
+  slug: string;
+  location: 'tahko' | 'vantaa' | 'helsinki';
+  name: string;
+  description?: string | null;
+  longDescription?:
+    | {
+        paragraph: string;
+        id?: string | null;
+      }[]
+    | null;
+  guests?: number | null;
+  bedrooms?: number | null;
+  image?: (number | null) | Media;
+  gallery?: (number | Media)[] | null;
+  imageAlt?: string | null;
+  amenities?: ('sauna' | 'wifi' | 'jacuzzi' | 'pets' | 'beds' | 'kitchen' | 'fireplace' | 'parking')[] | null;
+  /**
+   * Airbnb → Kalenteri → Vie kalenteri. Tyhjä = kalenteri ei näy sivulla.
+   */
+  icalUrl?: string | null;
+  units?:
+    | {
+        unitId: string;
+        name?: string | null;
+        guests?: number | null;
+        bedrooms?: number | null;
+        /**
+         * Airbnb → Kalenteri → Vie kalenteri. Tyhjä = kalenteri ei näy sivulla.
+         */
+        icalUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  pricing?: {
+    fromPerNight?: number | null;
+    seasons?:
+      | {
+          start: string;
+          end: string;
+          pricePerNight: number;
+          label?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ratingAverage?: number | null;
+  ratingCount?: number | null;
+  reviews?:
+    | {
+        comment: string;
+        author?: string | null;
+        rating?: number | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  syncedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "apartments".
+ */
+export interface Apartment {
+  id: number;
+  /**
+   * Esim. vantaa-1. Älä muuta julkaisun jälkeen.
+   */
+  apartmentId: string;
+  location: 'vantaa' | 'helsinki';
+  name: string;
+  area?: string | null;
+  description?: string | null;
+  guests?: number | null;
+  bedrooms?: number | null;
+  image?: (number | null) | Media;
+  gallery?: (number | Media)[] | null;
+  imageAlt?: string | null;
+  pricing?: {
+    fromPerNight?: number | null;
+    seasons?:
+      | {
+          start: string;
+          end: string;
+          pricePerNight: number;
+          label?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ratingAverage?: number | null;
+  ratingCount?: number | null;
+  reviews?:
+    | {
+        comment: string;
+        author?: string | null;
+        rating?: number | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  syncedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Airbnb-varaukset tulevat kalenteriin automaattisesti. Tänne vain muualta tulleet varaukset.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations".
+ */
+export interface Reservation {
+  id: number;
+  calendarKey: string;
+  startDate: string;
+  endDate: string;
+  guestName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -175,25 +330,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -217,12 +353,24 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'villas';
+        value: number | Villa;
+      } | null)
+    | ({
+        relationTo: 'apartments';
+        value: number | Apartment;
+      } | null)
+    | ({
+        relationTo: 'reservations';
+        value: number | Reservation;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -268,6 +416,141 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "villas_select".
+ */
+export interface VillasSelect<T extends boolean = true> {
+  slug?: T;
+  location?: T;
+  name?: T;
+  description?: T;
+  longDescription?:
+    | T
+    | {
+        paragraph?: T;
+        id?: T;
+      };
+  guests?: T;
+  bedrooms?: T;
+  image?: T;
+  gallery?: T;
+  imageAlt?: T;
+  amenities?: T;
+  icalUrl?: T;
+  units?:
+    | T
+    | {
+        unitId?: T;
+        name?: T;
+        guests?: T;
+        bedrooms?: T;
+        icalUrl?: T;
+        id?: T;
+      };
+  pricing?:
+    | T
+    | {
+        fromPerNight?: T;
+        seasons?:
+          | T
+          | {
+              start?: T;
+              end?: T;
+              pricePerNight?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  ratingAverage?: T;
+  ratingCount?: T;
+  reviews?:
+    | T
+    | {
+        comment?: T;
+        author?: T;
+        rating?: T;
+        date?: T;
+        id?: T;
+      };
+  syncedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "apartments_select".
+ */
+export interface ApartmentsSelect<T extends boolean = true> {
+  apartmentId?: T;
+  location?: T;
+  name?: T;
+  area?: T;
+  description?: T;
+  guests?: T;
+  bedrooms?: T;
+  image?: T;
+  gallery?: T;
+  imageAlt?: T;
+  pricing?:
+    | T
+    | {
+        fromPerNight?: T;
+        seasons?:
+          | T
+          | {
+              start?: T;
+              end?: T;
+              pricePerNight?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  ratingAverage?: T;
+  ratingCount?: T;
+  reviews?:
+    | T
+    | {
+        comment?: T;
+        author?: T;
+        rating?: T;
+        date?: T;
+        id?: T;
+      };
+  syncedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations_select".
+ */
+export interface ReservationsSelect<T extends boolean = true> {
+  calendarKey?: T;
+  startDate?: T;
+  endDate?: T;
+  guestName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -288,24 +571,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

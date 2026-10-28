@@ -4,8 +4,11 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig, type Config } from "payload";
 import sharp from "sharp";
+import { Apartments } from "./payload/collections/Apartments";
 import { Media } from "./payload/collections/Media";
+import { Reservations } from "./payload/collections/Reservations";
 import { Users } from "./payload/collections/Users";
+import { Villas } from "./payload/collections/Villas";
 import { siteTextGlobals } from "./payload/globals/SiteTexts";
 import { fi } from "./payload/i18n/fi";
 
@@ -17,7 +20,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " · Tahkon Villat" },
   },
-  collections: [Users, Media],
+  collections: [Villas, Apartments, Reservations, Media, Users],
   globals: siteTextGlobals,
   localization: {
     locales: [

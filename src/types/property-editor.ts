@@ -3,16 +3,7 @@ import type { AmenityId } from "@/types/villa";
 
 export type LocaleText = { fi: string; en: string };
 
-export const AMENITY_OPTIONS: { id: AmenityId; label: string }[] = [
-  { id: "sauna", label: "Sauna" },
-  { id: "wifi", label: "Wi-Fi" },
-  { id: "jacuzzi", label: "Poreamme" },
-  { id: "pets", label: "Lemmikit sallittu" },
-  { id: "beds", label: "Vuodevaatteet" },
-  { id: "kitchen", label: "Keittiö" },
-  { id: "fireplace", label: "Takka" },
-  { id: "parking", label: "Pysäköinti" },
-];
+export { AMENITY_OPTIONS } from "@/payload/fields/amenities";
 
 export type PropertyEditorData = {
   id: string;
