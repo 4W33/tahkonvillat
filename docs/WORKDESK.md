@@ -54,10 +54,10 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - Pyyntö: oma CMS kokonaan pois → Payload CMS; layoutin parannus; sivu tuntuu hitaalta.
 - ✓ Nopeus `582c8c9`: oma kursori pois (piilotti järjestelmän hiiren), sisältö näkyy heti (reveal vain näkymän alapuolelle, 500–700 ms), latauspalkki sivusiirtoihin. Mitattu: villasivulla 0 piilotettua sisältöelementtiä latauksessa (ennen 3), kursori-elementit 0. Palvelin vastasi jo ennen 0,2–0,6 s — hitaus oli animaatioissa.
 - ⏳ Payload-suunnitelma: `docs/superpowers/plans/2026-10-28-payload-cms.md`.
-- iCal-linkit saatu 28.10. (Henri Antikainen → Miki), kaikki 5 palauttavat kalenterin (HTTP 200):
-  - ✓ kytketty paikallisesti (`data/ical-sources.json`, gitignore): Puolukka, Karpalo, Teituli 8A
-  - ⚠ Teituli 6A (`1199826378507869635`) ja 6B (`47070530`) ovat Airbnbssä ERI ilmoituksia kuin sivuston "Teituli A" (`47064939`) ja "B" (`47068801`) → kysyttävä asiakkaalta
-  - ✗ Teituli 8B -linkki puuttuu
+- iCal-linkit saatu 28.10. (Henri Antikainen → Miki):
+  - ✓ kaikki 6 sivuston kalenteria kytketty paikallisesti (`data/ical-sources.json`, gitignore): Puolukka, Karpalo, Teituli A (`47064939`), B (`47068801`), 8A, 8B. Todennettu `next start`: jokainen avain `status: ok`, varauksia 5–16 per yksikkö.
+  - Lisäksi saatu Tintintaival 6A (`1199826378507869635`) ja 6B (`47070530`): eri Airbnb-ilmoituksia, joita sivustolla ei ole → kysyttävä, lisätäänkö kohteiksi.
+  - Tuotantoon linkit syötetään Payload-adminissa (Task 5), ei gittiin.
 
 ## Päätökset
 - 2026-09-09 Nykyinen admin + iframe-esikatselu, ei Sanitya (Miki).
