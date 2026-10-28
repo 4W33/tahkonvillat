@@ -17,3 +17,6 @@ data/ical-sources.json
 
 # Airbnb iCal -linkit sisältävät salaiset tokenit
 AIRBNB-LINKIT.md
+
+# Paikallinen embedded Postgres
+.dev-db/
