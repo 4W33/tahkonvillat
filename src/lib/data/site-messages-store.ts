@@ -1,16 +1,9 @@
 import { mergeMessages } from "@/lib/data/merge-messages";
-import { writeStoreJson } from "@/lib/storage/json";
 import { globalToMessages } from "@/payload/fields/messages-to-fields";
 import { SITE_TEXT_SECTIONS, siteTextSlug } from "@/payload/globals/SiteTexts";
 import type fiMessages from "../../../messages/fi.json";
 
 export type SiteMessages = typeof fiMessages;
-
-const MESSAGE_PATH = "data/content/messages";
-
-function messageFile(locale: string): string {
-  return `${MESSAGE_PATH}/${locale}.json`;
-}
 
 async function readBundledMessages(locale: string): Promise<SiteMessages> {
   if (locale === "en") {
@@ -47,22 +40,4 @@ export async function getSiteMessages(locale: string): Promise<SiteMessages> {
     console.error(`[site-texts] ${error instanceof Error ? error.message : String(error)}`);
     return bundled;
   }
-}
-
-export async function writeSiteMessages(
-  locale: string,
-  data: SiteMessages,
-): Promise<void> {
-  await writeStoreJson(messageFile(locale), data);
-}
-
-export async function getAllSiteMessages(): Promise<{
-  fi: SiteMessages;
-  en: SiteMessages;
-}> {
-  const [fi, en] = await Promise.all([
-    getSiteMessages("fi"),
-    getSiteMessages("en"),
-  ]);
-  return { fi, en };
 }

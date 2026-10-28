@@ -45,7 +45,6 @@ export default async function FaqPage(props: Props) {
   return (
     <main>
       <PageHeader
-        cmsKey="faq"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

@@ -26,7 +26,6 @@ export async function PropertyAvailability({ villa, locale }: Props) {
   return (
     <section
       className="mt-12"
-      data-cms="villas.detail.calendar"
       aria-labelledby="availability-title"
     >
       <h2

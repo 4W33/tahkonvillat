@@ -1,8 +1,5 @@
 import { toIsoDay } from "@/payload/fields/pricing";
-import { readStoreJson, writeStoreJson } from "@/lib/storage/json";
 import type { Reservation } from "@/types/villa";
-
-const RESERVATIONS_PATH = "data/reservations.json";
 
 /** propertySlug = kalenteriavain (`slug` tai `slug:unitId`). Kantavirhe HEITTÄÄ. */
 export async function readReservations(): Promise<Reservation[]> {
@@ -16,8 +13,4 @@ export async function readReservations(): Promise<Reservation[]> {
     endDate: toIsoDay(r.endDate) ?? "",
     guestName: r.guestName ?? "",
   }));
-}
-
-export async function writeReservations(reservations: Reservation[]): Promise<void> {
-  await writeStoreJson(RESERVATIONS_PATH, reservations);
 }

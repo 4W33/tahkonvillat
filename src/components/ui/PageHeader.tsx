@@ -10,8 +10,6 @@ type Props = {
   className?: string;
   image?: string;
   imageAlt?: string;
-  /** Adminin esikatselun osioavain, esim. "villas". */
-  cmsKey?: string;
 };
 
 export function PageHeader({
@@ -23,14 +21,12 @@ export function PageHeader({
   className = "",
   image,
   imageAlt = "",
-  cmsKey,
 }: Props) {
   const withImage = Boolean(image);
 
   if (withImage) {
     return (
       <section
-        data-cms={cmsKey}
         className={`relative flex min-h-[40vh] items-end overflow-hidden sm:min-h-[46vh] ${className}`}
       >
         <Image
@@ -69,7 +65,7 @@ export function PageHeader({
   }
 
   return (
-    <section data-cms={cmsKey} className={`page-header ${className}`}>
+    <section className={`page-header ${className}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="eyebrow">{eyebrow}</p>
         <h1 className="section-title mt-2 text-balance">{title}</h1>

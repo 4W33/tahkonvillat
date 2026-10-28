@@ -13,7 +13,7 @@ export async function ApartmentPreviewGrid({ locale }: Props) {
   const apartments = await getApartments();
 
   return (
-    <section data-cms="home.apartments" className="bg-white py-24 sm:py-32">
+    <section className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="mb-14 max-w-3xl">

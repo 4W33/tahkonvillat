@@ -8,13 +8,6 @@ const nextConfig = {
   // Kaksi root layoutia ((site) ja (payload)) → yhteinen 404 tiedostosta app/global-not-found.tsx
   experimental: { globalNotFound: true },
   serverExternalPackages: ["@vercel/blob", "undici"],
-  // Sisältö luetaan Blobista tai sen puuttuessa tiedostosta data/…
-  // dynaamisella polulla, jota Next ei osaa jäljittää. Ilman tätä tiedostot
-  // puuttuvat Vercelin funktioista ja ajon aikana renderöidyt sivut näyttävät
-  // tyhjää ja 404:ää (tuotantobugi 13.9.2026). Tarkistus: scripts/check-trace.mjs
-  outputFileTracingIncludes: {
-    "/**": ["./data/content/**/*", "./data/*.json"],
-  },
   async redirects() {
     return [
       { source: "/apartments", destination: "/asunnot", permanent: true },

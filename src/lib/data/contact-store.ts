@@ -1,29 +1,5 @@
 import { notifiedValue } from "@/payload/collections/Messages";
-import { readStoreJson, writeStoreJson } from "@/lib/storage/json";
 import type { ContactPayload, StoredContact } from "@/types/contact";
-
-const CONTACTS_PATH = "data/contacts.json";
-
-export async function readContacts(): Promise<StoredContact[]> {
-  const data = await readStoreJson<StoredContact[]>(CONTACTS_PATH);
-  if (!Array.isArray(data)) return [];
-  return data.map(normalizeContact);
-}
-
-function normalizeContact(entry: Record<string, unknown>): StoredContact {
-  return {
-    id: String(entry.id ?? ""),
-    createdAt: String(entry.createdAt ?? ""),
-    read: Boolean(entry.read),
-    name: String(entry.name ?? ""),
-    email: String(entry.email ?? ""),
-    phone: entry.phone ? String(entry.phone) : undefined,
-    topic: entry.topic as StoredContact["topic"],
-    message: String(entry.message ?? ""),
-    locale: String(entry.locale ?? "fi"),
-    notified: typeof entry.notified === "boolean" ? entry.notified : null,
-  };
-}
 
 export function buildContactEntry(payload: ContactPayload): StoredContact {
   return {
@@ -53,14 +29,4 @@ export async function appendContact(entry: StoredContact): Promise<StoredContact
     },
   });
   return entry;
-}
-
-export async function markContactRead(id: string): Promise<boolean> {
-  const contacts = await readContacts();
-  const index = contacts.findIndex((c) => c.id === id);
-  if (index === -1) return false;
-
-  contacts[index] = { ...contacts[index], read: true };
-  await writeStoreJson(CONTACTS_PATH, contacts);
-  return true;
 }

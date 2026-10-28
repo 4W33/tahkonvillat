@@ -3,9 +3,8 @@
  *
  *   node scripts/evidence.mjs <skenaario> [--base http://localhost:3311] [--tag before]
  *
- * Skenaariot: admin-ical · admin-pricing · villa · home · pages · admin-preview
+ * Skenaariot: logo · villa · home · pages
  * Kuvat: docs/superpowers/evidence/<pvm>-<skenaario>[-<tag>]-<näkymä>.png
- * Admin-salasana: EVIDENCE_ADMIN_PASSWORD (oletus dev-testiarvo, ei tuotantosalaisuus).
  */
 import { mkdir } from "node:fs/promises";
 import os from "node:os";
@@ -20,7 +19,6 @@ const opt = (name, fallback) => {
 };
 const BASE = opt("base", "http://localhost:3311");
 const TAG = opt("tag", "");
-const PASSWORD = process.env.EVIDENCE_ADMIN_PASSWORD ?? "novo-dev-test";
 const OUT = path.resolve("docs/superpowers/evidence");
 const DATE = new Date().toISOString().slice(0, 10);
 
@@ -34,13 +32,6 @@ async function shot(page, view, options = {}) {
   const target = file(view);
   await page.screenshot({ path: target, fullPage: options.fullPage ?? false });
   console.log("✓", path.relative(process.cwd(), target));
-}
-
-async function login(page) {
-  await page.goto(`${BASE}/admin/login`);
-  await page.fill("#password", PASSWORD);
-  await page.click("button[type=submit]");
-  await page.waitForURL(`${BASE}/admin`, { timeout: 15000 });
 }
 
 async function assertNoHorizontalScroll(page, label) {
@@ -62,203 +53,6 @@ const mobile = await browser.newContext({
 let failures = 0;
 
 try {
-  if (scenario === "admin-ical") {
-    const page = await desktop.newPage();
-    await login(page);
-    await page.getByRole("button", { name: "Airbnb-kalenterit" }).click();
-    await page.getByText("Näin kopioit linkin Airbnbstä").waitFor();
-    await shot(page, "list");
-    const first = page.locator("input[type=url]").first();
-    await first.fill("https://example.com/ei-ole.ics");
-    await page.getByRole("button", { name: "Testaa" }).first().click();
-    await page.getByText("Linkkiä ei voitu lukea").waitFor({ timeout: 20000 });
-    await shot(page, "test-error");
-    console.log("✓ viallinen linkki → virheviesti, ei kaatumista");
-  }
-
-  if (scenario === "admin-pricing") {
-    const page = await desktop.newPage();
-    await login(page);
-    await page.getByRole("button", { name: "Hinnat" }).click();
-    await page.getByText("Perushinta").first().waitFor();
-    await shot(page, "list", { fullPage: true });
-  }
-
-  if (scenario === "pricing-e2e") {
-    // Lisää kausi Puolukalle adminissa → tallenna → villasivu näyttää taulukon → poista kausi.
-    const page = await desktop.newPage();
-    await login(page);
-    await page.getByRole("button", { name: "Hinnat" }).click();
-    await page.getByText("Perushinta").first().waitFor();
-    const card = page.locator("li", { hasText: "Villa Puolukka" }).first();
-    await card.getByRole("button", { name: "+ Lisää kausi" }).click();
-    await card.locator("input[type=date]").nth(0).fill("2026-09-12");
-    await card.locator("input[type=date]").nth(1).fill("2026-09-30");
-    await card.locator("input[type=number]").nth(1).fill("250");
-    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
-    await page.getByText("Hinnat tallennettu.").waitFor({ timeout: 15000 });
-    await shot(page, "admin-saved");
-
-    const pub = await desktop.newPage();
-    await pub.goto(`${BASE}/villat/villa-puolukka`);
-    await pub.getByText("Hinnat kausittain").waitFor({ timeout: 20000 });
-    const price = pub.locator('[data-cms="pricing"]');
-    await price.screenshot({ path: file("public-table") });
-    const from = await price.locator("p").first().innerText();
-    console.log("✓ julkinen sivu:", from.trim(), "+ kausitaulukko");
-    if (!from.includes("250")) {
-      failures += 1;
-      console.log("✗ alkaen-hinnan piti olla 250 (kausi < perushinta 320)");
-    }
-
-    // Päällekkäinen kausi → virhe, ei tallennu
-    await card.getByRole("button", { name: "+ Lisää kausi" }).click();
-    await card.locator("input[type=date]").nth(2).fill("2026-09-20");
-    await card.locator("input[type=date]").nth(3).fill("2026-10-05");
-    await card.locator("input[type=number]").nth(2).fill("300");
-    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
-    await page.getByText(/päällekkäin/).waitFor({ timeout: 10000 });
-    console.log("✓ päällekkäinen kausi hylättiin viestillä");
-
-    // Siivous: poista molemmat kaudet, tallenna
-    await card.getByRole("button", { name: "Poista kausi" }).nth(1).click();
-    await card.getByRole("button", { name: "Poista kausi" }).nth(0).click();
-    await page.getByRole("button", { name: "Tallenna hinnat" }).click();
-    await page.getByText("Hinnat tallennettu.").waitFor({ timeout: 15000 });
-    console.log("✓ testikaudet poistettu");
-  }
-
-  if (scenario === "admin-full") {
-    // Kattava adminin savutesti: jokainen näkymä renderöityy, kohde-editorin
-    // tallennukset toimivat, uloskirjautuminen toimii ja suojaus pitää.
-    const page = await desktop.newPage();
-    const errors = [];
-    page.on("console", (m) => {
-      if (m.type() === "error") errors.push(m.text().slice(0, 120));
-    });
-
-    // Suojaus: ilman istuntoa /admin ohjaa kirjautumiseen
-    await page.goto(`${BASE}/admin`);
-    await page.waitForTimeout(1500);
-    const redirected = page.url().includes("/admin/login");
-    console.log(redirected ? "✓" : "✗", "ilman istuntoa /admin → kirjautuminen:", redirected);
-    if (!redirected) failures += 1;
-
-    await login(page);
-
-    const views = [
-      ["Etusivu — kuvat", "Etusivun kuvat"],
-      ["Sivuston tekstit", "Sivuston tekstit"],
-      ["Kohteet", "Kohteet"],
-      ["Kalenteri", "Kohde"],
-      ["Airbnb-kalenterit", "Näin kopioit linkin Airbnbstä"],
-      ["Hinnat", "Perushinta"],
-      ["Varausehdotukset", null],
-      ["Yhteydenotot", null],
-    ];
-    for (const [nappi, teksti] of views) {
-      await page.getByRole("button", { name: nappi, exact: true }).click();
-      await page.waitForTimeout(1600);
-      if (teksti) {
-        const nakyy = await page.getByText(teksti).first().isVisible().catch(() => false);
-        console.log(nakyy ? "✓" : "✗", `näkymä ${nappi}: ${teksti}`);
-        if (!nakyy) failures += 1;
-      } else {
-        console.log("✓", `näkymä ${nappi} avautui`);
-      }
-    }
-
-    // Kohde-editori: tekstien tallennus ja palautus
-    await page.getByRole("button", { name: "Kohteet", exact: true }).click();
-    await page.getByRole("button", { name: "Muokkaa" }).first().click();
-    await page.getByRole("button", { name: "Tekstit", exact: true }).click();
-    const nimi = page.locator("input[type=text]").first();
-    await nimi.waitFor({ state: "visible", timeout: 15000 });
-    const alkuperainen = await nimi.inputValue();
-    await nimi.fill(`${alkuperainen} TESTI`);
-    await page.getByRole("button", { name: /Tallenna tekstit/ }).click();
-    await page.getByText("Tekstit tallennettu.").waitFor({ timeout: 20000 });
-    console.log("✓ kohde-editori: tekstien tallennus");
-    await shot(page, "property-texts-saved");
-    await nimi.fill(alkuperainen);
-    await page.getByRole("button", { name: /Tallenna tekstit/ }).click();
-    await page.getByText("Tekstit tallennettu.").waitFor({ timeout: 20000 });
-    const palautettu = (await nimi.inputValue()) === alkuperainen;
-    console.log(palautettu ? "✓" : "✗", "kohde-editori: nimi palautettu ennalleen");
-    if (!palautettu) failures += 1;
-
-    // Tiedot-välilehti: tallennusnappi on lukittu kunnes jotain muuttuu.
-    await page.getByRole("button", { name: "Tiedot", exact: true }).click();
-    await page.waitForTimeout(1200);
-    const tallennaTiedot = page.getByRole("button", { name: /Tallenna tiedot/ });
-    const lukittuAluksi = await tallennaTiedot.isDisabled();
-    console.log(lukittuAluksi ? "✓" : "✗", "Tallenna tiedot lukittu ilman muutoksia:", lukittuAluksi);
-    if (!lukittuAluksi) failures += 1;
-
-    const luku = page.locator("input[type=number]").first();
-    const lukuAlku = await luku.inputValue();
-    await luku.fill(String(Number(lukuAlku) + 1));
-    await tallennaTiedot.click();
-    await page.getByText("Tiedot tallennettu.").waitFor({ timeout: 20000 });
-    console.log("✓ kohde-editori: tietojen tallennus");
-    await luku.fill(lukuAlku);
-    await tallennaTiedot.click();
-    await page.getByText("Tiedot tallennettu.").waitFor({ timeout: 20000 });
-    console.log("✓ kohde-editori: luku palautettu ennalleen");
-
-    // Kuvat-välilehti ja kuvavalitsin
-    await page.getByRole("button", { name: "Kuvat", exact: true }).click();
-    await page.waitForTimeout(1500);
-    const kuvia = await page.locator("img").count();
-    console.log(kuvia > 0 ? "✓" : "✗", `kohde-editori: galleria renderöityy (${kuvia} kuvaa)`);
-    if (kuvia === 0) failures += 1;
-    await shot(page, "property-images");
-
-    // Kuvan lataus: luodaan väliaikainen testikuva, ladataan se ja siivotaan perässä.
-    const sharp = (await import("sharp")).default;
-    const fsp = await import("node:fs/promises");
-    const testKuva = path.join(os.tmpdir(), "evidence-upload.jpg");
-    await sharp({
-      create: {
-        width: 1600,
-        height: 1200,
-        channels: 3,
-        background: { r: 180, g: 160, b: 120 },
-      },
-    })
-      .jpeg()
-      .toFile(testKuva);
-    const kuviaEnnen = await page.locator("img").count();
-    const chooser = page.waitForEvent("filechooser", { timeout: 15000 });
-    await page.locator("input[type=file]").first().click({ force: true }).catch(async () => {
-      await page.locator("input[type=file]").first().setInputFiles(testKuva);
-    });
-    await chooser.then((c) => c.setFiles(testKuva)).catch(async () => {
-      await page.locator("input[type=file]").first().setInputFiles(testKuva);
-    });
-    await page.waitForTimeout(6000);
-    const kuviaJalkeen = await page.locator("img").count();
-    const latausOk = kuviaJalkeen > kuviaEnnen;
-    console.log(latausOk ? "✓" : "✗", `kuvan lataus: ${kuviaEnnen} → ${kuviaJalkeen} kuvaa`);
-    if (!latausOk) failures += 1;
-    await shot(page, "property-upload");
-    await fsp.rm(testKuva, { force: true });
-
-    // Uloskirjautuminen
-    await page.getByRole("button", { name: "Kirjaudu ulos" }).first().click();
-    await page.waitForTimeout(2500);
-    const ulos = page.url().includes("/admin/login");
-    console.log(ulos ? "✓" : "✗", "uloskirjautuminen → kirjautumissivu:", ulos);
-    if (!ulos) failures += 1;
-
-    console.log(
-      errors.length === 0 ? "✓" : "✗",
-      `konsolivirheitä: ${errors.length}`,
-      errors.slice(0, 3).join(" | "),
-    );
-    if (errors.length > 0) failures += 1;
-  }
-
   if (scenario === "logo") {
     // Navin vaakalogo: hero-tila, vieritetty tila, md-leveys (768: pelkkä merkki) ja mobiili.
     const page = await desktop.newPage();
@@ -291,31 +85,6 @@ try {
     await mPage.locator("header").screenshot({ path: file("mobile-nav") });
     console.log("✓", path.relative(process.cwd(), file("mobile-nav")));
   }
-
-  if (scenario === "contact-e2e") {
-    // Lomake ilman RESEND_API_KEY:tä → tallentuu inboxiin, ei "Ilmoitus epäonnistui" -merkkiä.
-    const page = await desktop.newPage();
-    await page.goto(`${BASE}/yhteystiedot`);
-    await page.waitForLoadState("networkidle");
-    const marker = `evidence-${Date.now()}`;
-    await page.locator("#contact-name").fill("Testi Todiste");
-    await page.locator("#contact-email").fill("todiste@example.com");
-    await page.locator("form textarea").first().fill(`Automaattinen testiviesti ${marker}`);
-    await page.locator("form button[type=submit]").first().click();
-    await page.waitForTimeout(3000);
-    await shot(page, "form-sent");
-
-    const admin = await desktop.newPage();
-    await login(admin);
-    await admin.getByRole("button", { name: "Yhteydenotot" }).click();
-    await admin.getByText(marker).waitFor({ timeout: 15000 });
-    const item = admin.locator("li", { hasText: marker }).first();
-    const failed = await item.getByText("Ilmoitus epäonnistui").count();
-    console.log(failed === 0 ? "✓" : "✗", "inbox: viesti tallessa, epäonnistumismerkkiä ei (ei avainta):", failed === 0);
-    if (failed !== 0) failures += 1;
-    await shot(admin, "inbox");
-  }
-
   if (scenario === "villa") {
     for (const [ctx, view] of [
       [desktop, "desktop"],
@@ -324,7 +93,7 @@ try {
       const page = await ctx.newPage();
       await page.goto(`${BASE}/villat/villa-puolukka`);
       await page.waitForLoadState("networkidle");
-      const cal = page.locator('[data-cms="villas.detail.calendar"]');
+      const cal = page.locator('section[aria-labelledby="availability-title"]');
       if (await cal.count()) {
         await cal.scrollIntoViewIfNeeded();
         await page.waitForTimeout(800);
@@ -332,11 +101,6 @@ try {
         console.log("✓", path.relative(process.cwd(), file(`${view}-calendar`)));
       } else {
         console.log("ℹ ei kalenteriosiota (ei lähdettä eikä käsivarauksia)");
-      }
-      const price = page.locator('[data-cms="pricing"]');
-      if (await price.count()) {
-        await price.screenshot({ path: file(`${view}-price`) });
-        console.log("✓", path.relative(process.cwd(), file(`${view}-price`)));
       }
       if (!(await assertNoHorizontalScroll(page, `villa ${view}`))) failures += 1;
     }
@@ -385,41 +149,6 @@ try {
       await shot(page, `mobile-${slug}`, { fullPage: true });
       if (!(await assertNoHorizontalScroll(page, `mobile ${p}`))) failures += 1;
     }
-  }
-
-  if (scenario === "admin-preview") {
-    const page = await desktop.newPage();
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await login(page);
-    await page.getByRole("button", { name: "Sivuston tekstit" }).click();
-    await page.locator("iframe[title='Sivuston esikatselu']").waitFor({ timeout: 20000 });
-    // Oletusosio on ensimmäinen avain (metadata) → vaihda Etusivu-osioon
-    await page.getByRole("button", { name: "Etusivu", exact: true }).click();
-    const frame = page.frameLocator("iframe[title='Sivuston esikatselu']");
-    await frame.locator("[data-cms='home.hero']").waitFor({ timeout: 30000 });
-    await page.waitForTimeout(1500);
-
-    // 1) Kentän fokus → iframe korostaa oikean osion
-    await page.locator("input[id='hero.title']").first().focus();
-    await frame.locator("[data-cms-active='1'][data-cms='home.hero']").waitFor({ timeout: 5000 });
-    const label = await frame.locator("[data-cms-active='1']").getAttribute("data-cms-label");
-    console.log("✓ fokus hero.title → korostus:", label);
-    await page.getByText("Muokkaat: Etusivu › Hero").waitFor();
-    await shot(page, "split");
-
-    // 2) Klikkaus iframessa alatunnistetta → editori vaihtaa osioon Alatunniste
-    await frame.locator("[data-cms='footer']").scrollIntoViewIfNeeded();
-    await frame.locator("[data-cms='footer']").click({ position: { x: 20, y: 20 } });
-    await page.getByRole("heading", { level: 2, name: "Alatunniste" }).waitFor({ timeout: 5000 });
-    console.log("✓ klikkaus footer → osio Alatunniste");
-    await shot(page, "click-footer");
-
-    // 3) English → iframe /en?cms=1
-    await page.getByRole("button", { name: "English" }).click();
-    await page.waitForTimeout(500);
-    const src = await page.locator("iframe[title='Sivuston esikatselu']").getAttribute("src");
-    console.log(src === "/en?cms=1" ? "✓" : "✗", "iframe src en:", src);
-    if (src !== "/en?cms=1") failures += 1;
   }
 } catch (error) {
   failures += 1;

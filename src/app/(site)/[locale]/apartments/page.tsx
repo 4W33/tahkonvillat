@@ -59,7 +59,6 @@ export default async function ApartmentsPage(props: Props) {
   return (
     <main>
       <PageHeader
-        cmsKey="apartments"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

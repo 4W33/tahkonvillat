@@ -26,7 +26,7 @@ export async function PropertyPrice({
 
   if (variant === "detail") {
     return (
-      <div className="mt-4 rounded-xl bg-[#FAF7F3] px-5 py-4" data-cms="pricing">
+      <div className="mt-4 rounded-xl bg-[#FAF7F3] px-5 py-4">
         <p className="font-display text-3xl font-semibold text-forest sm:text-3xl">
           {t("fromPerNight", { price: formatted })}
         </p>

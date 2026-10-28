@@ -51,7 +51,6 @@ export default async function PrivacyPage(props: Props) {
   return (
     <main>
       <PageHeader
-        cmsKey="privacy"
         eyebrow={t("eyebrow")}
         title={t("title")}
         subtitle={t("subtitle")}

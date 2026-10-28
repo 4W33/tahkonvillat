@@ -54,7 +54,7 @@ export async function HomeReviews() {
   if (cards.length === 0) return null;
 
   return (
-    <section data-cms="home.homeReviews" className="bg-[#F7F2EA] py-20 sm:py-28">
+    <section className="bg-[#F7F2EA] py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="max-w-2xl">
