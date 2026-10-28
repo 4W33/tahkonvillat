@@ -87,8 +87,38 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fi' | 'en') | ('fi' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'texts-metadata': TextsMetadatum;
+    'texts-common': TextsCommon;
+    'texts-nav': TextsNav;
+    'texts-footer': TextsFooter;
+    'texts-home': TextsHome;
+    'texts-villas': TextsVilla;
+    'texts-apartments': TextsApartment;
+    'texts-contact': TextsContact;
+    'texts-faq': TextsFaq;
+    'texts-checkout': TextsCheckout;
+    'texts-pricing': TextsPricing;
+    'texts-reviews': TextsReview;
+    'texts-privacy': TextsPrivacy;
+    'texts-not-found': TextsNotFound;
+  };
+  globalsSelect: {
+    'texts-metadata': TextsMetadataSelect<false> | TextsMetadataSelect<true>;
+    'texts-common': TextsCommonSelect<false> | TextsCommonSelect<true>;
+    'texts-nav': TextsNavSelect<false> | TextsNavSelect<true>;
+    'texts-footer': TextsFooterSelect<false> | TextsFooterSelect<true>;
+    'texts-home': TextsHomeSelect<false> | TextsHomeSelect<true>;
+    'texts-villas': TextsVillasSelect<false> | TextsVillasSelect<true>;
+    'texts-apartments': TextsApartmentsSelect<false> | TextsApartmentsSelect<true>;
+    'texts-contact': TextsContactSelect<false> | TextsContactSelect<true>;
+    'texts-faq': TextsFaqSelect<false> | TextsFaqSelect<true>;
+    'texts-checkout': TextsCheckoutSelect<false> | TextsCheckoutSelect<true>;
+    'texts-pricing': TextsPricingSelect<false> | TextsPricingSelect<true>;
+    'texts-reviews': TextsReviewsSelect<false> | TextsReviewsSelect<true>;
+    'texts-privacy': TextsPrivacySelect<false> | TextsPrivacySelect<true>;
+    'texts-not-found': TextsNotFoundSelect<false> | TextsNotFoundSelect<true>;
+  };
   locale: 'fi' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -316,6 +346,1222 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-metadata".
+ */
+export interface TextsMetadatum {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-common".
+ */
+export interface TextsCommon {
+  id: number;
+  brand?: string | null;
+  brandShort?: string | null;
+  localeFi?: string | null;
+  localeEn?: string | null;
+  menuOpen?: string | null;
+  menuClose?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-nav".
+ */
+export interface TextsNav {
+  id: number;
+  home?: string | null;
+  villas?: string | null;
+  apartments?: string | null;
+  contact?: string | null;
+  helpMenu?: string | null;
+  faq?: string | null;
+  checkout?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-footer".
+ */
+export interface TextsFooter {
+  id: number;
+  tagline?: string | null;
+  contact?: string | null;
+  rights?: string | null;
+  privacy?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-home".
+ */
+export interface TextsHome {
+  id: number;
+  hero?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    image?: (number | null) | Media;
+    imageAlt?: string | null;
+    cta?: string | null;
+    ctaSecondary?: string | null;
+  };
+  villas?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    meta?: string | null;
+    explore?: string | null;
+    cta?: string | null;
+  };
+  apartments?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    cta?: string | null;
+  };
+  story?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    image?: (number | null) | Media;
+    imageAlt?: string | null;
+    paragraph1?: string | null;
+    paragraph2?: string | null;
+    paragraph3?: string | null;
+  };
+  editorial?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    image?: (number | null) | Media;
+    imageAlt?: string | null;
+    cta?: string | null;
+  };
+  trust?: {
+    eyebrow?: string | null;
+    item1Title?: string | null;
+    item1Text?: string | null;
+    item2Title?: string | null;
+    item2Text?: string | null;
+    item3Title?: string | null;
+    item3Text?: string | null;
+  };
+  cta?: {
+    title?: string | null;
+    subtitle?: string | null;
+    button?: string | null;
+  };
+  stats?: {
+    eyebrow?: string | null;
+    rating?: string | null;
+    reviews?: string | null;
+    homes?: string | null;
+    regions?: string | null;
+  };
+  highlights?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    lakeside?: string | null;
+    slopes?: string | null;
+  };
+  homeReviews?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-villas".
+ */
+export interface TextsVilla {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  cityHint?: string | null;
+  cityHintLink?: string | null;
+  meta?: string | null;
+  explore?: string | null;
+  locations?: {
+    tahko?: string | null;
+    helsinki?: string | null;
+    vantaa?: string | null;
+  };
+  filters?: {
+    label?: string | null;
+    all?: string | null;
+    tahko?: string | null;
+    helsinki?: string | null;
+    vantaa?: string | null;
+  };
+  empty?: {
+    title?: string | null;
+    subtitle?: string | null;
+    cta?: string | null;
+  };
+  detail?: {
+    back?: string | null;
+    mobileCta?: {
+      label?: string | null;
+    };
+    amenitiesTitle?: string | null;
+    unitsTitle?: string | null;
+    unitsSubtitle?: string | null;
+    unitMeta?: string | null;
+    amenities?: {
+      sauna?: string | null;
+      wifi?: string | null;
+      jacuzzi?: string | null;
+      pets?: string | null;
+      beds?: string | null;
+      kitchen?: string | null;
+      fireplace?: string | null;
+      parking?: string | null;
+    };
+    booking?: {
+      title?: string | null;
+      body?: string | null;
+      direct?: string | null;
+      rating?: string | null;
+    };
+    gallery?: {
+      openLightbox?: string | null;
+      lightboxTitle?: string | null;
+      expand?: string | null;
+      close?: string | null;
+      prev?: string | null;
+      next?: string | null;
+    };
+    calendar?: {
+      title?: string | null;
+      syncHint?: string | null;
+      unavailable?: string | null;
+      unitLabel?: string | null;
+      prevMonth?: string | null;
+      nextMonth?: string | null;
+      legendFree?: string | null;
+      legendBooked?: string | null;
+      bookedDay?: string | null;
+      freeDay?: string | null;
+      weekdays?: {
+        mon?: string | null;
+        tue?: string | null;
+        wed?: string | null;
+        thu?: string | null;
+        fri?: string | null;
+        sat?: string | null;
+        sun?: string | null;
+      };
+    };
+    form?: {
+      title?: string | null;
+      subtitle?: string | null;
+      name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+      checkIn?: string | null;
+      checkOut?: string | null;
+      guests?: string | null;
+      message?: string | null;
+      submit?: string | null;
+      sending?: string | null;
+      success?: string | null;
+      error?: string | null;
+      privacyNote?: string | null;
+      privacyLink?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-apartments".
+ */
+export interface TextsApartment {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  reviewCount?: string | null;
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  inquire?: string | null;
+  showReviews?: string | null;
+  hideReviews?: string | null;
+  empty?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  locations?: {
+    vantaa?: string | null;
+    helsinki?: string | null;
+  };
+  filters?: {
+    label?: string | null;
+    all?: string | null;
+    vantaa?: string | null;
+    helsinki?: string | null;
+  };
+  inquiry?: {
+    title?: string | null;
+    subtitle?: string | null;
+    cta?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-contact".
+ */
+export interface TextsContact {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  info?: {
+    title?: string | null;
+    description?: string | null;
+    emailLabel?: string | null;
+    responseLabel?: string | null;
+    response?: string | null;
+    bookingLabel?: string | null;
+    booking?: string | null;
+  };
+  form?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    topic?: string | null;
+    topics?: {
+      general?: string | null;
+      villa?: string | null;
+      apartment?: string | null;
+    };
+    message?: string | null;
+    submit?: string | null;
+    sending?: string | null;
+    success?: string | null;
+    error?: string | null;
+    prefillApartment?: string | null;
+    privacyNote?: string | null;
+    privacyLink?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-faq".
+ */
+export interface TextsFaq {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  items?: {
+    pets?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    bedLinens?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    checkInOut?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    cleaning?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    keys?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    kitchen?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    cancellation?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+    booking?: {
+      question?: string | null;
+      answer?: string | null;
+    };
+  };
+  cta?: {
+    title?: string | null;
+    subtitle?: string | null;
+    button?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-checkout".
+ */
+export interface TextsCheckout {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  checkout?: {
+    title?: string | null;
+    steps?:
+      | {
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cleaning?: {
+    title?: string | null;
+    intro?: string | null;
+    kitchen?: {
+      title?: string | null;
+      steps?:
+        | {
+            value: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    other?: {
+      title?: string | null;
+      steps?:
+        | {
+            value: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    outdoor?: {
+      title?: string | null;
+      steps?:
+        | {
+            value: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    note?: string | null;
+  };
+  cta?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    button?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-pricing".
+ */
+export interface TextsPricing {
+  id: number;
+  fromPerNight?: string | null;
+  perNight?: string | null;
+  disclaimer?: string | null;
+  seasonsTitle?: string | null;
+  otherTimes?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-reviews".
+ */
+export interface TextsReview {
+  id: number;
+  title?: string | null;
+  summary?: string | null;
+  showingSubset?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-privacy".
+ */
+export interface TextsPrivacy {
+  id: number;
+  metadata?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  eyebrow?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  updatedAt?: string | null;
+  sections?: {
+    controller?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    dataCollected?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    purpose?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    legalBasis?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    retention?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    sharing?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    rights?: {
+      title?: string | null;
+      body?: string | null;
+    };
+    contact?: {
+      title?: string | null;
+      body?: string | null;
+    };
+  };
+  createdAt?: string | null;
+}
+/**
+ * Tyhjä kenttä = sivustolla näkyy oletusteksti. Vaihda kieli (FI/EN) yläreunasta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-not-found".
+ */
+export interface TextsNotFound {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  cta?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-metadata_select".
+ */
+export interface TextsMetadataSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-common_select".
+ */
+export interface TextsCommonSelect<T extends boolean = true> {
+  brand?: T;
+  brandShort?: T;
+  localeFi?: T;
+  localeEn?: T;
+  menuOpen?: T;
+  menuClose?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-nav_select".
+ */
+export interface TextsNavSelect<T extends boolean = true> {
+  home?: T;
+  villas?: T;
+  apartments?: T;
+  contact?: T;
+  helpMenu?: T;
+  faq?: T;
+  checkout?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-footer_select".
+ */
+export interface TextsFooterSelect<T extends boolean = true> {
+  tagline?: T;
+  contact?: T;
+  rights?: T;
+  privacy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-home_select".
+ */
+export interface TextsHomeSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+        imageAlt?: T;
+        cta?: T;
+        ctaSecondary?: T;
+      };
+  villas?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        meta?: T;
+        explore?: T;
+        cta?: T;
+      };
+  apartments?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        cta?: T;
+      };
+  story?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        image?: T;
+        imageAlt?: T;
+        paragraph1?: T;
+        paragraph2?: T;
+        paragraph3?: T;
+      };
+  editorial?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+        imageAlt?: T;
+        cta?: T;
+      };
+  trust?:
+    | T
+    | {
+        eyebrow?: T;
+        item1Title?: T;
+        item1Text?: T;
+        item2Title?: T;
+        item2Text?: T;
+        item3Title?: T;
+        item3Text?: T;
+      };
+  cta?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        button?: T;
+      };
+  stats?:
+    | T
+    | {
+        eyebrow?: T;
+        rating?: T;
+        reviews?: T;
+        homes?: T;
+        regions?: T;
+      };
+  highlights?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        lakeside?: T;
+        slopes?: T;
+      };
+  homeReviews?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-villas_select".
+ */
+export interface TextsVillasSelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  cityHint?: T;
+  cityHintLink?: T;
+  meta?: T;
+  explore?: T;
+  locations?:
+    | T
+    | {
+        tahko?: T;
+        helsinki?: T;
+        vantaa?: T;
+      };
+  filters?:
+    | T
+    | {
+        label?: T;
+        all?: T;
+        tahko?: T;
+        helsinki?: T;
+        vantaa?: T;
+      };
+  empty?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        cta?: T;
+      };
+  detail?:
+    | T
+    | {
+        back?: T;
+        mobileCta?:
+          | T
+          | {
+              label?: T;
+            };
+        amenitiesTitle?: T;
+        unitsTitle?: T;
+        unitsSubtitle?: T;
+        unitMeta?: T;
+        amenities?:
+          | T
+          | {
+              sauna?: T;
+              wifi?: T;
+              jacuzzi?: T;
+              pets?: T;
+              beds?: T;
+              kitchen?: T;
+              fireplace?: T;
+              parking?: T;
+            };
+        booking?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              direct?: T;
+              rating?: T;
+            };
+        gallery?:
+          | T
+          | {
+              openLightbox?: T;
+              lightboxTitle?: T;
+              expand?: T;
+              close?: T;
+              prev?: T;
+              next?: T;
+            };
+        calendar?:
+          | T
+          | {
+              title?: T;
+              syncHint?: T;
+              unavailable?: T;
+              unitLabel?: T;
+              prevMonth?: T;
+              nextMonth?: T;
+              legendFree?: T;
+              legendBooked?: T;
+              bookedDay?: T;
+              freeDay?: T;
+              weekdays?:
+                | T
+                | {
+                    mon?: T;
+                    tue?: T;
+                    wed?: T;
+                    thu?: T;
+                    fri?: T;
+                    sat?: T;
+                    sun?: T;
+                  };
+            };
+        form?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              name?: T;
+              email?: T;
+              phone?: T;
+              checkIn?: T;
+              checkOut?: T;
+              guests?: T;
+              message?: T;
+              submit?: T;
+              sending?: T;
+              success?: T;
+              error?: T;
+              privacyNote?: T;
+              privacyLink?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-apartments_select".
+ */
+export interface TextsApartmentsSelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  reviewCount?: T;
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  inquire?: T;
+  showReviews?: T;
+  hideReviews?: T;
+  empty?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  locations?:
+    | T
+    | {
+        vantaa?: T;
+        helsinki?: T;
+      };
+  filters?:
+    | T
+    | {
+        label?: T;
+        all?: T;
+        vantaa?: T;
+        helsinki?: T;
+      };
+  inquiry?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        cta?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-contact_select".
+ */
+export interface TextsContactSelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  info?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        emailLabel?: T;
+        responseLabel?: T;
+        response?: T;
+        bookingLabel?: T;
+        booking?: T;
+      };
+  form?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+        topic?: T;
+        topics?:
+          | T
+          | {
+              general?: T;
+              villa?: T;
+              apartment?: T;
+            };
+        message?: T;
+        submit?: T;
+        sending?: T;
+        success?: T;
+        error?: T;
+        prefillApartment?: T;
+        privacyNote?: T;
+        privacyLink?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-faq_select".
+ */
+export interface TextsFaqSelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  items?:
+    | T
+    | {
+        pets?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        bedLinens?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        checkInOut?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        cleaning?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        keys?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        kitchen?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        cancellation?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+        booking?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        button?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-checkout_select".
+ */
+export interface TextsCheckoutSelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  checkout?:
+    | T
+    | {
+        title?: T;
+        steps?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+      };
+  cleaning?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        kitchen?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    value?: T;
+                    id?: T;
+                  };
+            };
+        other?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    value?: T;
+                    id?: T;
+                  };
+            };
+        outdoor?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    value?: T;
+                    id?: T;
+                  };
+            };
+        note?: T;
+      };
+  cta?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        button?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-pricing_select".
+ */
+export interface TextsPricingSelect<T extends boolean = true> {
+  fromPerNight?: T;
+  perNight?: T;
+  disclaimer?: T;
+  seasonsTitle?: T;
+  otherTimes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-reviews_select".
+ */
+export interface TextsReviewsSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  showingSubset?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-privacy_select".
+ */
+export interface TextsPrivacySelect<T extends boolean = true> {
+  metadata?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  eyebrow?: T;
+  title?: T;
+  subtitle?: T;
+  updatedAt?: T;
+  sections?:
+    | T
+    | {
+        controller?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        dataCollected?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        purpose?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        legalBasis?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        retention?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        sharing?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        rights?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+        contact?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+            };
+      };
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "texts-not-found_select".
+ */
+export interface TextsNotFoundSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  cta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

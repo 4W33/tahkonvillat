@@ -6,6 +6,7 @@ import { buildConfig, type Config } from "payload";
 import sharp from "sharp";
 import { Media } from "./payload/collections/Media";
 import { Users } from "./payload/collections/Users";
+import { siteTextGlobals } from "./payload/globals/SiteTexts";
 import { fi } from "./payload/i18n/fi";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,6 +18,7 @@ export default buildConfig({
     meta: { titleSuffix: " · Tahkon Villat" },
   },
   collections: [Users, Media],
+  globals: siteTextGlobals,
   localization: {
     locales: [
       { code: "fi", label: "Suomi" },

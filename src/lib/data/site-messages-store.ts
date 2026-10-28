@@ -1,5 +1,7 @@
 import { mergeMessages } from "@/lib/data/merge-messages";
-import { readStoreJson, writeStoreJson } from "@/lib/storage/json";
+import { writeStoreJson } from "@/lib/storage/json";
+import { globalToMessages } from "@/payload/fields/messages-to-fields";
+import { SITE_TEXT_SECTIONS, siteTextSlug } from "@/payload/globals/SiteTexts";
 import type fiMessages from "../../../messages/fi.json";
 
 export type SiteMessages = typeof fiMessages;
@@ -18,15 +20,33 @@ async function readBundledMessages(locale: string): Promise<SiteMessages> {
 }
 
 /**
- * Oletusviestit (messages/*.json) + adminin ylikirjoitus syvämergettynä.
- * Ylikirjoitus voi olla vanhempi kuin koodi: uudet avaimet tulevat oletuksista,
- * poistetut avaimet pudotetaan, jolloin validointi ja t() toimivat aina.
+ * Oletusviestit (messages/*.json) + Payloadin site-texts-global syvämergettynä.
+ * Tyhjä kenttä → oletus. Ilman kielifallbackia: tyhjä EN-kenttä ei saa näyttää
+ * suomenkielistä tekstiä. Tietokantavirhe → oletukset (sisältö saa palata).
  */
 export async function getSiteMessages(locale: string): Promise<SiteMessages> {
   const bundled = await readBundledMessages(locale);
-  const stored = await readStoreJson<unknown>(messageFile(locale));
-  if (!stored) return bundled;
-  return mergeMessages(bundled, stored);
+  try {
+    const { getPayloadClient } = await import("@/lib/payload");
+    const payload = await getPayloadClient();
+    const docs = await Promise.all(
+      SITE_TEXT_SECTIONS.map((section) =>
+        payload.findGlobal({
+          slug: siteTextSlug(section) as never,
+          locale: locale as "fi" | "en",
+          fallbackLocale: false,
+          depth: 1,
+        }),
+      ),
+    );
+    const stored = Object.fromEntries(
+      SITE_TEXT_SECTIONS.map((section, i) => [section, globalToMessages(docs[i])]),
+    );
+    return mergeMessages(bundled, stored);
+  } catch (error) {
+    console.error(`[site-texts] ${error instanceof Error ? error.message : String(error)}`);
+    return bundled;
+  }
 }
 
 export async function writeSiteMessages(
