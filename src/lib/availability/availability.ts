@@ -40,9 +40,10 @@ const defaultDeps: AvailabilityDeps = {
   readReservations,
 };
 
-function manualRanges(reservations: Reservation[], propertySlug: string): BookedRange[] {
+/** propertySlug = varauksen kalenteriavain: koko kohde (`slug`) tai yksikkö (`slug:unitId`). */
+function manualRanges(reservations: Reservation[], key: string, propertySlug: string): BookedRange[] {
   return reservations
-    .filter((r) => r.propertySlug === propertySlug)
+    .filter((r) => r.propertySlug === key || r.propertySlug === propertySlug)
     .map((r) => ({ start: r.startDate, end: r.endDate, source: "manual" as const }));
 }
 
@@ -57,11 +58,15 @@ export async function getAvailability(
 ): Promise<Availability> {
   const deps = { ...defaultDeps, ...overrides };
   const { propertySlug } = parseCalendarKey(key);
-  const [sources, reservations] = await Promise.all([
-    deps.readSources(),
-    deps.readReservations(),
-  ]);
-  const manual = manualRanges(reservations, propertySlug);
+  let sources: IcalSourceStore;
+  let reservations: Reservation[];
+  try {
+    [sources, reservations] = await Promise.all([deps.readSources(), deps.readReservations()]);
+  } catch (error) {
+    console.error(`[availability] ${key}: ${error instanceof Error ? error.message : String(error)}`);
+    return { key, booked: [], status: "unavailable" };
+  }
+  const manual = manualRanges(reservations, key, propertySlug);
   const source = sources[key];
 
   if (!source?.url) {

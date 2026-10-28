@@ -59,6 +59,30 @@ describe("getAvailability", () => {
     expect(out.booked).toEqual([{ start: "2026-09-20", end: "2026-09-22", source: "manual" }]);
   });
 
+  it("linkkien luku kaatuu → unavailable, ei 'kaikki vapaana'", async () => {
+    const out = await getAvailability("villa-puolukka", {
+      fetchIcs: async () => ICS,
+      readSources: async () => {
+        throw new Error("db down");
+      },
+      readReservations: async () => reservations,
+    });
+    expect(out.status).toBe("unavailable");
+  });
+
+  it("varaus yksikön avaimella näkyy vain sille yksikölle", async () => {
+    const unitReservations = [
+      { id: "r3", propertySlug: "tahkon-teituli:a", startDate: "2026-12-01", endDate: "2026-12-03", guestName: "z" },
+    ];
+    const deps = {
+      fetchIcs: async () => ICS,
+      readSources: async () => ({}),
+      readReservations: async () => unitReservations,
+    };
+    expect((await getAvailability("tahkon-teituli:a", deps)).booked).toHaveLength(1);
+    expect((await getAvailability("tahkon-teituli:b", deps)).booked).toHaveLength(0);
+  });
+
   it("yksikköavain perii kohteen käsivaraukset", async () => {
     const out = await getAvailability("tahkon-teituli:8b", {
       fetchIcs: async () => ICS,
