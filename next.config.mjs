@@ -1,9 +1,12 @@
+import { withPayload } from "@payloadcms/next/withPayload";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Kaksi root layoutia ((site) ja (payload)) → yhteinen 404 tiedostosta app/global-not-found.tsx
+  experimental: { globalNotFound: true },
   serverExternalPackages: ["@vercel/blob", "undici"],
   // Sisältö luetaan Blobista tai sen puuttuessa tiedostosta data/…
   // dynaamisella polulla, jota Next ei osaa jäljittää. Ilman tätä tiedostot
@@ -39,4 +42,4 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withPayload(withNextIntl(nextConfig));

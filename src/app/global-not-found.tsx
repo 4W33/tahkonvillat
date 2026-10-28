@@ -11,8 +11,8 @@ const wrap: React.CSSProperties = {
 };
 
 /**
- * Root fallback for unmatched top-level routes (renders outside the [locale]
- * segment, so globals.css and the brand fonts are not loaded). Styled inline
+ * Global 404 for unmatched routes (app has two root layouts, (site) and
+ * (payload), so globals.css and the brand fonts are not loaded). Styled inline
  * to stay on-brand regardless. Most 404s render the localized page instead.
  */
 export default function NotFound() {

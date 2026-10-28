@@ -25,11 +25,13 @@
 ## Ratkaisut (Clauden päätökset — Miki voi kumota)
 
 1. **Postgres + Neon** tuotannossa (Vercel Marketplace, asiakkaan Vercel-tilillä). Paikallisesti `embedded-postgres` (oikea Postgres npm-paketista, ei asennusta, ei tiliä).
-2. **Yksi yksityinen Blob-säilö säilyy.** Payloadin blob-adapteri `access: 'private'`, `clientUploads: false` (asiakaslataus kovakoodaa `public`). Seuraus: yksittäisen latauksen raja 4,5 Mt Vercelissä — Media-kokoelma pienentää kuvat (`resizeOptions` 2400 px) mutta raja koskee alkuperäistä tiedostoa.
+2. **Payloadin kuvat JULKISEEN Blob-säilöön** (muutettu 28.10. Task 3:ssa: `@payloadcms/storage-vercel-blob` 3.92.1 tukee vain `access: 'public'`). Kuvat ovat sivustolla julkisia muutenkin; sisältö ja lomakkeet ovat Postgresissa, joten yksityistä säilöä ei enää tarvita, kun vanha data on viety (Task 8). `clientUploads: true` → ei 4,5 Mt rajaa. Tuotannossa: uusi julkinen Blob-säilö projektiin.
 3. **Sivuston tekstit = yksi global `site-texts`**, jonka kentät GENEROIDAAN `messages/fi.json`:n rakenteesta (ryhmä per avain, `text`/`textarea` lokalisoituna, merkkijonolistat `array`-kenttinä, avain `image` → upload-relaatio). Adminissa näkyy sama rakenne kuin ennen; uusi käännösavain ilmestyy adminiin automaattisesti. `merge-messages.ts` säilyy: oletukset + globalin arvot.
 4. **Villat ja asunnot omina kokoelminaan** (`villas`, `apartments`) nykyisten tyyppien mukaan; hinnoittelu upotettuna `pricing`-ryhmänä (perushinta + kaudet, validointi `validateSeasons`). Erillinen `pricing.json` poistuu.
 5. **Esikatselu (asiakaspyyntö #7)**: Payload Live Preview (`admin.livePreview`) villoille, asunnoille ja site-textsille + `RefreshRouteOnSave` julkisessa layoutissa. Esikatselu päivittyy tallennuksessa; luonnos-/autosave-tilaa EI tehdä (YAGNI).
-6. **Admin suomeksi**: `i18n.supportedLanguages: { fi }`, `fallbackLanguage: 'fi'`.
+6. **Admin suomeksi**: Payload ei sisällä suomea → oma käännös `src/payload/i18n/fi.ts` (587/587 merkkijonoa, tarkistettu en.js:ää vasten). Päivitettäessä Payloadia: diffaa en.js uudelleen.
+
+**Task 3:n toteutuspoikkeamat (28.10.):** `package.json` `"type": "module"` (ilman sitä Payload-CLI kaatui undici-virheeseen, ei Node-versioon); vanha `src/app/admin` ja `/api/media` poistettu jo Task 3:ssa, koska Payload tarvitsee `/admin`- ja `/api/media/*`-polut; root `not-found` → `app/global-not-found.tsx` + `experimental.globalNotFound` (kaksi root layoutia). Node 22.20 toimii paikallisesti; Payloadin engines-vaatimus (≥22.23.4) koskee Verceliä → Node 22.x/24.x riittää.
 7. Lomakkeet (`contacts`, `inquiries`) ja käsivaraukset (`reservations`) Payload-kokoelmia; julkinen luku/kirjoitus estetty, reittikäsittelijät kirjoittavat Local API:lla.
 
 ## Review Focus
