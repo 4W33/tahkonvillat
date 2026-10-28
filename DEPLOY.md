@@ -1,111 +1,119 @@
-# Tahkon Villat — Vercel deployment
+# Tahkon Villat — julkaisu Verceliin
 
-## Prerequisites
+Sovellus = Next.js 16 + Payload CMS 3. Tuotannossa tarvitaan **Postgres (Neon)** ja **julkinen Vercel Blob -säilö** kuville.
+Pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md).
 
-- Vercel project linked to this repo
-- Domain `tahkonvillat.fi` (or staging `*.vercel.app`) configured in Vercel
-- Resend optional for demo (forms still save to admin inbox)
+## Edellytykset
 
-## Environment variables (Production)
+- Vercel-projekti kytkettynä tähän repoon (olemassa Valtterin tilillä)
+- Vercel → Project → Settings → **Node.js Version 22.x tai 24.x** (Payload vaatii `^22.23.4 || >=24.22.1`)
+- Domain `tahkonvillat.fi` (tai `*.vercel.app`) Vercelissä
+- Resend valinnainen (lomakkeet tallentuvat ilman sitä Payloadin Viestit-ryhmään)
 
-Set in **Vercel → Project → Settings → Environment Variables**:
+## Ympäristömuuttujat (Production)
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `NEXT_PUBLIC_SITE_URL` | Yes | `https://tahkonvillat.fi` or `https://your-project.vercel.app` |
-| `ADMIN_PASSWORD` | Yes | Demo/client password for `/admin/login` |
-| `ADMIN_SESSION_TOKEN` | Yes | Long random string — **not** `tahkon-villat-admin-session-2026` |
-| `BLOB_READ_WRITE_TOKEN` | Yes | Vercel Blob (Storage tab) — required for admin saves |
+**Vercel → Project → Settings → Environment Variables:**
 
-Optional (add later):
+| Muuttuja | Pakollinen | Huom. |
+|----------|-----------|-------|
+| `DATABASE_URL` | Kyllä | Neon (Vercel Marketplace lisää sen projektiin) |
+| `PAYLOAD_SECRET` | Kyllä | Pitkä satunnainen merkkijono, ks. alla |
+| `BLOB_READ_WRITE_TOKEN` | Kyllä | **JULKINEN** Blob-säilö (Storage → Blob), Vercel lisää itse |
+| `NEXT_PUBLIC_SITE_URL` | Kyllä | `https://tahkonvillat.fi` tai `https://<projekti>.vercel.app` |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Ei | Lomakeilmoitukset ja adminin salasanan palautus sähköpostiin (ilman avainta palautuslinkki menee vain lokiin), `EMAIL_FROM` vaatii verifioidun domainin |
+| `EMAIL_TO` | Ei | Vastaanottaja, oletus `site.config.ts` contact.email |
 
-| Variable | Notes |
-|----------|-------|
-| `RESEND_API_KEY` | Form email notifications |
-| `EMAIL_FROM` | e.g. `Tahkon Villat <noreply@tahkonvillat.fi>` |
+Ilman `DATABASE_URL`ia tai `PAYLOAD_SECRET`ia sovellus kaatuu käynnistyksessä (`src/instrumentation.ts`).
+`ADMIN_PASSWORD` ja `ADMIN_SESSION_TOKEN` eivät ole enää käytössä — ne voi poistaa Vercelistä.
 
-Generate session token (PowerShell):
+`PAYLOAD_SECRET` (PowerShell):
 
 ```powershell
 -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 48 | ForEach-Object { [char]$_ })
 ```
 
-## Pre-deploy (local)
+## Build ja migraatiot
 
-```bash
-npm run build
-npm run content:messages   # ensures data/content/messages/*.json exists
-```
+`vercel.json` → `buildCommand: npm run build:vercel`: tuotantobuild (`VERCEL_ENV=production`) ajaa ensin
+tietokantamigraatiot (`src/migrations/`), preview-build ja paikallinen `npm run build` **eivät**.
 
-## Deploy steps
+> **Huom:** preview-deploy ei migroi kantaa. Jos Previewllä on sama `DATABASE_URL` kuin tuotannolla, skeemamuutoksen
+> sisältävä preview voi kaatua vanhaan skeemaan. Anna Previewlle oma kanta (esim. Neonin haara) tai jätä `DATABASE_URL` vain Productioniin.
 
-1. **Push** to the branch Vercel deploys from.
-2. Wait for **build** to succeed on Vercel.
-3. **Enable Vercel Blob** on the project.
-4. Add `BLOB_READ_WRITE_TOKEN` + other env vars → **Redeploy**.
-5. **Seed Blob** from your machine:
+Skeemamuutoksen jälkeen (uusi kenttä, uusi käännösavain `messages/fi.json`:iin): `npx payload migrate:create <nimi>` paikallista kantaa vasten → committaa `src/migrations/`.
 
-   ```bash
-   BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxx npm run storage:seed
+## Julkaisun vaiheet
+
+1. **Neon:** Vercel → Storage / Marketplace → Neon → kytke projektiin → `DATABASE_URL` Productioniin.
+2. **Vanhan datan export (ennen Blob-vaihtoa):** ota vanhan YKSITYISEN säilön `BLOB_READ_WRITE_TOKEN` talteen ja aja omalla koneella:
+
+   ```powershell
+   $env:BLOB_READ_WRITE_TOKEN="<vanhan yksityisen säilön token>"; npm run cms:export-blob
    ```
 
-   Uploads: `data/*.json`, `data/content/*`, `data/content/messages/*`, property images.
+   → `data/blob-export/` (gitignore): tekstit, hinnat, varaukset, lomakeviestit ja adminissa ladatut kuvat.
+3. **Julkinen Blob:** Storage → Blob → luo uusi säilö **Public**-tasolla → kytke projektiin → `BLOB_READ_WRITE_TOKEN`.
+   Vanha yksityinen säilö pitää irrottaa projektista, koska molemmat käyttävät samaa muuttujanimeä.
+4. Lisää `PAYLOAD_SECRET` ja `NEXT_PUBLIC_SITE_URL` → **Redeploy**. Build ajaa `payload migrate` → taulut syntyvät.
+5. **Ensimmäinen käyttäjä heti:** avaa `https://<osoite>/admin` → "Luo ensimmäinen käyttäjä". Tyhjässä kannassa kuka tahansa
+   osoitteen tietävä voisi luoda sen, joten tee tämä heti deployn jälkeen.
+6. **Data Payloadiin** omalta koneelta tuotannon arvoilla (ympäristön arvot voittavat `.env.local`in):
 
-6. **Verify live site:**
+   ```powershell
+   $env:DATABASE_URL="<Neonin DATABASE_URL>"
+   $env:PAYLOAD_SECRET="<tuotannon PAYLOAD_SECRET>"
+   $env:BLOB_READ_WRITE_TOKEN="<uuden JULKISEN säilön token>"
+   npm run cms:seed
+   ```
 
-   | URL | Check |
-   |-----|-------|
-   | `/` | Home, hero image |
-   | `/villat` | Villa listing + prices |
-   | `/villat/villa-puolukka` | Gallery, inquiry form |
-   | `/asunnot` | Apartments |
-   | `/yhteystiedot` | Contact form |
-   | `/faq` | FAQ |
-   | `/tietosuoja` | Privacy |
-   | `/admin/login` | Admin access |
+   Lähde on `data/blob-export/`, jos se on olemassa, muuten repon `data/`. iCal-linkit tulevat paikallisesta
+   `data/ical-sources.json`ista (gitignore), jos exportissa ei ole omaa. Paikallinen ajo 28.10. tyhjään kantaan:
+   117 kuvaa, 3 villaa, 5 asuntoa, 6 iCal-linkkiä, 1 varaus. Ajo on idempotentti: olemassa olevat villat ja
+   asunnot ohitetaan, joten asiakkaan muokkaukset säilyvät. `npm run cms:seed -- --force` ylikirjoittaa ne datan arvoilla.
+7. **Tarkista live:**
 
-7. **Admin smoke test:**
-   - Edit home title in **Sivuston tekstit** → save → refresh `/` (change visible)
-   - Edit a price in **Hinnat** → save → refresh `/villat`
-   - Submit contact form → check **Yhteydenotot**
+   | URL | Tarkistus |
+   |-----|-----------|
+   | `/` | Etusivu, hero-kuva |
+   | `/villat` | Villalista + hinnat |
+   | `/villat/villa-puolukka` | Galleria, Saatavuus-kalenteri, tiedustelulomake |
+   | `/asunnot` | Asunnot |
+   | `/yhteystiedot` | Yhteydenottolomake |
+   | `/faq` · `/tietosuoja` | Sisältösivut |
+   | `/admin` | Payload-kirjautuminen |
 
-## Admin sections
+8. **Admin-savutesti:**
+   - Sivuston tekstit → Etusivu → muuta tekstiä → Tallenna → päivitä `/` (muutos näkyy)
+   - Villat → villa → Hinnat → muuta perushintaa → Tallenna → päivitä `/villat`
+   - Lähetä yhteydenottolomake → Viestit → Yhteydenotot
 
-| Section | Purpose |
-|---------|---------|
-| **Sivuston tekstit** | All site copy FI/EN |
-| **Kohteet** | Images, texts, details per property |
-| **Kalenteri** | Availability |
-| **Hinnat** | Guide prices |
-| **Varausehdotukset** / **Yhteydenotot** | Inbox |
+## Mitä adminissa ei voi muokata
 
-See **ADMIN-GUIDE.md** for client-facing instructions (what is / isn't editable).
+- Yhteystietojen sähköposti footerissa (`site.config.ts`)
+- Uusi FAQ-kysymys (rakenne `messages/*.json`:ssa) — uusi avain vaatii kehittäjän ja migraation
 
-## Not editable in admin (by design)
+Asiakkaan ohje: **ADMIN-GUIDE.md**.
 
-- Contact email in footer (`site.config.ts`)
-- Adding/removing properties
-- New FAQ items (structure fixed in code)
-
-## Local development
+## Paikallinen kehitys
 
 ```bash
+npm run db:dev      # Postgres 127.0.0.1:54329
 npm run dev:clean
 ```
 
-Without `BLOB_READ_WRITE_TOKEN`, writes go to local `data/` and `public/images/`.
+Ilman `BLOB_READ_WRITE_TOKEN`ia kuvat tallentuvat `media/`-kansioon.
 
-## Troubleshooting
+## Vianetsintä
 
-| Issue | Fix |
-|-------|-----|
-| Build fails on Vercel | `ADMIN_SESSION_TOKEN` must not be dev default |
-| Admin login 503 | Set `ADMIN_PASSWORD` + unique `ADMIN_SESSION_TOKEN` |
-| Admin saves fail | `BLOB_READ_WRITE_TOKEN` + redeploy + `storage:seed` |
-| Stale content after save | Fixed: revalidation uses `/villat` not `/fi/villat` |
-| Missing images in prod | Run `storage:seed` |
-| Text save rejected | Structure must match template (no deleted keys) |
+| Ongelma | Korjaus |
+|---------|---------|
+| Käynnistys kaatuu "Puuttuvat ympäristömuuttujat" | Lisää `DATABASE_URL` + `PAYLOAD_SECRET` → Redeploy |
+| Build kaatuu `payload migrate`iin | `DATABASE_URL` puuttuu buildista tai kanta ei vastaa — tarkista Neon-kytkentä |
+| Payload vaatii uudemman Noden | Settings → Node.js Version 22.x tai 24.x |
+| Kuvan lataus epäonnistuu | `BLOB_READ_WRITE_TOKEN` puuttuu tai säilö ei ole julkinen |
+| Kuvat puuttuvat sivulta | `cms:seed` ajamatta tuotantokantaan / säilöön |
+| Kalenteri "Saatavuustietoa ei juuri nyt saada haettua" | iCal-linkki virheellinen, Airbnb ei vastaa tai kanta ei vastaa — päiviä ei silloin näytetä vapaina. Tyhjä linkki = vain käsivaraukset |
 
-## DNS (production domain)
+## DNS (tuotantodomain)
 
-Point `tahkonvillat.fi` to Vercel. Add Resend DNS if using custom `EMAIL_FROM`.
+Osoita `tahkonvillat.fi` Verceliin. Lisää Resendin DNS-tietueet, jos käytät omaa `EMAIL_FROM`-osoitetta.

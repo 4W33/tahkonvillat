@@ -11,20 +11,24 @@
 - Ohjaustaulu (tehtävät, päätökset, asiakkaalta odotettavat): `docs/WORKDESK.md` — päivitä jokaisen tehtävän jälkeen.
 - Spec: `docs/superpowers/specs/2026-09-09-phase1-completion-design.md`
 - Plan: `docs/superpowers/plans/2026-09-09-phase1-completion.md`
+- Payload-siirto (vaihe 2): `docs/superpowers/plans/2026-10-28-payload-cms.md`
 - Asiakasohje: `ADMIN-GUIDE.md` · deploy: `DEPLOY.md`
 
 ## Komennot
+- Tietokanta: `npm run db:dev` taustalle ENNEN deviä (embedded Postgres, portti 54329, data `.dev-db/`).
 - Dev: `preview_start` → `tahkonvillat-dev` (portti 3311). Älä aja `npm run build` kun dev pyörii.
+- Admin: `/admin` (Payload, sähköposti + salasana, kokoelma Käyttäjät).
 - Testit: `npm test` · tyypit: `npx tsc --noEmit` · build: `npm run build`
-- Sisältö: `npm run content:import` (Airbnb-scrape) · `npm run content:messages` (CMS-tekstipohja)
+- Sisältö: `npm run content:import` (Airbnb-scrape → `data/content/`) · `npm run cms:seed` (data → Payload, idempotentti, olemassa olevat kohteet ohitetaan, `--force` ylikirjoittaa) · `npm run cms:export-blob` (vanhan CMS:n tuotantodata → `data/blob-export/`)
 
 ## Kovat säännöt
 - Ei koskaan keksittyä copya, hintaa tai asiakastietoa. Kaikki teksti `messages/*.json` (fi+en) tai Airbnb-datasta.
 - Ei salaisuuksia gitiin. Miki syöttää avaimet itse (`.env.local`, Vercel).
 - Ei IntersectionObserveria reveal-animaatioihin — käytä `ui/Reveal`.
 - Kaikki julkiset napit: `rounded-lg` (0.875 rem). Ei pill-nappeja.
-- Tekstit: `getSiteMessages` mergeää oletukset + ylikirjoituksen (`merge-messages.ts`). Uusi avain lisätään AINA molempiin `messages/fi.json` ja `messages/en.json`.
-- Kalenteri: iCal-linkit adminissa (`data/ical-sources.json`), haku 3 h välimuistilla. Virhetilanteessa EI näytetä päiviä vapaina.
-- Tallennus: YKSI YKSITYINEN Blob-säilö. Vercelissä taso on kiinteä per säilö, joten julkista ja yksityistä ei voi sekoittaa. Kaikki `access: "private"`; kuvat näytetään reitin `/api/media/…` kautta, joka päästää läpi vain `media/properties/<kohde>/<kuva>`. `failLoudOnReadError` (access-policy.ts) päättää mitkä luvut saavat kaatua: vain lomakeviestit, varaukset ja iCal-linkit; sisältö palaa repon oletukseen.
+- Tekstit: `getSiteMessages` mergeää oletukset + Payloadin "Sivuston tekstit" -globaalit (yksi per `messages/fi.json`-osio, kentät generoidaan `messages-to-fields.ts`:llä). Uusi avain lisätään AINA molempiin `messages/fi.json` ja `messages/en.json`; adminiin se ilmestyy automaattisesti. Uusi kenttä = skeemamuutos → migraatio (`npx payload migrate:create`).
+- Kalenteri: iCal-linkit villojen ja yksiköiden `icalUrl`-kentissä Payloadissa (luku vain kirjautuneelle, ei koskaan julkiseen API-vastaukseen), käsivaraukset kokoelmassa Varaukset (`calendarKey` = slug tai slug:unitId). Haku 3 h välimuistilla. Virhetilanteessa EI näytetä päiviä vapaina (`unavailable`).
+- Tallennus: sisältö, varaukset ja lomakeviestit Postgresissa (paikallisesti embedded-postgres, tuotannossa Neon → `DATABASE_URL`). Kuvat Payloadin Media-kokoelmassa: tuotannossa JULKINEN Vercel Blob -säilö (`BLOB_READ_WRITE_TOKEN`, `@payloadcms/storage-vercel-blob` 3.92 ei tue yksityistä), paikallisesti `media/` (gitignore). Tuotanto vaatii `DATABASE_URL` + `PAYLOAD_SECRET` (`instrumentation.ts`). iCal-lähteiden ja varausten lukuvirhe heittää; tekstien lukuvirhe palaa `messages/*.json`-oletukseen.
+- Skeemamuutokset: `npx payload migrate:create <nimi>` → `src/migrations/` committiin. Vercel-build (`build:vercel`) ajaa `payload migrate` vain tuotannossa (`VERCEL_ENV=production`), paikallinen `npm run build` ei.
 - Logon vaakaversio (merkki + nimi vieressä) kytkeytyy päälle vasta kun tekstitön merkki on paikallaan: `public/images/logo-mark-plain.png` + `markPlainAvailable: true` site.configissa.
-- Asiakasopas: `node scripts/admin-guide-pdf.mjs` (dev-palvelin käynnissä) → `docs/Tahkon-Villat-sisallonhallintaopas.pdf`. Älä kirjoita oppaaseen ominaisuuksia, joita adminissa ei ole.
+- Asiakasopas: `ADMIN-GUIDE.md` (Payload-admin). PDF `docs/Tahkon-Villat-sisallonhallintaopas.pdf` on VANHENTUNUT (vanhan adminin kuvat, generaattori poistettu) — uusinta erillinen tehtävä. Älä kirjoita oppaaseen ominaisuuksia, joita adminissa ei ole.

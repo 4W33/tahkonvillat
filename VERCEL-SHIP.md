@@ -1,95 +1,90 @@
-# Vercel — 10 min ship checklist
+# Vercel — julkaisun pikalista (Payload)
 
-Local `vendor-chunks` / `Cannot find module` errors are **OneDrive + dev cache** — not Vercel.  
-Vercel builds in a clean cloud environment. Follow this exactly.
+Tarkemmat perustelut ja vianetsintä: [DEPLOY.md](DEPLOY.md). Noudata järjestystä: vanhan datan export
+ennen kuin vanha Blob-säilö irrotetaan.
 
-## 1. Push code to GitHub
+## 1. Koodi GitHubiin
+
+Push mainiin laukaisee Vercelin tuotantobuildin. **Ei pushia ilman Mikin lupaa** (ks. CLAUDE.md, tili `4W33`).
+`.env.local` ei mene gitiin.
+
+## 2. Vercel-projektin asetukset
+
+- Projekti on jo olemassa Valtterin tilillä, kytketty repoon.
+- Settings → **Node.js Version: 22.x tai 24.x** (Payload vaatii `^22.23.4 || >=24.22.1`).
+- Build command tulee `vercel.json`ista: `npm run build:vercel` (= `payload migrate` vain tuotannossa + build). Älä ylikirjoita sitä asetuksissa.
+
+## 3. Tietokanta: Neon
+
+Storage / Marketplace → **Neon** → kytke projektiin → `DATABASE_URL` Production-ympäristöön.
+Älä anna samaa `DATABASE_URL`ia Previewlle: preview ei migroi kantaa ja voi kaatua skeemamuutoksen jälkeen.
+
+## 4. Vanha data talteen (omalla koneella)
 
 ```powershell
-cd c:\Users\mikis\OneDrive\Tiedostot\villasivut
-git add .
-git commit -m "Ready for Vercel demo"
-git push
+cd C:\Users\user\Documents\tahkonvillat
+$env:BLOB_READ_WRITE_TOKEN="<vanhan YKSITYISEN säilön token>"
+npm run cms:export-blob
 ```
 
-(No `.env.local` in git — it's ignored.)
+→ `data/blob-export/` (gitignore).
 
-## 2. Create Vercel project
+## 5. Kuvat: uusi julkinen Blob-säilö
 
-1. [vercel.com](https://vercel.com) → **Add New Project**
-2. Import your GitHub repo
-3. Framework: **Next.js** (auto-detected)
-4. **Do not deploy yet** — add env vars first
+Storage → Blob → Create → taso **Public** → kytke projektiin → `BLOB_READ_WRITE_TOKEN`.
+Irrota vanha yksityinen säilö projektista (sama muuttujanimi).
 
-## 3. Environment variables (Production)
+## 6. Muut ympäristömuuttujat (Production)
 
-| Name | Value |
-|------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://YOUR-PROJECT.vercel.app` (update after first deploy) |
-| `ADMIN_PASSWORD` | Strong password you give the client |
-| `ADMIN_SESSION_TOKEN` | Random 48+ chars — **not** `tahkon-villat-admin-session-2026` |
-| `BLOB_READ_WRITE_TOKEN` | From Vercel → Storage → Blob → Create store → token |
+| Nimi | Arvo |
+|------|------|
+| `PAYLOAD_SECRET` | Satunnainen 48+ merkkiä |
+| `NEXT_PUBLIC_SITE_URL` | `https://<projekti>.vercel.app` (päivitä domainin jälkeen) |
+| `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_TO` | Valinnaiset, myöhemmin |
 
-Generate token (PowerShell):
+Poista vanhat `ADMIN_PASSWORD` ja `ADMIN_SESSION_TOKEN`.
 
 ```powershell
 -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 48 | ForEach-Object { [char]$_ })
 ```
 
-## 4. Enable Blob storage
+## 7. Deploy
 
-Vercel project → **Storage** → **Blob** → Create  
-Copy `BLOB_READ_WRITE_TOKEN` into env vars → **Redeploy**
+**Redeploy**. Build ajaa migraatiot → taulut syntyvät Neoniin.
 
-## 5. Deploy
+## 8. Ensimmäinen käyttäjä — heti
 
-Click **Deploy**. Build command: `npm run build` (cleans cache automatically).
+`https://<osoite>/admin` → **Luo ensimmäinen käyttäjä** (sähköposti + salasana). Tyhjään kantaan kuka tahansa voisi luoda sen.
 
-If build fails: check env vars are set for **Production** environment.
-
-## 6. Seed content (once, from your PC)
+## 9. Data Payloadiin (kerran, omalta koneelta)
 
 ```powershell
-cd c:\Users\mikis\OneDrive\Tiedostot\villasivut
-$env:BLOB_READ_WRITE_TOKEN="vercel_blob_rw_xxxxx"
-npm run storage:seed
+$env:DATABASE_URL="<Neonin DATABASE_URL>"
+$env:PAYLOAD_SECRET="<tuotannon PAYLOAD_SECRET>"
+$env:BLOB_READ_WRITE_TOKEN="<uuden JULKISEN säilön token>"
+npm run cms:seed
 ```
 
-Uploads JSON, messages, and all property images to Blob.
+Tulostaa yhteenvedon (luotu / päivitetty / ohitettu). Uudelleenajo ohittaa olemassa olevat kohteet; `-- --force` ylikirjoittaa ne.
 
-## 7. Smoke test live URL
+## 10. Savutesti
 
-- `/` — home with villas + apartments
-- `/villat/villa-puolukka`
-- `/admin/login` — login works
-- Admin → save a text change → refresh public page
+- `/`, `/villat/villa-puolukka` (kuvat + Saatavuus-kalenteri), `/asunnot`
+- `/admin` → kirjaudu → Sivuston tekstit → muuta yksi teksti → Tallenna → päivitä julkinen sivu
+- Lähetä yhteydenottolomake → Viestit → Yhteydenotot
 
-## 8. Update site URL (optional)
+## 11. Domain (myöhemmin)
 
-After custom domain: set `NEXT_PUBLIC_SITE_URL=https://tahkonvillat.fi` → redeploy.
+Oman domainin jälkeen `NEXT_PUBLIC_SITE_URL=https://tahkonvillat.fi` → Redeploy.
 
 ---
 
-## Local testing (OneDrive causes dev errors)
-
-`vendor-chunks` / `Cannot find module` in **`npm run dev`** = OneDrive corrupting `.next`.  
-**This does NOT affect Vercel** (clean cloud build).
-
-**Before deploy, test production build locally:**
+## Paikallinen testaus
 
 ```powershell
-npm run preview
+npm run db:dev        # oma terminaali
+npm run preview       # tuotantobuild + next start, http://localhost:3000 (ei aja migraatioita)
 ```
 
-Opens **http://localhost:3000** — same as Vercel production.
-
-For editing: `npm run dev:clean` — never run `build` while dev is running.
-
-## Resend (later)
-
-Add when ready:
-
-- `RESEND_API_KEY`
-- `EMAIL_FROM`
-
-Forms work without these — messages save to admin inbox.
+Muokkaukseen `npm run dev:clean` — älä aja `build`ia kun dev pyörii. OneDriven `vendor-chunks` / `Cannot find module`
+-virheet koskevat vain paikallista `.next`-välimuistia, eivät Verceliä.

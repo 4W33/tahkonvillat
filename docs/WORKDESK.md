@@ -1,6 +1,6 @@
 # WORKDESK — Tahkon Villat
 
-Päivitetty: 2026-09-09 · Vastuu: Novo Media (Miki + Walter) · Asiakas: Tahkon Villat
+Päivitetty: 2026-10-28 (Payload-siirto) · aiemmin 2026-09-09 · Vastuu: Novo Media (Miki + Walter) · Asiakas: Tahkon Villat
 Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat`.
 
 ## Vaihe 1 — asiakkaan pyynnöt (Valtteri 6.9.2026)
@@ -12,15 +12,15 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 | 3 | Hinnat ajanjaksoittain | ✓ | `evidence/pricing-e2e-*.png` |
 | 4 | Mobiili: hero button, lehdet tekstin päällä | ✓ | `evidence/home-{before,after}-*.png` |
 | 5 | Nykyinen teema säilyy, vain viimeistely | ✓ | — |
-| 6 | Sisällönhallinta selkeäksi (admin tai Sanity) | ✓ nykyinen admin | — |
-| 7 | Näkee mitä muokkaa, esikatselu vieressä | ✓ | `evidence/admin-preview-*.png` |
+| 6 | Sisällönhallinta selkeäksi (admin tai Sanity) | ✓ vaihe 1 oma admin · 28.10. korvattu Payload CMS:llä | — |
+| 7 | Näkee mitä muokkaa, esikatselu vieressä | ✓ vaihe 1 · Payloadissa Live Preview villoille ja asunnoille | `evidence/admin-preview-*.png` (vanha admin) |
 | 8 | Kaikki Airbnb-villat sivustolla | ✓ 10/10 + Karpalo | `scripts/check-airbnb-coverage.mjs` |
 | 9 | Lomakkeen sähköpostit | ✓ koodi · ⏳ Resend-avain + DNS | `evidence/contact-e2e-*.png` |
 | 10 | Uusi logo (Nanobanana-viimeistely) | ⏳ lähdetiedosto asiakkaalta | — |
 | 11 | Logon teksti kuvan viereen, skaalautuu naviin | ✓ koodi valmis, kytkeytyy kun merkki saapuu | `evidence/logo-fixed-*.png` |
 | 12 | Kaikki buttonit saman muotoisia | ✓ `rounded-lg` | `evidence/home-after-desktop-hero.png` |
 | 13 | Siirto Domainhotellin hostille | ⚠ **ei onnistu** — ei Node-tukea. Esitys: Vercel + DNS. **Kerrottava asiakkaalle.** | — |
-| 14 | Kattava PDF-sisällönhallintaopas | ✓ 15 sivua | `docs/Tahkon-Villat-sisallonhallintaopas.pdf` |
+| 14 | Kattava PDF-sisällönhallintaopas | ⚠ vanhentunut 28.10. (vanhan adminin opas) · uusinta Payloadista | `docs/Tahkon-Villat-sisallonhallintaopas.pdf` |
 | 15 | Koko sivuston loppukatsaus | ✓ tekninen · ⏳ asiakkaan kanssa | `docs/superpowers/reviews/2026-09-09-vaihe1-code-review.md` |
 | 16 | Projektin päätös ja laskutus | ✗ vaihe 2 | — |
 
@@ -53,7 +53,13 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 ## Vaihe 2 käynnissä 28.10.2026 (Miki)
 - Pyyntö: oma CMS kokonaan pois → Payload CMS; layoutin parannus; sivu tuntuu hitaalta.
 - ✓ Nopeus `582c8c9`: oma kursori pois (piilotti järjestelmän hiiren), sisältö näkyy heti (reveal vain näkymän alapuolelle, 500–700 ms), latauspalkki sivusiirtoihin. Mitattu: villasivulla 0 piilotettua sisältöelementtiä latauksessa (ennen 3), kursori-elementit 0. Palvelin vastasi jo ennen 0,2–0,6 s — hitaus oli animaatioissa.
-- ⏳ Payload-suunnitelma: `docs/superpowers/plans/2026-10-28-payload-cms.md`.
+- ✓ Payload CMS 3 koodissa (suunnitelma `docs/superpowers/plans/2026-10-28-payload-cms.md`, commitit `5d2a50f`…`afc0fcc`):
+  - Admin `/admin` (Payload, sähköposti + salasana, suomeksi). Vanha `/admin/login`, `ADMIN_PASSWORD`, `ADMIN_SESSION_TOKEN`, yksityinen Blob, `/api/media`-reitti, `data-cms`-esikatselu ja `admin-guide-pdf.mjs` poistettu.
+  - Sisältö Postgresissa (paikallisesti `npm run db:dev`, tuotannossa Neon). Kuvat Media-kokoelmassa (tuotannossa julkinen Blob, paikallisesti `media/`).
+  - Villat, asunnot (hinnat + kaudet), iCal-linkit villoissa/yksiköissä (vain kirjautuneelle), Varaukset, Viestit (Yhteydenotot, Varaustiedustelut), Sivuston tekstit (globaali per osio), Live Preview.
+  - Seed paikallisesti tyhjään kantaan: 117 kuvaa, 3 villaa, 5 asuntoa, 6 iCal-linkkiä, 1 varaus.
+  - Vercel-build `npm run build:vercel` ajaa `payload migrate` vain tuotannossa (alkumigraatio `src/migrations/20261028_145744_initial`).
+  - EI pushattu. Tuotanto toimii vanhalla koodilla, kunnes alla olevat odottavat kohdat on tehty.
 - iCal-linkit saatu 28.10. (Henri Antikainen → Miki):
   - ✓ kaikki 6 sivuston kalenteria kytketty paikallisesti (`data/ical-sources.json`, gitignore): Puolukka, Karpalo, Teituli A (`47064939`), B (`47068801`), 8A, 8B. Todennettu `next start`: jokainen avain `status: ok`, varauksia 5–16 per yksikkö.
   - Lisäksi saatu Tintintaival 6A (`1199826378507869635`) ja 6B (`47070530`): eri Airbnb-ilmoituksia, joita sivustolla ei ole → kysyttävä, lisätäänkö kohteiksi.
@@ -67,25 +73,36 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - 2026-09-09 vitest 3.x (vitest 5 vaatii @types/node 22, projekti on 20).
 - 2026-09-09 Teitulin yksiköt samalla Gantt-rivillä (tunnus palkissa).
 - 2026-09-09 Vaakatunnus on HTML-ladottu ja kytkeytyy päälle vasta tekstittömästä merkistä.
-- 2026-09-09 Tallennustasot yhdessä tiedostossa (`access-policy.ts`), testi estää eriytymisen.
+- 2026-09-09 Tallennustasot yhdessä tiedostossa (`access-policy.ts`), testi estää eriytymisen. *(Kumottu 28.10.: tiedosto poistettu Payload-siirrossa.)*
+- 2026-10-28 Oma CMS pois → Payload CMS 3 (Miki). Postgres: paikallisesti embedded-postgres, tuotannossa Neon (Claude, Miki voi kumota).
+- 2026-10-28 Payloadin kuvat JULKISEEN Blob-säilöön: `@payloadcms/storage-vercel-blob` 3.92 ei tue yksityistä. Sisältö ja lomakkeet Postgresissa.
+- 2026-10-28 Sivuston tekstit = yksi Payload-globaali per `messages/fi.json`-osio (Postgresin 100 argumentin raja), kentät generoidaan viestipohjasta.
+- 2026-10-28 Esikatselu = Payload Live Preview (päivittyy tallennuksessa), ei luonnos-/autosave-tilaa.
 
-## Odottaa asiakkaalta / Valtterilta
-- [ ] **Airbnb iCal -linkit ×6** (Puolukka, Karpalo, Teituli A/B/8A/8B). Asiakkaalle oma ohje: `docs/Tahkon-Villat-Airbnb-kalenteriohje.pdf`. Asiakas hakee linkit itse — **emme pyydä Airbnb-tunnuksia**.
+## Odottaa asiakkaalta / Valtterilta / Mikiltä
+- [ ] **Neon-tietokanta** Valtterin Vercel-projektiin (Marketplace → `DATABASE_URL`) — tilitoimenpide, mahdollinen kustannus → Mikin/Valtterin päätös.
+- [ ] **Uusi JULKINEN Blob-säilö** samaan projektiin (`BLOB_READ_WRITE_TOKEN`) + `PAYLOAD_SECRET` + Node 22.x/24.x. Ks. `DEPLOY.md`.
+- [ ] **Tuotannon yksityisen Blob-säilön token** exporttia varten (`npm run cms:export-blob`) ENNEN kuin vanha säilö irrotetaan; sitten `npm run cms:seed` tuotantokantaan.
+- [ ] **Ensimmäinen admin-käyttäjä tuotannossa** heti ensimmäisen deployn jälkeen (`/admin` → Luo ensimmäinen käyttäjä) ja tunnukset asiakkaalle.
+- [ ] **Asiakkaan PDF-opas** `docs/Tahkon-Villat-sisallonhallintaopas.pdf` on VANHENTUNUT → tehdään uudelleen Payload-administa (erillinen tehtävä; pohjana `ADMIN-GUIDE.md`).
+- [ ] **Tintintaival 6A ja 6B**: lisätäänkö sivustolle kohteiksi (eri Airbnb-ilmoitukset, iCal-linkit saatu 28.10.).
+- [ ] **Layoutin suunta** (vaihe 2 pyyntö "layoutin parannus") — päätös auki.
+- [x] **Airbnb iCal -linkit ×6** (Puolukka, Karpalo, Teituli A/B/8A/8B) — saatu 28.10. Asiakkaalle oma ohje: `docs/Tahkon-Villat-Airbnb-kalenteriohje.pdf`. Asiakas hakee linkit itse — **emme pyydä Airbnb-tunnuksia**.
 - [ ] **Logon tekstitön merkki** → `public/images/logo-mark-plain.png`, sitten `markPlainAvailable: true` site.configiin. Lisäksi uusi Nanobanana-viimeistelty tunnus jos tulee.
 - [ ] **Resend**: API-avain (`.env.local` + Vercel) ja tahkonvillat.fi SPF/DKIM Domainhotellin DNS:ään.
 - [ ] **Vercel-projektin avaaminen** Valtterin tilillä (402 = pysäytetty).
 - [ ] **Päätös hostingista** asiakkaan kanssa: Domainhotelli ei pyöritä Next-sovellusta.
 
-## Vaihe 2 (ei aloitettu)
-- Vercel: env-muuttujat (`NEXT_PUBLIC_SITE_URL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_TOKEN`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_TO`) + `npm run storage:seed`
-- **Ensimmäinen Blob-savutesti**: tallenna adminissa teksti, hinta ja iCal-linkki → lataa sivu uudelleen → arvot säilyvät. Tämä on ainoa tapa todentaa blob-korjaus oikeasti.
+## Vaihe 2 — jäljellä
+- Vercel: env-muuttujat (`DATABASE_URL`, `PAYLOAD_SECRET`, `BLOB_READ_WRITE_TOKEN` julkinen, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_TO`) → deploy → ensimmäinen käyttäjä → `npm run cms:seed` (ks. `DEPLOY.md`)
+- **Ensimmäinen tuotannon savutesti**: tallenna Payloadissa teksti, hinta ja iCal-linkki → lataa sivu uudelleen → arvot säilyvät; lähetä testilomake → näkyy Viesteissä.
 - DNS tahkonvillat.fi → Vercel; Resend-domain verifiointi
 - iCal-URL-rajaus tunnettuihin domaineihin (code review MEDIUM 1)
 - Loppukatselmus asiakkaan kanssa + `/delivery-check` → laskutus
 
 ## Kehitysmuistiinpanot
-- **Buildin jälkeen aina** `node scripts/check-trace.mjs` — varmistaa että data/ on funktioissa.
-- Dev: `ADMIN_PASSWORD=novo-dev-test npm run dev -- -p 3311` (paikallinen testisalasana, ei koske `.env.local`).
-- Todisteet: `PLAYWRIGHT_BROWSERS_PATH=%LOCALAPPDATA%\ms-playwright node scripts/evidence.mjs <admin-ical|admin-pricing|pricing-e2e|villa|home|pages|admin-preview|logo|contact-e2e>`
-- Opas: `node scripts/admin-guide-pdf.mjs` (palvelin käynnissä)
-- `pricing-e2e` ja `contact-e2e` kirjoittavat `data/`-tiedostoihin → `git checkout -- data/` ajon jälkeen.
+- Ensin `npm run db:dev` (embedded Postgres 127.0.0.1:54329, data `.dev-db/`), sitten dev: `preview_start` → `tahkonvillat-dev` (3311). Admin `/admin`; paikallinen testikäyttäjä `.env.local`-kommentissa.
+- Tyhjä kanta → `npm run cms:seed`. Olemassa olevat kohteet ohitetaan; `-- --force` ylikirjoittaa ne datan arvoilla.
+- Skeemamuutos → `npx payload migrate:create <nimi>` → `src/migrations/` committiin. Paikallinen `npm run build` ja preview eivät aja migraatioita, tuotannon Vercel-build ajaa.
+- Todisteet: `PLAYWRIGHT_BROWSERS_PATH=%LOCALAPPDATA%\ms-playwright node scripts/evidence.mjs <logo|villa|home|pages>` (admin-skenaariot poistettu vanhan adminin mukana).
+- `check-trace.mjs` ja `admin-guide-pdf.mjs` poistettu 28.10.
