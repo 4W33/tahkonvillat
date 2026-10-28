@@ -7,7 +7,7 @@ import {
   writeReservations,
 } from "@/lib/data/reservation-store";
 
-type RouteContext = { params: { id: string } };
+type RouteContext = { params: Promise<{ id: string }> };
 
 async function isValidReservation(body: unknown): Promise<boolean> {
   if (!body || typeof body !== "object") return false;
@@ -26,7 +26,8 @@ async function isValidReservation(body: unknown): Promise<boolean> {
   );
 }
 
-export async function PUT(request: Request, { params }: RouteContext) {
+export async function PUT(request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 
@@ -60,7 +61,8 @@ export async function PUT(request: Request, { params }: RouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, { params }: RouteContext) {
+export async function DELETE(_request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 

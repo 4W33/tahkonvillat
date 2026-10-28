@@ -11,10 +11,16 @@ import { CtaSection } from "@/components/home/CtaSection";
 import { requireLocale } from "@/i18n/locale";
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export default async function HomePage({ params: { locale } }: Props) {
+export default async function HomePage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
 

@@ -1,7 +1,7 @@
 import { getBlobClient } from "@/lib/storage/blob-client";
 import { isAllowedMediaPathname, isBlobStorageEnabled } from "@/lib/storage/config";
 
-type RouteContext = { params: { path: string[] } };
+type RouteContext = { params: Promise<{ path: string[] }> };
 
 /**
  * Näyttää adminissa ladatun kuvan yksityisestä Blob-säilöstä.
@@ -11,7 +11,8 @@ type RouteContext = { params: { path: string[] } };
  * ovat UUID:itä, eikä samaa nimeä käytetä uudelleen, joten vastauksen voi
  * välimuistittaa pysyvästi. Kuvat ovat julkisen sivuston sisältöä, eivät henkilötietoa.
  */
-export async function GET(_request: Request, { params }: RouteContext) {
+export async function GET(_request: Request, props: RouteContext) {
+  const params = await props.params;
   const pathname = `media/${(params.path ?? []).join("/")}`;
 
   if (!isAllowedMediaPathname(pathname) || !isBlobStorageEnabled()) {

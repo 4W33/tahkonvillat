@@ -8,11 +8,17 @@ import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
 type Props = {
-  params: { locale: string };
-  searchParams: { topic?: string; property?: string };
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ topic?: string; property?: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "contact.metadata" });
   return buildPageMetadata({
     locale,
@@ -23,10 +29,14 @@ export async function generateMetadata({ params: { locale } }: Props) {
   });
 }
 
-export default async function ContactPage({
-  params: { locale },
-  searchParams,
-}: Props) {
+export default async function ContactPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("contact");

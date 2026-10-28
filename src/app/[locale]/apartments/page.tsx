@@ -17,11 +17,17 @@ import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
 type Props = {
-  params: { locale: string };
-  searchParams: { location?: string };
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ location?: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "apartments.metadata" });
   return buildPageMetadata({
     locale,
@@ -32,10 +38,14 @@ export async function generateMetadata({ params: { locale } }: Props) {
   });
 }
 
-export default async function ApartmentsPage({
-  params: { locale },
-  searchParams,
-}: Props) {
+export default async function ApartmentsPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("apartments");

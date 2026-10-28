@@ -9,10 +9,16 @@ import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "faq.metadata" });
   return buildPageMetadata({
     locale,
@@ -23,7 +29,13 @@ export async function generateMetadata({ params: { locale } }: Props) {
   });
 }
 
-export default async function FaqPage({ params: { locale } }: Props) {
+export default async function FaqPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("faq");

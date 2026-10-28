@@ -14,7 +14,7 @@ import type {
 } from "@/types/property-editor";
 import type { AmenityId } from "@/types/villa";
 
-type RouteContext = { params: { id: string } };
+type RouteContext = { params: Promise<{ id: string }> };
 
 function isLocaleText(value: unknown): value is { fi: string; en: string } {
   if (!value || typeof value !== "object") return false;
@@ -98,7 +98,8 @@ function parseMeta(body: Record<string, unknown>): PropertyMetaPayload | null {
   return meta;
 }
 
-export async function GET(_request: Request, { params }: RouteContext) {
+export async function GET(_request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 
@@ -115,7 +116,8 @@ export async function GET(_request: Request, { params }: RouteContext) {
   return NextResponse.json(property);
 }
 
-export async function PUT(request: Request, { params }: RouteContext) {
+export async function PUT(request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 

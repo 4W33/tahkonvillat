@@ -10,9 +10,10 @@ import {
 import { isBlobMediaUrl, isLocalMediaPath } from "@/lib/storage/config";
 import { deleteMediaUrl } from "@/lib/storage/media";
 
-type RouteContext = { params: { id: string } };
+type RouteContext = { params: Promise<{ id: string }> };
 
-export async function POST(request: Request, { params }: RouteContext) {
+export async function POST(request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 
@@ -55,7 +56,8 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 }
 
-export async function DELETE(request: Request, { params }: RouteContext) {
+export async function DELETE(request: Request, props: RouteContext) {
+  const params = await props.params;
   const authError = await requireAdmin();
   if (authError) return authError;
 

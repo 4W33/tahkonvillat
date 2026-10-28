@@ -12,10 +12,16 @@ import { requireLocale } from "@/i18n/locale";
 export const revalidate = 10800;
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "villas.metadata" });
 
   return buildPageMetadata({
@@ -27,7 +33,13 @@ export async function generateMetadata({ params: { locale } }: Props) {
   });
 }
 
-export default async function VillasPage({ params: { locale } }: Props) {
+export default async function VillasPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("villas");

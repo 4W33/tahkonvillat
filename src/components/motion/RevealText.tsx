@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement, type ReactNode } from "react";
+import { createElement, type JSX, type ReactNode } from "react";
 import { useRevealOnScroll } from "./useRevealOnScroll";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   lines: ReactNode[];
   className?: string;
   /** Heading/element tag to render. */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof JSX.IntrinsicElements & string;
   delay?: number;
 };
 

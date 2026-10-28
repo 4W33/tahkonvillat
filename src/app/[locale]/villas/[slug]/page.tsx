@@ -21,7 +21,7 @@ import { requireLocale } from "@/i18n/locale";
 export const revalidate = 10800;
 
 type Props = {
-  params: { locale: string; slug: string };
+  params: Promise<{ locale: string; slug: string }>;
 };
 
 export async function generateStaticParams() {
@@ -29,7 +29,14 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params: { locale, slug } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale,
+    slug
+  } = params;
+
   const villa = await getVillaBySlug(slug);
   if (!villa) return {};
 
@@ -46,9 +53,14 @@ export async function generateMetadata({ params: { locale, slug } }: Props) {
   });
 }
 
-export default async function VillaDetailPage({
-  params: { locale, slug },
-}: Props) {
+export default async function VillaDetailPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale,
+    slug
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const villa = await getVillaBySlug(slug);

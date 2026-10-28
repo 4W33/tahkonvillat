@@ -8,10 +8,16 @@ import { buildPageMetadata } from "@/lib/seo";
 import { requireLocale } from "@/i18n/locale";
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "checkout.metadata" });
   return buildPageMetadata({
     locale,
@@ -38,7 +44,13 @@ function InstructionList({ items }: { items: string[] }) {
   );
 }
 
-export default async function CheckoutPage({ params: { locale } }: Props) {
+export default async function CheckoutPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("checkout");

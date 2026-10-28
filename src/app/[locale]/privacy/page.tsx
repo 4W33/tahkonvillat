@@ -17,10 +17,16 @@ const SECTION_KEYS = [
 ] as const;
 
 type Props = {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params: { locale } }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: "privacy.metadata" });
   return buildPageMetadata({
     locale,
@@ -31,7 +37,13 @@ export async function generateMetadata({ params: { locale } }: Props) {
   });
 }
 
-export default async function PrivacyPage({ params: { locale } }: Props) {
+export default async function PrivacyPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("privacy");
