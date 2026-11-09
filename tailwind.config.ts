@@ -63,6 +63,8 @@ const config: Config = {
           DEFAULT: "#B8955A",
           light: "#D4B07A",
           dark: "#9A7B43",
+          // Pieni teksti #EDE5D8-taustalla: 4.79:1 (WCAG AA)
+          deep: "#7A5F30",
         },
       },
       fontFamily: {
@@ -96,7 +98,7 @@ const config: Config = {
       animation: {
         "fade-up": "fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
-        "hero-zoom": "hero-zoom 24s ease-in-out infinite alternate",
+        "hero-zoom": "hero-zoom 1.8s cubic-bezier(0.16, 1, 0.3, 1) both",
         "loading-bar": "loading-bar 1s ease-in-out infinite",
       },
       keyframes: {
@@ -109,8 +111,8 @@ const config: Config = {
           to: { opacity: "1" },
         },
         "hero-zoom": {
-          from: { transform: "scale(1)" },
-          to: { transform: "scale(1.08)" },
+          from: { transform: "scale(1.06)" },
+          to: { transform: "scale(1)" },
         },
         "loading-bar": {
           from: { transform: "translateX(-100%)" },

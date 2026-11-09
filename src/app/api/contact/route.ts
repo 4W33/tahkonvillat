@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { appendContact, buildContactEntry } from "@/lib/data/contact-store";
-import { hasValidSender, markNotified } from "@/lib/data/message-guard";
+import { hasValidSender, isHoneypotFilled, isSiteLocale, markNotified } from "@/lib/data/message-guard";
 import { sendContactNotification, toNotifiedFlag } from "@/lib/email/send";
 import type { ContactPayload } from "@/types/contact";
 
@@ -10,7 +10,7 @@ function isValidPayload(body: unknown): body is ContactPayload {
 
   return (
     hasValidSender(data) &&
-    typeof data.locale === "string" &&
+    isSiteLocale(data.locale) &&
     (data.topic === "villa" ||
       data.topic === "apartment" ||
       data.topic === "general")
@@ -20,6 +20,9 @@ function isValidPayload(body: unknown): body is ContactPayload {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // Botti: näennäinen onnistuminen, ei tallennusta eikä sähköpostia.
+    if (isHoneypotFilled(body)) return NextResponse.json({ ok: true });
 
     if (!isValidPayload(body)) {
       return NextResponse.json({ error: "Invalid contact data" }, { status: 400 });

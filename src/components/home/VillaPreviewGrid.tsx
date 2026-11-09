@@ -14,7 +14,7 @@ export async function VillaPreviewGrid({ locale }: Props) {
 
   return (
     <section className="bg-[#F7F2EA] py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="mb-16 max-w-3xl">
             <p className="eyebrow">{t("eyebrow")}</p>

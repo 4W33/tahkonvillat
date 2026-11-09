@@ -18,6 +18,8 @@ export async function fetchIcsText(
 ): Promise<string> {
   const response = await fetch(url, {
     headers: { accept: "text/calendar, text/plain;q=0.8, */*;q=0.5" },
+    // Jumiutunut Airbnb ei saa pidätellä sivua: aikakatkaisu heittää → getAvailability palauttaa "unavailable".
+    signal: AbortSignal.timeout(8000),
     ...(opts.noStore
       ? { cache: "no-store" as const }
       : { next: { revalidate: REVALIDATE_SECONDS } }),

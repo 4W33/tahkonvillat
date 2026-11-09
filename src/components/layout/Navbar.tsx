@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -14,6 +14,7 @@ export function Navbar() {
   const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const heroOverlay = isHome && !scrolled && !open;
 
@@ -30,8 +31,16 @@ export function Navbar() {
     if (!open) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Escape sulkee valikon ja palauttaa fokuksen valikkonappiin
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus();
+    }
+    window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
 
@@ -56,7 +65,7 @@ export function Navbar() {
         }`}
       >
         <div
-          className={`mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 transition-all duration-300 sm:px-6 lg:px-8 ${
+          className={`mx-auto grid max-w-[88rem] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 transition-all duration-300 sm:px-6 lg:px-8 ${
             heroOverlay ? "h-[6.25rem]" : "h-[4.75rem]"
           }`}
         >
@@ -88,6 +97,7 @@ export function Navbar() {
             <LanguageSwitcher tone={heroOverlay ? "light" : "dark"} />
 
             <button
+              ref={toggleRef}
               type="button"
               className={`inline-flex h-12 w-12 items-center justify-center rounded-lg transition-colors md:hidden ${
                 heroOverlay
@@ -95,6 +105,7 @@ export function Navbar() {
                   : "text-ink hover:bg-ink/5"
               }`}
               aria-expanded={open}
+              aria-controls="mobile-menu"
               aria-label={open ? tCommon("menuClose") : tCommon("menuOpen")}
               onClick={() => setOpen((prev) => !prev)}
             >
@@ -112,7 +123,7 @@ export function Navbar() {
         </div>
 
         {open && (
-          <div className="border-t border-[color:var(--hairline)] bg-white px-4 py-5 md:hidden">
+          <div id="mobile-menu" className="border-t border-[color:var(--hairline)] bg-white px-4 py-5 md:hidden">
             <NavLinks
               variant="vertical"
               className="flex flex-col gap-0.5"

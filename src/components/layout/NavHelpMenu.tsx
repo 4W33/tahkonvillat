@@ -50,7 +50,7 @@ export function NavHelpMenu({
   if (variant === "mobile") {
     return (
       <div className="py-1">
-        <p className="px-4 py-2 font-sans text-[0.75rem] font-semibold uppercase tracking-wide text-forest-500">
+        <p className="px-4 py-2 font-sans text-[0.9375rem] font-semibold uppercase tracking-wide text-forest-500">
           {t("helpMenu")}
         </p>
         {helpItems.map((item) => {

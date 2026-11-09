@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import type { GuestReview } from "@/types/review";
+import { formatReviewDate } from "@/lib/format-review-date";
 import { StarRating } from "./StarRating";
 
 type Props = {
@@ -13,13 +14,15 @@ type Props = {
 
 export async function GuestReviews({
   locale,
-  reviews,
+  reviews: unsorted,
   ratingAverage,
   ratingCount,
   propertyName,
   compact = false,
 }: Props) {
-  if (!reviews.length && ratingAverage == null) return null;
+  if (!unsorted.length && ratingAverage == null) return null;
+  // Parhaat arviot ensin (sort on vakaa: sama arvosana säilyttää alkuperäisen järjestyksen).
+  const reviews = [...unsorted].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
 
   const t = await getTranslations({ locale, namespace: "reviews" });
 
@@ -37,7 +40,7 @@ export async function GuestReviews({
 
       {!compact && (
         <div className="mt-3 flex flex-wrap items-end justify-between gap-6">
-          <h2 className="font-display text-3xl font-semibold text-forest sm:text-4xl">
+          <h2 className="font-display text-4xl font-semibold text-forest sm:text-5xl">
             {t("title")}
           </h2>
 
@@ -48,7 +51,7 @@ export async function GuestReviews({
               </span>
               <div>
                 <StarRating value={ratingAverage} size="md" />
-                <p className="mt-1.5 font-sans text-sm text-forest-600">
+                <p className="mt-1.5 font-sans text-[0.9375rem] text-forest-600">
                   {t("summary", { count: ratingCount })}
                 </p>
               </div>
@@ -63,7 +66,7 @@ export async function GuestReviews({
             {t("summary", { count: ratingCount })}
           </p>
           {ratingCount > reviews.length && reviews.length > 0 && (
-            <p className="font-sans text-sm text-forest-500">
+            <p className="font-sans text-[0.9375rem] text-forest-500">
               {t("showingSubset", {
                 total: ratingCount,
                 shown: reviews.length,
@@ -75,7 +78,7 @@ export async function GuestReviews({
 
       {reviews.length > 0 && (
         <ul
-          className={`grid gap-5 ${compact ? "sm:grid-cols-2" : "mt-10 sm:grid-cols-2"}`}
+          className={`grid items-start gap-5 sm:grid-cols-2 ${compact ? "" : "mt-10"}`}
         >
           {reviews.map((review) => (
             <li
@@ -92,8 +95,8 @@ export async function GuestReviews({
                   </span>
                 )}
                 {review.date && (
-                  <span className="font-sans text-sm text-forest-500">
-                    {review.date}
+                  <span className="font-sans text-[0.9375rem] text-forest-500">
+                    {formatReviewDate(review.date, locale)}
                   </span>
                 )}
               </div>
@@ -104,6 +107,10 @@ export async function GuestReviews({
             </li>
           ))}
         </ul>
+      )}
+
+      {locale !== "fi" && reviews.length > 0 && (
+        <p className="mt-6 font-sans text-base text-forest-500">{t("originalLanguage")}</p>
       )}
 
       {!compact &&

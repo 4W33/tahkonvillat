@@ -6,7 +6,7 @@ Pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md).
 ## Edellytykset
 
 - Vercel-projekti kytkettynä tähän repoon (olemassa Valtterin tilillä)
-- Vercel → Project → Settings → **Node.js Version 22.x tai 24.x** (Payload vaatii `^22.23.4 || >=24.22.1`)
+- Node.js 24.x: `package.json` `engines` lukitsee sen Vercelissä (ohittaa Settings → Node.js Version). Payload vaatii `^22.23.4 || >=24.22.1`
 - Domain `tahkonvillat.fi` (tai `*.vercel.app`) Vercelissä
 - Resend valinnainen (lomakkeet tallentuvat ilman sitä Payloadin Viestit-ryhmään)
 
@@ -23,7 +23,7 @@ Pikalista: [VERCEL-SHIP.md](VERCEL-SHIP.md).
 | `RESEND_API_KEY`, `EMAIL_FROM` | Ei | Lomakeilmoitukset ja adminin salasanan palautus sähköpostiin (ilman avainta palautuslinkki menee vain lokiin), `EMAIL_FROM` vaatii verifioidun domainin |
 | `EMAIL_TO` | Ei | Vastaanottaja, oletus `site.config.ts` contact.email |
 
-Ilman `DATABASE_URL`ia tai `PAYLOAD_SECRET`ia sovellus kaatuu käynnistyksessä (`src/instrumentation.ts`).
+Ilman `DATABASE_URL`ia, `PAYLOAD_SECRET`ia tai `BLOB_READ_WRITE_TOKEN`ia sovellus kaatuu käynnistyksessä (`src/instrumentation.ts`).
 `ADMIN_PASSWORD` ja `ADMIN_SESSION_TOKEN` eivät ole enää käytössä — ne voi poistaa Vercelistä.
 
 `PAYLOAD_SECRET` (PowerShell):
@@ -37,8 +37,10 @@ Ilman `DATABASE_URL`ia tai `PAYLOAD_SECRET`ia sovellus kaatuu käynnistyksessä 
 `vercel.json` → `buildCommand: npm run build:vercel`: tuotantobuild (`VERCEL_ENV=production`) ajaa ensin
 tietokantamigraatiot (`src/migrations/`), preview-build ja paikallinen `npm run build` **eivät**.
 
-> **Huom:** preview-deploy ei migroi kantaa. Jos Previewllä on sama `DATABASE_URL` kuin tuotannolla, skeemamuutoksen
-> sisältävä preview voi kaatua vanhaan skeemaan. Anna Previewlle oma kanta (esim. Neonin haara) tai jätä `DATABASE_URL` vain Productioniin.
+> **Preview = oma Neon-haara.** Preview-deploy ei migroi kantaa, joten sama `DATABASE_URL` kuin tuotannolla kaataisi
+> skeemamuutoksen sisältävän previewn vanhaan skeemaan. Luo Neoniin haara (Branches → Create branch tuotannosta) ja
+> aseta sen `DATABASE_URL` vain Preview-ympäristöön. Uusi skeema haaraan: aja `npx payload migrate` omalta koneelta
+> haaran `DATABASE_URL`illa.
 
 Skeemamuutoksen jälkeen (uusi kenttä, uusi käännösavain `messages/fi.json`:iin): `npx payload migrate:create <nimi>` paikallista kantaa vasten → committaa `src/migrations/`.
 
@@ -70,7 +72,9 @@ Skeemamuutoksen jälkeen (uusi kenttä, uusi käännösavain `messages/fi.json`:
    `data/ical-sources.json`ista (gitignore), jos exportissa ei ole omaa. Paikallinen ajo 28.10. tyhjään kantaan:
    117 kuvaa, 3 villaa, 5 asuntoa, 6 iCal-linkkiä, 1 varaus. Ajo on idempotentti: olemassa olevat villat ja
    asunnot ohitetaan, joten asiakkaan muokkaukset säilyvät. `npm run cms:seed -- --force` ylikirjoittaa ne datan arvoilla.
-7. **Tarkista live:**
+7. **Redeploy seedin jälkeen:** seed ei tyhjennä Vercelin sivuvälimuistia (revalidointi on seedissä pois päältä), joten
+   ensimmäisessä deployssa tyhjästä kannasta rakennetut sivut näkyisivät tyhjinä, kunnes välimuisti vanhenee. Vercel → Deployments → Redeploy.
+8. **Tarkista live:**
 
    | URL | Tarkistus |
    |-----|-----------|
@@ -82,7 +86,7 @@ Skeemamuutoksen jälkeen (uusi kenttä, uusi käännösavain `messages/fi.json`:
    | `/faq` · `/tietosuoja` | Sisältösivut |
    | `/admin` | Payload-kirjautuminen |
 
-8. **Admin-savutesti:**
+9. **Admin-savutesti:**
    - Sivuston tekstit → Etusivu → muuta tekstiä → Tallenna → päivitä `/` (muutos näkyy)
    - Villat → villa → Hinnat → muuta perushintaa → Tallenna → päivitä `/villat`
    - Lähetä yhteydenottolomake → Viestit → Yhteydenotot
@@ -107,9 +111,9 @@ Ilman `BLOB_READ_WRITE_TOKEN`ia kuvat tallentuvat `media/`-kansioon.
 
 | Ongelma | Korjaus |
 |---------|---------|
-| Käynnistys kaatuu "Puuttuvat ympäristömuuttujat" | Lisää `DATABASE_URL` + `PAYLOAD_SECRET` → Redeploy |
+| Käynnistys kaatuu "Puuttuvat ympäristömuuttujat" | Lisää virheessä nimetyt: `DATABASE_URL`, `PAYLOAD_SECRET`, `BLOB_READ_WRITE_TOKEN` → Redeploy |
 | Build kaatuu `payload migrate`iin | `DATABASE_URL` puuttuu buildista tai kanta ei vastaa — tarkista Neon-kytkentä |
-| Payload vaatii uudemman Noden | Settings → Node.js Version 22.x tai 24.x |
+| Payload vaatii uudemman Noden | `package.json` `engines.node` = `24.x`; paikallisesti Node ≥ 22.23.4 |
 | Kuvan lataus epäonnistuu | `BLOB_READ_WRITE_TOKEN` puuttuu tai säilö ei ole julkinen |
 | Kuvat puuttuvat sivulta | `cms:seed` ajamatta tuotantokantaan / säilöön |
 | Kalenteri "Saatavuustietoa ei juuri nyt saada haettua" | iCal-linkki virheellinen, Airbnb ei vastaa tai kanta ei vastaa — päiviä ei silloin näytetä vapaina. Tyhjä linkki = vain käsivaraukset |

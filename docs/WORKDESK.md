@@ -65,6 +65,20 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
   - Lisäksi saatu Tintintaival 6A (`1199826378507869635`) ja 6B (`47070530`): eri Airbnb-ilmoituksia, joita sivustolla ei ole → kysyttävä, lisätäänkö kohteiksi.
   - Tuotantoon linkit syötetään Payload-adminissa (Task 5), ei gittiin.
 
+## Tuotantovalmius 9.11.2026 (Miki, ennen asiakaspalaveria)
+- ✓ **Nopeus**: layoutista puuttui `setRequestLocale` → jokainen sivu renderöitiin joka pyynnöllä. Nyt etusivu, villat, villasivut, UKK, lähtöohjeet ja tietosuoja esirenderöidään (build-taulukko ●). Asunnot ja yhteystiedot yhä dynaamisia (`searchParams`). Paikallinen `next start`: TTFB 20–85 ms. Hintojen N+1-kysely poistettu (`pricing.ts`, yksi haku per pyyntö). Käyttämättömät fonttipainot pois.
+- ✓ **i18n /en**: canonical oli `/en/en/...` (`seo.ts`), korjattu + `x-default`, etusivulle alternates. Kovakoodatut suomenkieliset tekstit (footer "Sivut", "Ota yhteyttä", allekirjoitus) käännösavaimiin. Arvostelujen päivämäärät englanniksi + huomautus alkuperäiskielestä. Tuntematon polku → kielikohtainen 404 oikealla statuksella (`[...rest]`, `loading.tsx` poistettu: se teki 404:stä statuksen 200).
+- ✓ **Uudet tekstiavaimet** `footer.pages`, `reviews.originalLanguage` → migraatio `20261109_211800_tekstit_footer_pages_reviews_kieli`.
+- ✓ **Deploy-ansa**: `postgresAdapter.push` vain paikalliselle kannalle. Ennen `cms:seed` Neoniin olisi tehnyt dev-pushin, jonka jälkeen tuotannon `payload migrate` ohittuu hiljaa. DEPLOY.md/VERCEL-SHIP.md: redeploy seedin jälkeen, previewille oma Neon-haara, `BLOB_READ_WRITE_TOKEN` vianetsintään, Node 24.x (`engines`).
+- ✓ **Kalenteri**: `unavailable`-tilassa näytetään vain ilmoitus, ei ruudukkoa (päivät näkyivät vapaina). iCal-haulle 8 s aikakatkaisu.
+- ✓ **Lomakkeet**: honeypot (`website`), päivämäärä-/kieli-/slug-validointi, villan nimi haetaan palvelimella slugista (ei asiakkaan syötteestä sähköpostin otsikkoon), virheilmoitus lokalisoitu + `role="alert"`, `maxLength`.
+- ✓ **Saavutettavuus**: gallerian lightboxin fokus (avaus → sulkunappi, sulku → takaisin), mobiilivalikko Esc + `aria-controls`, kontrastit AA (forest-500, uusi `gold.deep`), ei alle 15 px tekstiä (mitattu 0 kpl kaikilla sivuilla, 1440 ja 390 px).
+- ✓ **Turva/SEO**: turvaotsakkeet koko sivustolle (`vercel.json`), Media vain jpeg/png/webp/avif (ei SVG), JSON-LD `LodgingBusiness` absoluuttisella kuvalla (koordinaatteja ei ole → ei `VacationRental`), jakokuva on villakuva eikä logo.
+- ✓ **Ilme**: HighlightsStrip, Magnetic ja tuulinappi poistettu, hero-zoom kertaluonteinen, napeissa `active:scale`, kontti 88rem, etusivun arvosteluissa keskiarvo oikeasta datasta, villasivun tiedustelulomake seuraa vieritystä, otsikkokuvat vaihdettu (yhteystiedoissa oli suihkuhuone).
+- Todisteet: `npx tsc --noEmit` 0 virhettä · `npm test` 64/64 · `npm run build` läpi.
+- ✗ Ei tehty: Payloadin `csrf`-lista (rikkoisi adminin Vercel-previewssä, kunnes `serverURL` on päätetty) · `npm run lint` ei toimi (repossa ei ESLint-konfiguraatiota) · asunnot/yhteystiedot staattisiksi · arvostelujen käännös englanniksi · Lighthouse-mittaus tuotanto-osoitteesta (ei vielä deployattu).
+- EI pushattu.
+
 ## Päätökset
 - 2026-09-09 Nykyinen admin + iframe-esikatselu, ei Sanitya (Miki).
 - 2026-09-09 Sovellus Verceliin, tahkonvillat.fi DNS Domainhotellilta Verceliin (Miki).
@@ -78,6 +92,8 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - 2026-10-28 Payloadin kuvat JULKISEEN Blob-säilöön: `@payloadcms/storage-vercel-blob` 3.92 ei tue yksityistä. Sisältö ja lomakkeet Postgresissa.
 - 2026-10-28 Sivuston tekstit = yksi Payload-globaali per `messages/fi.json`-osio (Postgresin 100 argumentin raja), kentät generoidaan viestipohjasta.
 - 2026-10-28 Esikatselu = Payload Live Preview (päivittyy tallennuksessa), ei luonnos-/autosave-tilaa.
+- 2026-11-09 Sivusiirtojen latauspalkki (`loading.tsx`) poistettu: sivut ovat esirenderöityjä ja palkki muutti 404-statuksen 200:ksi (Claude).
+- 2026-11-09 Lomakkeiden roskapostisuoja = honeypot; nopeusrajoitus tehdään tarvittaessa Vercel Firewallissa, ei koodissa (Claude).
 
 ## Odottaa asiakkaalta / Valtterilta / Mikiltä
 - [ ] **Neon-tietokanta** Valtterin Vercel-projektiin (Marketplace → `DATABASE_URL`) — tilitoimenpide, mahdollinen kustannus → Mikin/Valtterin päätös.
@@ -86,7 +102,8 @@ Haara `vaihe1-viimeistely` mergetty `main`iin ja **pushattu** `4W33/tahkonvillat
 - [ ] **Ensimmäinen admin-käyttäjä tuotannossa** heti ensimmäisen deployn jälkeen (`/admin` → Luo ensimmäinen käyttäjä) ja tunnukset asiakkaalle.
 - [ ] **Asiakkaan PDF-opas** `docs/Tahkon-Villat-sisallonhallintaopas.pdf` on VANHENTUNUT → tehdään uudelleen Payload-administa (erillinen tehtävä; pohjana `ADMIN-GUIDE.md`).
 - [ ] **Tintintaival 6A ja 6B**: lisätäänkö sivustolle kohteiksi (eri Airbnb-ilmoitukset, iCal-linkit saatu 28.10.).
-- [ ] **Layoutin suunta** (vaihe 2 pyyntö "layoutin parannus") — päätös auki.
+- [x] **Layoutin suunta**: nykyinen teema säilyy, hionta tehty 9.11. (ks. Tuotantovalmius). Asiakkaan kommentit palaverista.
+- [ ] **Villa Puolukan 3 tähden arvostelu** (maininta hiirestä) näkyy villasivulla viimeisenä → asiakas päättää, poistetaanko Payloadissa.
 - [x] **Airbnb iCal -linkit ×6** (Puolukka, Karpalo, Teituli A/B/8A/8B) — saatu 28.10. Asiakkaalle oma ohje: `docs/Tahkon-Villat-Airbnb-kalenteriohje.pdf`. Asiakas hakee linkit itse — **emme pyydä Airbnb-tunnuksia**.
 - [ ] **Logon tekstitön merkki** → `public/images/logo-mark-plain.png`, sitten `markPlainAvailable: true` site.configiin. Lisäksi uusi Nanobanana-viimeistelty tunnus jos tulee.
 - [ ] **Resend**: API-avain (`.env.local` + Vercel) ja tahkonvillat.fi SPF/DKIM Domainhotellin DNS:ään.

@@ -61,93 +61,96 @@ export function AvailabilityCalendar({ calendars, locale, today }: Props) {
         </div>
       )}
 
-      {calendar.status === "unavailable" && (
-        <p className="mb-4 rounded-lg border border-[color:var(--hairline)] bg-paper-100 px-4 py-3 font-sans text-sm text-forest-700">
+      {/* Virhetilanteessa vain ilmoitus: ruudukko näyttäisi päivät vapaina. */}
+      {calendar.status === "unavailable" ? (
+        <p className="mb-4 rounded-lg border border-[color:var(--hairline)] bg-paper-100 px-4 py-3 font-sans text-[0.9375rem] text-forest-700">
           {t("unavailable")}
         </p>
-      )}
-
-      <div className="rounded-2xl border border-[color:var(--hairline)] bg-paper p-4 sm:p-6">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setCursor(shiftMonth(year, month, -1))}
-            disabled={monthsAhead <= 0}
-            aria-label={t("prevMonth")}
-            className={navButton}
-          >
-            ‹
-          </button>
-          <p
-            className="font-display text-2xl font-semibold capitalize text-ink"
-            aria-live="polite"
-          >
-            {monthLabel}
-          </p>
-          <button
-            type="button"
-            onClick={() => setCursor(shiftMonth(year, month, 1))}
-            disabled={monthsAhead >= MAX_MONTHS_AHEAD}
-            aria-label={t("nextMonth")}
-            className={navButton}
-          >
-            ›
-          </button>
-        </div>
-
-        <div className="mt-5 grid grid-cols-7 gap-1 text-center">
-          {WEEKDAY_KEYS.map((key) => (
-            <div key={key} className="mono-label py-1 text-[0.7rem]">
-              {t(`weekdays.${key}`)}
-            </div>
-          ))}
-          {cells.map((cell) => {
-            const booked = cell.inMonth && isBooked(cell.iso, calendar.booked);
-            const past = cell.iso < today;
-            const label = dayFormat.format(new Date(`${cell.iso}T00:00:00Z`));
-            return (
-              <div
-                key={cell.iso}
-                role={cell.inMonth ? "img" : undefined}
-                aria-label={
-                  cell.inMonth
-                    ? booked
-                      ? t("bookedDay", { date: label })
-                      : t("freeDay", { date: label })
-                    : undefined
-                }
-                aria-hidden={!cell.inMonth}
-                className={[
-                  "flex aspect-square min-h-10 items-center justify-center rounded-md font-sans text-sm",
-                  !cell.inMonth ? "invisible" : "",
-                  booked
-                    ? "bg-paper-300 text-forest-500 line-through decoration-forest-400"
-                    : "bg-paper-50 text-ink",
-                  past && cell.inMonth ? "opacity-40" : "",
-                ].join(" ")}
+      ) : (
+        <>
+          <div className="rounded-2xl border border-[color:var(--hairline)] bg-paper p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setCursor(shiftMonth(year, month, -1))}
+                disabled={monthsAhead <= 0}
+                aria-label={t("prevMonth")}
+                className={navButton}
               >
-                {cell.day}
-              </div>
-            );
-          })}
-        </div>
+                ‹
+              </button>
+              <p
+                className="font-display text-2xl font-semibold capitalize text-ink"
+                aria-live="polite"
+              >
+                {monthLabel}
+              </p>
+              <button
+                type="button"
+                onClick={() => setCursor(shiftMonth(year, month, 1))}
+                disabled={monthsAhead >= MAX_MONTHS_AHEAD}
+                aria-label={t("nextMonth")}
+                className={navButton}
+              >
+                ›
+              </button>
+            </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-5 font-sans text-sm text-forest-600">
-          <span className="inline-flex items-center gap-2">
-            <span
-              className="h-4 w-4 rounded-sm border border-[color:var(--hairline)] bg-paper-50"
-              aria-hidden
-            />
-            {t("legendFree")}
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <span className="h-4 w-4 rounded-sm bg-paper-300" aria-hidden />
-            {t("legendBooked")}
-          </span>
-        </div>
-      </div>
+            <div className="mt-5 grid grid-cols-7 gap-1 text-center">
+              {WEEKDAY_KEYS.map((key) => (
+                <div key={key} className="mono-label py-1 text-[0.9375rem]">
+                  {t(`weekdays.${key}`)}
+                </div>
+              ))}
+              {cells.map((cell) => {
+                const booked = cell.inMonth && isBooked(cell.iso, calendar.booked);
+                const past = cell.iso < today;
+                const label = dayFormat.format(new Date(`${cell.iso}T00:00:00Z`));
+                return (
+                  <div
+                    key={cell.iso}
+                    role={cell.inMonth ? "img" : undefined}
+                    aria-label={
+                      cell.inMonth
+                        ? booked
+                          ? t("bookedDay", { date: label })
+                          : t("freeDay", { date: label })
+                        : undefined
+                    }
+                    aria-hidden={!cell.inMonth}
+                    className={[
+                      "flex aspect-square min-h-10 items-center justify-center rounded-md font-sans text-[0.9375rem]",
+                      !cell.inMonth ? "invisible" : "",
+                      booked
+                        ? "bg-paper-300 text-forest-500 line-through decoration-forest-400"
+                        : "bg-paper-50 text-ink",
+                      past && cell.inMonth ? "opacity-40" : "",
+                    ].join(" ")}
+                  >
+                    {cell.day}
+                  </div>
+                );
+              })}
+            </div>
 
-      <p className="mt-3 font-sans text-sm text-forest-600">{t("syncHint")}</p>
+            <div className="mt-5 flex flex-wrap items-center gap-5 font-sans text-[0.9375rem] text-forest-600">
+              <span className="inline-flex items-center gap-2">
+                <span
+                  className="h-4 w-4 rounded-sm border border-[color:var(--hairline)] bg-paper-50"
+                  aria-hidden
+                />
+                {t("legendFree")}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="h-4 w-4 rounded-sm bg-paper-300" aria-hidden />
+                {t("legendBooked")}
+              </span>
+            </div>
+          </div>
+
+          <p className="mt-3 font-sans text-[0.9375rem] text-forest-600">{t("syncHint")}</p>
+        </>
+      )}
     </div>
   );
 }

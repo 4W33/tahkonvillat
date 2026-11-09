@@ -2,8 +2,6 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { RevealText } from "@/components/motion/RevealText";
-import { ClipReveal } from "@/components/motion/ClipReveal";
-import { Magnetic } from "@/components/motion/Magnetic";
 
 export async function HomeEditorialBand() {
   const t = await getTranslations("home.editorial");
@@ -11,7 +9,7 @@ export async function HomeEditorialBand() {
 
   return (
     <section className="relative min-h-[80vh] overflow-hidden bg-neutral-900 text-paper">
-      <ClipReveal className="absolute inset-0">
+      <div className="absolute inset-0">
         <Image
           src={editorialImage}
           alt={t("imageAlt")}
@@ -19,13 +17,13 @@ export async function HomeEditorialBand() {
           sizes="100vw"
           className="object-cover"
         />
-      </ClipReveal>
+      </div>
       <div
         className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"
         aria-hidden
       />
 
-      <div className="relative mx-auto flex min-h-[80vh] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-[80vh] max-w-[88rem] flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
         <p className="eyebrow text-paper/70">{t("eyebrow")}</p>
         <RevealText
           as="h2"
@@ -36,11 +34,9 @@ export async function HomeEditorialBand() {
           {t("subtitle")}
         </p>
         <div className="mt-10">
-          <Magnetic>
-            <Link href="/villas" className="btn-cream">
-              {t("cta")}
-            </Link>
-          </Magnetic>
+          <Link href="/villas" className="btn-cream">
+            {t("cta")}
+          </Link>
         </div>
       </div>
     </section>

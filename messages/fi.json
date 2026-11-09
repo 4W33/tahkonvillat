@@ -24,7 +24,8 @@
     "tagline": "Lomamökit Tahkolla sekä asunnot Uudellamaalla.",
     "contact": "Ota yhteyttä",
     "rights": "Kaikki oikeudet pidätetään.",
-    "privacy": "Tietosuoja"
+    "privacy": "Tietosuoja",
+    "pages": "Sivut"
   },
   "home": {
     "hero": {
@@ -53,7 +54,7 @@
     "story": {
       "eyebrow": "Meistä",
       "title": "Tilaa hengittää, lähellä kaikkea",
-      "image": "/images/properties/villa-puolukka/12.jpg",
+      "image": "/images/properties/villa-karpalo/02.jpg",
       "imageAlt": "Maisema järven ja metsän yllä Tahkon seudulla",
       "paragraph1": "Olemme perhe, joka tuntee nämä rinteet ja rannat läpikotaisin — ja hoidamme jokaisen villan ja asunnon itse, ensimmäisestä viestistä avainten luovutukseen.",
       "paragraph2": "Tahkon villamme on tehty saunailtoja, takkatulia ja verkkaisia järviaamuja varten, rinteet ja reitit minuuttien päässä. Uudenmaan asuntomme pitävät työ- ja kaupunkireissut vaivattomina.",
@@ -399,7 +400,8 @@
   "reviews": {
     "title": "Vieraiden kokemuksia",
     "summary": "{count} arvostelua",
-    "showingSubset": "Sivulla näytetään {shown} valittua arvostelua. Yhteensä {total} vahvistettua arvostelua."
+    "showingSubset": "Sivulla näytetään {shown} valittua arvostelua. Yhteensä {total} vahvistettua arvostelua.",
+    "originalLanguage": "Arvostelut näytetään alkuperäisellä kielellä."
   },
   "privacy": {
     "metadata": {

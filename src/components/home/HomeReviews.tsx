@@ -23,6 +23,7 @@ function bestReviews(reviews: GuestReview[] | undefined): GuestReview[] {
 
 export async function HomeReviews() {
   const t = await getTranslations("home.homeReviews");
+  const tReviews = await getTranslations("reviews");
   const lang = (await getLocale()) as "fi" | "en";
   const villas = await getVillas();
   const apartments = await getApartments();
@@ -53,16 +54,38 @@ export async function HomeReviews() {
 
   if (cards.length === 0) return null;
 
+  // Kaikkien kohteiden arvioiden määrä ja niillä painotettu keskiarvo (oikeasta datasta, ei käsin syötetty).
+  const rated = properties.filter((p) => p.ratingAverage != null && p.ratingCount);
+  const totalCount = rated.reduce((n, p) => n + (p.ratingCount ?? 0), 0);
+  const average = totalCount
+    ? rated.reduce((n, p) => n + (p.ratingAverage ?? 0) * (p.ratingCount ?? 0), 0) / totalCount
+    : null;
+
   return (
     <section className="bg-[#F7F2EA] py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="max-w-2xl">
-            <p className="eyebrow">{t("eyebrow")}</p>
-            <h2 className="section-title mt-2">{t("title")}</h2>
-            <p className="mt-5 font-sans text-base leading-relaxed text-forest-700">
-              {t("subtitle")}
-            </p>
+          <div className="flex flex-wrap items-end justify-between gap-8">
+            <div className="max-w-2xl">
+              <p className="eyebrow">{t("eyebrow")}</p>
+              <h2 className="section-title mt-2">{t("title")}</h2>
+              <p className="mt-5 font-sans text-base leading-relaxed text-forest-700">
+                {t("subtitle")}
+              </p>
+            </div>
+            {average != null && (
+              <div className="flex items-center gap-5 rounded-2xl bg-white px-7 py-5 shadow-soft">
+                <span className="font-display text-6xl font-semibold leading-none text-ink">
+                  {average.toFixed(2)}
+                </span>
+                <div>
+                  <StarRating value={average} size="lg" />
+                  <p className="mt-2 font-sans text-base text-forest-600">
+                    {tReviews("summary", { count: totalCount })}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </Reveal>
 
@@ -76,7 +99,7 @@ export async function HomeReviews() {
                 <blockquote className="mt-4 flex-1 font-serif text-lg italic leading-snug text-ink">
                   {card.comment}
                 </blockquote>
-                <figcaption className="mt-6 flex items-center gap-2 font-sans text-[0.82rem] text-forest-600">
+                <figcaption className="mt-6 flex items-center gap-2 font-sans text-[0.9375rem] text-forest-600">
                   {card.author && <span className="font-semibold text-ink">{card.author}</span>}
                   {card.author && <span aria-hidden>·</span>}
                   <span>{card.property}</span>

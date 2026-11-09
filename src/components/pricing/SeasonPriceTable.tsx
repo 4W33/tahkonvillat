@@ -18,7 +18,7 @@ export async function SeasonPriceTable({ pricing, locale, today }: Props) {
   return (
     <div className="mt-4 border-t border-[color:var(--hairline)] pt-4">
       <p className="mono-label">{t("seasonsTitle")}</p>
-      <table className="mt-2 w-full font-sans text-sm text-forest-700">
+      <table className="mt-2 w-full font-sans text-[0.9375rem] text-forest-700">
         <tbody>
           {seasons.map((season) => (
             <tr

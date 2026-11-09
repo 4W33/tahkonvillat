@@ -1,4 +1,5 @@
-import { absoluteUrl } from "@/lib/seo";
+import { getTranslations } from "next-intl/server";
+import { absoluteUrl, getSiteUrl } from "@/lib/seo";
 import type { Villa } from "@/types/villa";
 
 type Props = {
@@ -6,24 +7,22 @@ type Props = {
   locale: "fi" | "en";
 };
 
-export function VillaJsonLd({ villa, locale }: Props) {
+// VacationRental vaatii koordinaatit (latitude/longitude), joita datassa ei ole: käytetään LodgingBusinessia
+export async function VillaJsonLd({ villa, locale }: Props) {
+  const t = await getTranslations({ locale, namespace: "villas" });
   const data = {
     "@context": "https://schema.org",
-    "@type": "VacationRental",
+    "@type": "LodgingBusiness",
     name: villa.name[locale],
     description: villa.description[locale],
     url: absoluteUrl(locale, `/villas/${villa.slug}`),
     numberOfRooms: villa.bedrooms,
-    occupancy: {
-      "@type": "QuantitativeValue",
-      maxValue: villa.guests,
-    },
     address: {
       "@type": "PostalAddress",
-      addressLocality: villa.location,
+      addressLocality: t(`locations.${villa.location}`),
       addressCountry: "FI",
     },
-    image: villa.gallery[0] ?? villa.image,
+    image: new URL(villa.gallery[0] ?? villa.image, getSiteUrl()).toString(),
   };
 
   return (

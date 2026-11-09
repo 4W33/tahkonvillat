@@ -50,6 +50,7 @@ export async function generateMetadata(props: Props) {
     description: villa.description[lang],
     path: `/villas/${slug}`,
     absoluteTitle: pageTitle,
+    image: villa.image,
   });
 }
 
@@ -77,7 +78,7 @@ export default async function VillaDetailPage(props: Props) {
       <VillaJsonLd villa={villa} locale={lang} />
       <VillaMobileCta />
       <section className="page-header !py-10 sm:!py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <Reveal>
             <BackLink href="/villas" label={tDetail("back")} />
             <p className="eyebrow mt-6">{t(`locations.${villa.location}`)}</p>
@@ -106,7 +107,7 @@ export default async function VillaDetailPage(props: Props) {
       </section>
 
       <section className="py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-12">
             <div>
               <Reveal>
@@ -162,11 +163,12 @@ export default async function VillaDetailPage(props: Props) {
               )}
             </div>
 
-            <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            {/* Lomake seuraa vieritystä (koko sivupalkki on ruutua korkeampi, joten vain lomake on sticky). */}
+            <aside className="flex flex-col gap-6">
               <Reveal delay={60}>
                 <BookingNotice locale={locale} villa={villa} />
               </Reveal>
-              <Reveal delay={140}>
+              <Reveal delay={140} className="[@media(min-height:880px)]:lg:sticky [@media(min-height:880px)]:lg:top-24">
                 <VillaInquiryForm
                   villaSlug={villa.slug}
                   villaName={villa.name[lang]}

@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { RevealText } from "@/components/motion/RevealText";
-import { Magnetic } from "@/components/motion/Magnetic";
 
 export async function CtaSection() {
   const t = await getTranslations("home.cta");
+  const tFooter = await getTranslations("footer");
 
   return (
     <section className="relative overflow-hidden bg-[#EDE5D8] py-24 sm:py-32">
@@ -20,7 +20,7 @@ export async function CtaSection() {
 
       <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
         <p className="font-display italic text-3xl font-semibold text-gold-dark sm:text-4xl">
-          Ota yhteyttä
+          {tFooter("contact")}
         </p>
         <RevealText
           as="h2"
@@ -35,11 +35,9 @@ export async function CtaSection() {
           {t("subtitle")}
         </p>
         <div className="mt-12 flex justify-center">
-          <Magnetic>
-            <Link href="/contact" className="btn-primary">
-              {t("button")}
-            </Link>
-          </Magnetic>
+          <Link href="/contact" className="btn-primary">
+            {t("button")}
+          </Link>
         </div>
       </div>
     </section>

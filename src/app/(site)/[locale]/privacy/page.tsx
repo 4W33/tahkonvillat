@@ -69,7 +69,7 @@ export default async function PrivacyPage(props: Props) {
                   <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-ink sm:text-2xl">
                     {t(`sections.${key}.title`)}
                   </h2>
-                  <p className="mt-3 font-sans text-sm leading-relaxed text-forest-700 sm:text-base">
+                  <p className="mt-3 font-sans text-[0.9375rem] leading-relaxed text-forest-700 sm:text-base">
                     {t(`sections.${key}.body`, { email: CONTACT_EMAIL })}
                   </p>
                 </article>
@@ -78,7 +78,7 @@ export default async function PrivacyPage(props: Props) {
           </div>
 
           <Reveal delay={360}>
-            <p className="mt-12 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-forest-500">
+            <p className="mt-12 font-mono text-[0.9375rem] uppercase tracking-[0.14em] text-forest-500">
               {t("updatedAt")}
             </p>
           </Reveal>

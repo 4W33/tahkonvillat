@@ -43,7 +43,7 @@ function AccordionItem({
           {question}
         </span>
         <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--hairline)] font-sans text-xl font-light text-ink transition-transform duration-300 ease-out-expo ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--hairline)] font-sans text-xl font-normal text-ink transition-transform duration-300 ease-out-expo ${
             isOpen ? "rotate-45 border-ink bg-ink text-paper" : ""
           }`}
           aria-hidden

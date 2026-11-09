@@ -22,7 +22,7 @@ export async function ApartmentEmptyState({ variant = "light" }: Props) {
         {t("title")}
       </p>
       <p
-        className={`mx-auto mt-3 max-w-md font-sans text-sm leading-relaxed ${
+        className={`mx-auto mt-3 max-w-md font-sans text-[0.9375rem] leading-relaxed ${
           isDark ? "text-paper/75" : "text-forest-700"
         }`}
       >

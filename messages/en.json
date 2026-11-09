@@ -24,7 +24,8 @@
     "tagline": "Holiday homes in Tahko and apartments in Uusimaa.",
     "contact": "Get in touch",
     "rights": "All rights reserved.",
-    "privacy": "Privacy policy"
+    "privacy": "Privacy policy",
+    "pages": "Pages"
   },
   "home": {
     "hero": {
@@ -53,7 +54,7 @@
     "story": {
       "eyebrow": "About us",
       "title": "Room to breathe, close to everything",
-      "image": "/images/properties/villa-puolukka/12.jpg",
+      "image": "/images/properties/villa-karpalo/02.jpg",
       "imageAlt": "Lake and forest landscape in the Tahko region",
       "paragraph1": "We're a family who knows these slopes and shores by heart — and we look after every villa and apartment ourselves, from your first message to the keys in your hand.",
       "paragraph2": "Our Tahko villas are made for sauna evenings, firelit nights and slow mornings by the water, with the slopes and trails just minutes away. Our Uusimaa apartments keep work trips and city breaks effortless.",
@@ -399,7 +400,8 @@
   "reviews": {
     "title": "Guest experiences",
     "summary": "{count} reviews",
-    "showingSubset": "Showing {shown} selected reviews. {total} verified reviews in total."
+    "showingSubset": "Showing {shown} selected reviews. {total} verified reviews in total.",
+    "originalLanguage": "Reviews are shown in their original language."
   },
   "privacy": {
     "metadata": {

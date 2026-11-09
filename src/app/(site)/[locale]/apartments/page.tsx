@@ -68,7 +68,7 @@ export default async function ApartmentsPage(props: Props) {
       />
 
       <section className="bg-[#F2EBE0] py-14 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <Reveal>
             <p className="font-serif italic text-base text-forest-600">{t("filters.label")}</p>
           </Reveal>
@@ -96,7 +96,7 @@ export default async function ApartmentsPage(props: Props) {
       </section>
 
       <section className="bg-[#F2EBE0] py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div
               id="inquiry"

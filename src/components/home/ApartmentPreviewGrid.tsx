@@ -14,7 +14,7 @@ export async function ApartmentPreviewGrid({ locale }: Props) {
 
   return (
     <section className="bg-white py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="mb-14 max-w-3xl">
             <p className="eyebrow">{t("eyebrow")}</p>
@@ -26,7 +26,7 @@ export async function ApartmentPreviewGrid({ locale }: Props) {
         </Reveal>
 
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {apartments.map((apartment, index) => (
+          {apartments.slice(0, 3).map((apartment, index) => (
             <Reveal key={apartment.id} delay={index * 80}>
               <ApartmentHomeCard apartment={apartment} locale={locale} />
             </Reveal>

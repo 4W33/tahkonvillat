@@ -9,7 +9,7 @@ export function BackLink({ href, label }: Props) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 font-sans text-sm text-forest-600 transition-colors hover:text-forest"
+      className="inline-flex items-center gap-2 font-sans text-[0.9375rem] text-forest-600 transition-colors hover:text-forest"
     >
       <svg
         viewBox="0 0 16 16"

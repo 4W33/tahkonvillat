@@ -68,13 +68,13 @@ export default async function ContactPage(props: Props) {
       />
 
       <section className="py-12 sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
+        <div className="mx-auto grid max-w-[88rem] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
           <Reveal>
           <div>
             <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               {t("info.title")}
             </h2>
-            <p className="mt-5 font-sans text-sm leading-relaxed text-forest-700 sm:text-base">
+            <p className="mt-5 font-sans text-[0.9375rem] leading-relaxed text-forest-700 sm:text-base">
               {t("info.description")}
             </p>
 

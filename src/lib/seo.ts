@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { BRAND_LOGO, BRAND_NAME } from "@/lib/constants";
+import { BRAND_NAME } from "@/lib/constants";
 import { siteConfig } from "@/lib/site.config";
 
 export function getSiteUrl(): string {
@@ -43,10 +43,11 @@ export function localePath(locale: string, path: string): string {
       ? getPathname({ locale, href: normalized as StaticPath })
       : normalized;
 
-  if (locale === routing.defaultLocale) {
+  // getPathname lisää kieliprefiksin itse (localePrefix "as-needed"); vain tuntematon polku prefiksoidaan käsin.
+  if (villaMatch || STATIC_PATHS.has(normalized as StaticPath)) {
     return localized === "/" ? "" : localized;
   }
-  return `/${locale}${localized === "/" ? "" : localized}`;
+  return locale === routing.defaultLocale ? localized : `/${locale}${localized}`;
 }
 
 export function absoluteUrl(locale: string, path: string): string {
@@ -60,7 +61,11 @@ type PageMeta = {
   description: string;
   path?: string;
   absoluteTitle?: string;
+  /** Jakokuva (polku tai täysi URL). Oletus: etusivun hero-kuva. */
+  image?: string;
 };
+
+const DEFAULT_OG_IMAGE = "/images/properties/villa-karpalo/04.jpg";
 
 export function buildPageMetadata({
   locale,
@@ -68,8 +73,10 @@ export function buildPageMetadata({
   description,
   path = "",
   absoluteTitle,
+  image = DEFAULT_OG_IMAGE,
 }: PageMeta): Metadata {
   const url = absoluteUrl(locale, path);
+  const ogImage = image.startsWith("http") ? image : `${getSiteUrl()}${image}`;
   const resolvedTitle = absoluteTitle ?? title;
 
   return {
@@ -77,9 +84,12 @@ export function buildPageMetadata({
     description,
     alternates: {
       canonical: url,
-      languages: Object.fromEntries(
-        routing.locales.map((loc) => [loc, absoluteUrl(loc, path)]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          routing.locales.map((loc) => [loc, absoluteUrl(loc, path)]),
+        ),
+        "x-default": absoluteUrl(routing.defaultLocale, path),
+      },
     },
     openGraph: {
       type: "website",
@@ -88,20 +98,13 @@ export function buildPageMetadata({
       siteName: BRAND_NAME,
       title: resolvedTitle,
       description,
-      images: [
-        {
-          url: `${getSiteUrl()}${BRAND_LOGO}`,
-          width: 630,
-          height: 599,
-          alt: BRAND_NAME,
-        },
-      ],
+      images: [{ url: ogImage, alt: resolvedTitle }],
     },
     twitter: {
       card: "summary_large_image",
       title: resolvedTitle,
       description,
-      images: [`${getSiteUrl()}${BRAND_LOGO}`],
+      images: [ogImage],
     },
   };
 }

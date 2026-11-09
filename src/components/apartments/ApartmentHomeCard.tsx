@@ -35,7 +35,7 @@ export async function ApartmentHomeCard({ apartment, locale }: Props) {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-[1.1s] ease-out-expo group-hover:scale-105"
         />
-        <span className="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1 font-sans text-sm font-medium text-ink backdrop-blur-sm">
+        <span className="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1 font-sans text-[0.9375rem] font-medium text-ink backdrop-blur-sm">
           {t(`locations.${apartment.location}`)}
         </span>
       </div>

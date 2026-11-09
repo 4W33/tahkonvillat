@@ -35,7 +35,7 @@ export function LanguageSwitcher({ tone = "dark" }: { tone?: "light" | "dark" })
           key={code}
           href={href}
           locale={code}
-          className={`rounded-md px-3 py-1.5 font-sans text-[0.75rem] font-semibold uppercase tracking-wide transition-colors duration-200 ${
+          className={`rounded-md px-3 py-1.5 font-sans text-[0.9375rem] font-semibold uppercase tracking-wide transition-colors duration-200 ${
             locale === code
               ? tone === "light"
                 ? "bg-paper text-ink"

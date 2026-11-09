@@ -3,8 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { RevealText } from "@/components/motion/RevealText";
 import { ClipReveal } from "@/components/motion/ClipReveal";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { WindButton } from "@/components/ui/WindButton";
 
 export async function Hero() {
   const t = await getTranslations("home.hero");
@@ -40,7 +38,7 @@ export async function Hero() {
       <div className="absolute inset-0 bg-black/35 sm:hidden" aria-hidden />
 
       {/* One cohesive content block, bottom-left. */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-36 lg:px-8 lg:pb-36">
+      <div className="relative z-10 mx-auto w-full max-w-[88rem] px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-36 lg:px-8 lg:pb-36">
         <p className="font-display text-2xl italic font-semibold text-paper/90 sm:text-3xl">
           {t("eyebrow")}
         </p>
@@ -54,17 +52,12 @@ export async function Hero() {
           {t("subtitle")}
         </p>
         <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <WindButton href="/villas" variant="light" className="w-full sm:w-auto">
+          <Link href="/villas" className="btn-cream w-full sm:w-auto">
             {t("cta")}
-          </WindButton>
-          <Magnetic className="block w-full sm:inline-block sm:w-auto">
-            <Link
-              href="/contact"
-              className="btn-ghost-light w-full whitespace-nowrap !border-[1.5px] !border-white/60 !px-[1.3rem] !py-[0.7rem] !text-[0.95rem] !leading-[1.5] hover:!bg-white/10 hover:!text-paper sm:w-auto sm:!px-[2.6rem] sm:!py-[0.7rem] sm:!text-lg sm:!leading-[1.5]"
-            >
-              {t("ctaSecondary")}
-            </Link>
-          </Magnetic>
+          </Link>
+          <Link href="/contact" className="btn-ghost-light w-full sm:w-auto">
+            {t("ctaSecondary")}
+          </Link>
         </div>
       </div>
     </section>

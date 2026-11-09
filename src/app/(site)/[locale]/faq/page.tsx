@@ -39,6 +39,7 @@ export default async function FaqPage(props: Props) {
   const lang = requireLocale(locale);
   setRequestLocale(lang);
   const t = await getTranslations("faq");
+  const tFooter = await getTranslations("footer");
   const faqItems = await getFaqItems();
   const headerImage = getPageHeaderImage("faq", lang);
 
@@ -64,7 +65,7 @@ export default async function FaqPage(props: Props) {
 
           <Reveal delay={120}>
           <div className="mt-12 overflow-hidden rounded-2xl bg-[#EDE5D8] px-6 py-12 text-center sm:px-10">
-            <p className="font-serif italic text-base text-gold-dark">Ota yhteyttä</p>
+            <p className="font-serif italic text-base text-gold-deep">{tFooter("contact")}</p>
             <p className="font-display mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               {t("cta.title")}
             </p>

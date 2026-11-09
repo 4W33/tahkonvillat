@@ -29,13 +29,13 @@ export function ApartmentReviewsAccordion({
         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-forest/[0.03] sm:px-6"
       >
         <span className="flex flex-wrap items-center gap-3">
-          <span className="font-sans text-sm font-semibold text-forest">
+          <span className="font-sans text-[0.9375rem] font-semibold text-forest">
             {open
               ? t("hideReviews")
               : t("showReviews", { shown: shownCount, total: reviewCount })}
           </span>
           {ratingAverage != null && (
-            <span className="flex items-center gap-2 font-sans text-xs text-forest-500">
+            <span className="flex items-center gap-2 font-sans text-[0.9375rem] text-forest-500">
               <StarRating value={ratingAverage} size="sm" />
               {ratingAverage.toFixed(2)}
             </span>

@@ -14,14 +14,14 @@ export const pageHeaderImages = {
     },
   },
   contact: {
-    src: "/images/properties/villa-puolukka/11.jpg",
+    src: "/images/properties/villa-puolukka/15.jpg",
     alt: {
       fi: "Villa Puolukka — terassi ja luonto",
       en: "Villa Puolukka — terrace and nature",
     },
   },
   faq: {
-    src: "/images/properties/villa-karpalo/08.jpg",
+    src: "/images/properties/villa-karpalo/09.jpg",
     alt: {
       fi: "Villa Karpalo — sauna ja sisätilat",
       en: "Villa Karpalo — sauna and interior",

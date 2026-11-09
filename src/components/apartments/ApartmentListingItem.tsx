@@ -30,7 +30,7 @@ export async function ApartmentListingItem({ apartment, locale }: Props) {
           ja kuva + tekstit leikkautuvat kortin ulkopuolelle. */}
       <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.45fr)]">
         <div className="relative min-w-0 p-4 sm:p-5 md:min-h-[300px]">
-          <span className="absolute left-7 top-7 z-20 rounded-full bg-white/85 px-3 py-1 font-sans text-sm font-medium text-ink backdrop-blur-sm">
+          <span className="absolute left-7 top-7 z-20 rounded-full bg-white/85 px-3 py-1 font-sans text-[0.9375rem] font-medium text-ink backdrop-blur-sm">
             {t(`locations.${apartment.location}`)}
           </span>
           <VillaGallery images={gallery} alt={alt} variant="card" />

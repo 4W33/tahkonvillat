@@ -11,13 +11,14 @@ Push mainiin laukaisee Vercelin tuotantobuildin. **Ei pushia ilman Mikin lupaa**
 ## 2. Vercel-projektin asetukset
 
 - Projekti on jo olemassa Valtterin tilillä, kytketty repoon.
-- Settings → **Node.js Version: 22.x tai 24.x** (Payload vaatii `^22.23.4 || >=24.22.1`).
+- Node.js 24.x tulee `package.json`:n `engines`-kentästä (ohittaa Settings → Node.js Version). Payload vaatii `^22.23.4 || >=24.22.1`.
 - Build command tulee `vercel.json`ista: `npm run build:vercel` (= `payload migrate` vain tuotannossa + build). Älä ylikirjoita sitä asetuksissa.
 
 ## 3. Tietokanta: Neon
 
 Storage / Marketplace → **Neon** → kytke projektiin → `DATABASE_URL` Production-ympäristöön.
-Älä anna samaa `DATABASE_URL`ia Previewlle: preview ei migroi kantaa ja voi kaatua skeemamuutoksen jälkeen.
+Preview saa **oman Neon-haaran**: Neon → Branches → Create branch → haaran `DATABASE_URL` vain Preview-ympäristöön.
+Älä anna tuotannon `DATABASE_URL`ia Previewlle: preview ei migroi kantaa ja voi kaatua skeemamuutoksen jälkeen.
 
 ## 4. Vanha data talteen (omalla koneella)
 
@@ -67,13 +68,17 @@ npm run cms:seed
 
 Tulostaa yhteenvedon (luotu / päivitetty / ohitettu). Uudelleenajo ohittaa olemassa olevat kohteet; `-- --force` ylikirjoittaa ne.
 
-## 10. Savutesti
+## 10. Redeploy seedin jälkeen
+
+Vercel → Deployments → **Redeploy**. Seed ei tyhjennä sivuvälimuistia, joten ilman tätä tyhjästä kannasta rakennetut sivut näkyvät tyhjinä, kunnes välimuisti vanhenee.
+
+## 11. Savutesti
 
 - `/`, `/villat/villa-puolukka` (kuvat + Saatavuus-kalenteri), `/asunnot`
 - `/admin` → kirjaudu → Sivuston tekstit → muuta yksi teksti → Tallenna → päivitä julkinen sivu
 - Lähetä yhteydenottolomake → Viestit → Yhteydenotot
 
-## 11. Domain (myöhemmin)
+## 12. Domain (myöhemmin)
 
 Oman domainin jälkeen `NEXT_PUBLIC_SITE_URL=https://tahkonvillat.fi` → Redeploy.
 

@@ -33,7 +33,7 @@ export async function VillaCard({ villa, locale }: Props) {
           className="object-cover transition-transform duration-[1.1s] ease-out-expo group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        <span className="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1 font-sans text-sm font-medium text-ink backdrop-blur-sm">
+        <span className="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1 font-sans text-[0.9375rem] font-medium text-ink backdrop-blur-sm">
           {t(`locations.${villa.location}`)}
         </span>
       </div>

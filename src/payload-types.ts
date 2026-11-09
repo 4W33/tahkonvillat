@@ -758,6 +758,7 @@ export interface TextsFooter {
   contact?: string | null;
   rights?: string | null;
   privacy?: string | null;
+  pages?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1192,6 +1193,7 @@ export interface TextsReview {
   title?: string | null;
   summary?: string | null;
   showingSubset?: string | null;
+  originalLanguage?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1312,6 +1314,7 @@ export interface TextsFooterSelect<T extends boolean = true> {
   contact?: T;
   rights?: T;
   privacy?: T;
+  pages?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1828,6 +1831,7 @@ export interface TextsReviewsSelect<T extends boolean = true> {
   title?: T;
   summary?: T;
   showingSubset?: T;
+  originalLanguage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

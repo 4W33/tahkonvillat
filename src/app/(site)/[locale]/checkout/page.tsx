@@ -121,7 +121,7 @@ export default async function CheckoutPage(props: Props) {
 
           <Reveal delay={120}>
             <div className="mt-12 overflow-hidden rounded-2xl bg-[#EDE5D8] px-6 py-12 text-center sm:px-10">
-              <p className="font-serif italic text-base text-gold-dark">{t("cta.eyebrow")}</p>
+              <p className="font-serif italic text-base text-gold-deep">{t("cta.eyebrow")}</p>
               <p className="font-display mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                 {t("cta.title")}
               </p>

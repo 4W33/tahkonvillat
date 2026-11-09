@@ -46,7 +46,7 @@ export function PageHeader({
           aria-hidden
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-36 lg:px-8">
+        <div className="relative z-10 mx-auto w-full max-w-[88rem] px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-36 lg:px-8">
           <p className="eyebrow text-paper/85">{eyebrow}</p>
           <h1 className="section-title mt-2 text-balance text-paper">{title}</h1>
           {subtitle && (
@@ -66,7 +66,7 @@ export function PageHeader({
 
   return (
     <section className={`page-header ${className}`}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
         <p className="eyebrow">{eyebrow}</p>
         <h1 className="section-title mt-2 text-balance">{title}</h1>
         {subtitle && (

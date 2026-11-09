@@ -45,6 +45,9 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL },
+    // Dev-push vain paikalliseen kantaan (npm run db:dev): Neonia vasten ajettu cms:seed muuten
+    // pushaisi skeeman ja kirjaisi batch -1 -rivin, jonka jälkeen Vercelin `payload migrate` ohittaa migraatiot.
+    push: /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(process.env.DATABASE_URL ?? ""),
   }),
   email: process.env.RESEND_API_KEY
     ? resendAdapter({

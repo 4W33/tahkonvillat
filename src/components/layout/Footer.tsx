@@ -24,7 +24,7 @@ export async function Footer() {
 
       {/* ── Footer content ──────────────────────────────── */}
       <div className="bg-[#FAF7F3]">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             {/* Brand */}
             <div className="max-w-md">
@@ -48,8 +48,8 @@ export async function Footer() {
 
               {/* Nav */}
               <div>
-                <p className="font-display italic text-xl font-semibold text-gold-dark sm:text-2xl">Sivut</p>
-                <nav aria-label="Footer navigation" className="mt-3">
+                <p className="font-display italic text-xl font-semibold text-gold-dark sm:text-2xl">{t("pages")}</p>
+                <nav aria-label={t("pages")} className="mt-3">
                   <ul className="flex flex-col gap-3">
                     {navItems.map((item) => (
                       <li key={item.key}>
@@ -68,12 +68,12 @@ export async function Footer() {
           </div>
 
           <div className="mt-14 flex flex-col gap-3 border-t border-[color:var(--hairline)] pt-8 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-sans text-sm text-forest-400">
+            <p className="font-sans text-[0.9375rem] text-forest-500">
               © {year} {tCommon("brand")}. {t("rights")}
             </p>
             <Link
               href="/privacy"
-              className="font-sans text-sm text-forest-400 transition-colors hover:text-ink"
+              className="font-sans text-[0.9375rem] text-forest-500 transition-colors hover:text-ink"
             >
               {t("privacy")}
             </Link>

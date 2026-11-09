@@ -17,7 +17,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    mimeTypes: ["image/*"],
+    // Ei SVG:tä (voi sisältää skriptiä) eikä muita kuin sharpin käsittelemiä kuvamuotoja; sama lista kuin seed-skriptissä.
+    mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/avif"],
     resizeOptions: { width: 2400, withoutEnlargement: true },
   },
 };

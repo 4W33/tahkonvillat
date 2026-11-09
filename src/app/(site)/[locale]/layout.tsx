@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, IBM_Plex_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SiteShell } from "@/components/layout/SiteShell";
@@ -17,7 +17,8 @@ const serif = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-serif",
   style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700"],
+  // 500 ei käytössä serifillä (font-medium vain font-sans/mono-elementeissä)
+  weight: ["400", "600", "700"],
   display: "swap",
 });
 
@@ -25,7 +26,8 @@ const serif = Cormorant_Garamond({
 const sans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
+  // 700 ei käytössä sansilla (font-bold vain font-display/serif-elementeissä)
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -61,8 +63,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       template: `%s | ${BRAND_NAME}`,
     },
     description: t("description"),
+    // Favicon tulee src/app/icon.png-tiedostosta (sama kuva kuin logo-mark.png)
     icons: {
-      icon: "/images/logo-mark.png",
       apple: "/images/logo-mark-180.png",
     },
     openGraph: {
@@ -95,6 +97,8 @@ export default async function LocaleLayout(props: Props) {
     notFound();
   }
 
+  // Ilman tätä next-intl lukee kielen headers()-kutsulla ja jokainen sivu renderöityy dynaamisesti.
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (

@@ -13,7 +13,7 @@ export default async function NotFoundPage() {
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           {t("title")}
         </h1>
-        <p className="mx-auto mt-4 max-w-md font-sans text-sm leading-relaxed text-forest-700 sm:text-base">
+        <p className="mx-auto mt-4 max-w-md font-sans text-[0.9375rem] leading-relaxed text-forest-700 sm:text-base">
           {t("description")}
         </p>
         <Link href="/" className="btn-primary mt-10">

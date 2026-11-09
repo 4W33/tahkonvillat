@@ -68,7 +68,7 @@ export default async function VillasPage(props: Props) {
       </PageHeader>
 
       <section className="bg-[#F2EBE0] py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <RevealList className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {villas.map((villa) => (
               <VillaCard
